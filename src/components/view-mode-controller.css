@@ -1,0 +1,46 @@
+@import '@radix-ui/colors/black-alpha.css';
+/* @import '@radix-ui/colors/accent.css'; */
+/* @import '@radix-ui/colors/mauve.css'; */
+/* @import '@radix-ui/colors/violet.css'; */
+
+.ToggleGroup {
+  display: inline-flex;
+  background-color: var(--accent-6);
+  border-radius: var(--radius);
+  border: 1px solid var(--gray-7);
+  /* box-shadow: 0 2px 10px var(--black-a7); */
+}
+
+.ToggleGroupItem {
+  background-color: white;
+  color: var(--accent-11);
+  height: 32px;
+  width: 32px;
+  display: flex;
+  font-size: 15px;
+  line-height: 1;
+  align-items: center;
+  justify-content: center;
+  margin-left: 1px;
+  user-select: none;
+}
+.ToggleGroupItem:first-child {
+  margin-left: 0;
+  border-top-left-radius: var(--radius);
+  border-bottom-left-radius: var(--radius);
+}
+.ToggleGroupItem:last-child {
+  border-top-right-radius: var(--radius);
+  border-bottom-right-radius: var(--radius);
+}
+.ToggleGroupItem:hover {
+  background-color: var(--accent-3);
+}
+.ToggleGroupItem[data-state='on'] {
+  background-color: var(--accent-5);
+  color: var(--accent-11);
+}
+/* .ToggleGroupItem:focus {
+  position: relative;
+  box-shadow: 0 0 0 2px black;
+} */
