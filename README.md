@@ -2,6 +2,8 @@
 
 This repository contains the source code for "Awesome Website", a project that transforms a simple YAML file into a beautiful, interactive, and easily deployable website. It's the perfect solution for creating and maintaining "awesome lists" with a polished and professional look.
 
+**[Demo:](https://raideno.github.io/awesome-website/)** [https://raideno.github.io/awesome-website](https://raideno.github.io/awesome-website/)
+
 ![website-preview](./assets/preview.png)
 
 # TODOs
@@ -14,6 +16,45 @@ This repository contains the source code for "Awesome Website", a project that t
 To create your own awesome list website, you'll need to fork this repository and modify the `example.list.yaml` file.
 
 ### Usage
+
+```yaml
+name: Deploy Awesome Website to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v4
+
+      - name: build awesome website
+        uses: raideno/awesome-website@main
+        with:
+          # Formatted according to the structure specified below
+          yaml-path: 'example.list.yaml'
+
+      - name: upload build artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: awesome-website-src/dist
+          name: github-pages
+
+      - name: deploy to github pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+        with:
+          artifact_name: github-pages
+
+```
 
 1. **Create a GitHub repository.**
 2. **Create List File:** Copy [`example.list.yaml`](./example.list.yaml) into your repository.
