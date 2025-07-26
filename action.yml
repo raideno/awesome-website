@@ -1,5 +1,8 @@
 name: 'Build Awesome Website'
 description: 'Builds the Awesome Website from a user-provided YAML file.'
+branding:
+  icon: book-open
+  color: orange
 inputs:
   yaml-path:
     description: 'Path to the YAML file to use as data source.'
