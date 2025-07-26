@@ -1,5 +1,7 @@
 # Awesome Website
 
+**NOTE:** To easily deploy an awesome list; Use the [**Template Repository**](https://github.com/raideno/easy-awesome-website).
+
 This repository contains the source code for "Awesome Website", a project that transforms a simple YAML file into a beautiful, interactive, and easily deployable website. It's the perfect solution for creating and maintaining "awesome lists" with a polished and professional look.
 
 **[Demo:](https://raideno.github.io/awesome-website/)** [https://raideno.github.io/awesome-website](https://raideno.github.io/awesome-website/)
