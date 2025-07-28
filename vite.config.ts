@@ -15,7 +15,13 @@ if (process.env.BASE_PATH) {
   base = `/${repo}/`
 }
 
-console.log('[github-repository-url]', process.env.GITHUB_REPOSITORY_URL)
+console.log('[base]:', base)
+console.log('[process.env.BASE_PATH]:', process.env.BASE_PATH)
+console.log('[process.env.LIST_FILE_PATH]:', process.env.LIST_FILE_PATH)
+console.log(
+  '[process.env.GITHUB_REPOSITORY_URL]:',
+  process.env.GITHUB_REPOSITORY_URL,
+)
 
 // NOTE: https://vitejs.dev/config/
 export default vite.defineConfig({
@@ -29,7 +35,7 @@ export default vite.defineConfig({
   },
   define: {
     __BUILD_TIME__: JSON.stringify(new Date().toISOString()),
-    __REPOSITORY_URL__: process.env.GITHUB_REPOSITORY_URL,
+    __REPOSITORY_URL__: JSON.stringify(process.env.GITHUB_REPOSITORY_URL),
   },
   base: base,
   resolve: {
