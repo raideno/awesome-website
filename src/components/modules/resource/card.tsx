@@ -3,9 +3,9 @@ import React from 'react'
 import { Badge, Card, Flex, Heading, Link, Text } from '@radix-ui/themes'
 import type { CardProps } from '@radix-ui/themes'
 
-import type { Element } from '@/data/awesome-list-schema'
+import type { Element } from '@/types/awesome-list'
 
-import { cn } from '@/utils/cn'
+import { cn } from '@/lib/utils'
 import { useViewMode } from '@/context/view-mode'
 
 export interface ResourceCardProps extends CardProps {
@@ -55,15 +55,15 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
           </div>
         </Flex>
         <Flex direction={'row'} wrap={'wrap'} gap={'3'}>
-          {element.urls.map((link, index) => (
+          {element.urls.map((url, index) => (
             <Link
-              key={index}
-              href={link.url}
+              key={index + url}
+              href={url}
               className="!underline"
               target="_blank"
               rel="noopener noreferrer"
             >
-              {link.label}
+              {url}
             </Link>
           ))}
         </Flex>

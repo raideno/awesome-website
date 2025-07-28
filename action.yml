@@ -42,15 +42,17 @@ runs:
         if [ -n "${{ inputs.base-path }}" ]; then
           echo "value=${{ inputs.base-path }}" >> "$GITHUB_OUTPUT"
         else
-          REPO_NAME=$(basename "${GITHUB_REPOSITORY}")
+          REPO_NAME=$(basename "${GITHUB_REPOSITORY_URL}")
           echo "value=/$REPO_NAME/" >> "$GITHUB_OUTPUT"
         fi
       shell: bash
 
-    - name: Build Awesome Website
+    - name: build awesome website
       env:
         BASE_PATH: ${{ steps.base.outputs.value }}
         LIST_FILE_PATH: list.yaml
+        # TODO: might cause an issue
+        GITHUB_REPOSITORY_URL: ${{ secrets.GITHUB_REPOSITORY_URL }}
       run: |
         cd awesome-website-src
         npm run build

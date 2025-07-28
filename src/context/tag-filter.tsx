@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState } from 'react'
+import React, { createContext, useContext } from 'react'
+import { useLocalStorageState } from '@/hooks/local-storage-state'
 
 interface TagFilterContextType {
   selectedTags: Array<string>
@@ -22,7 +23,10 @@ export const useTagFilter = () => {
 export const TagFilterProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [selectedTags, setSelectedTags] = useState<Array<string>>([])
+  const [selectedTags, setSelectedTags] = useLocalStorageState<Array<string>>(
+    'filtering.tags',
+    [],
+  )
 
   const addTag = (tag: string) => {
     if (!selectedTags.includes(tag)) {

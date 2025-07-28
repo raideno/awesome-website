@@ -2,10 +2,10 @@ import fs from 'node:fs'
 import path from 'node:path'
 import yaml from 'js-yaml'
 
-import { AwesomeListSchema } from './src/data/awesome-list-schema'
+import { AwesomeListSchema } from '../src/types/awesome-list'
 
 import type { Plugin } from 'vite'
-import type { AwesomeList } from './src/data/awesome-list-schema'
+import type { AwesomeList } from '../src/types/awesome-list'
 
 const validateListFile = (listPath: string | undefined): AwesomeList => {
   if (!listPath) {
@@ -27,18 +27,15 @@ const validateListFile = (listPath: string | undefined): AwesomeList => {
   return parsing.data
 }
 
-export default (): Plugin => {
+export default (listPath: string): Plugin => {
   const virtualModuleId = 'virtual:awesome-list'
   const resolvedVirtualModuleId = '\0' + virtualModuleId
-  let listPath: string | undefined
 
   return {
     name: 'yaml-awesome-list',
     enforce: 'pre',
 
     configResolved(config) {
-      listPath = process.env.LIST_FILE_PATH
-
       validateListFile(listPath)
 
       if (listPath) {

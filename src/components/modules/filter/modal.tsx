@@ -15,7 +15,7 @@ import {
 import { Cross1Icon, MagnifyingGlassIcon } from '@radix-ui/react-icons'
 
 import { useTagFilter } from '@/context/tag-filter'
-import { getAllTags, getList } from '@/data/awesome-list'
+import { useList } from '@/context/list'
 
 export interface FilterModalProps {
   children: React.ReactNode
@@ -28,9 +28,7 @@ export const TagFilterModal: React.FC<FilterModalProps> = ({
 
   const [value, setValue] = React.useState<string>('')
 
-  const list = getList()
-
-  const allTags = getAllTags(list)
+  const { allTags } = useList()
 
   const modalFilteredTags = allTags.filter((tag) =>
     tag.toLowerCase().includes(value.toLowerCase()),

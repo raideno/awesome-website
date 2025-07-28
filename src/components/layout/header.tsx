@@ -11,21 +11,20 @@ import {
   Link,
   Text,
 } from '@radix-ui/themes'
-
-import { getList } from '@/data/awesome-list'
+import { useList } from '@/context/list'
 
 export interface HeaderProps {}
 
 const MAX_HEADER_TAGS = 4
 
 export const Header: React.FC<HeaderProps> = () => {
-  const list = getList()
+  const list = useList()
 
   const [showAllHeaderTags, setShowAllHeaderTags] = React.useState(false)
 
   const tags = showAllHeaderTags
-    ? list.tags
-    : list.tags.slice(0, MAX_HEADER_TAGS)
+    ? list.allTags
+    : list.allTags.slice(0, MAX_HEADER_TAGS)
 
   return (
     <Flex
@@ -35,7 +34,17 @@ export const Header: React.FC<HeaderProps> = () => {
       className="w-full text-center mb-12"
     >
       <Text size={'2'} color={'gray'}>
-        Version {list.version} • By {list.author} • Updated {list.last_updated}
+        By {list.content.new.author} • Updated{' '}
+        {new Date(__BUILD_TIME__).toLocaleDateString(undefined, {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        })}{' '}
+        at{' '}
+        {new Date(__BUILD_TIME__).toLocaleTimeString(undefined, {
+          hour: '2-digit',
+          minute: '2-digit',
+        })}
       </Text>
 
       <Flex
@@ -51,7 +60,7 @@ export const Header: React.FC<HeaderProps> = () => {
             {tag}
           </Badge>
         ))}
-        {list.tags.length > MAX_HEADER_TAGS && (
+        {list.allTags.length > MAX_HEADER_TAGS && (
           <Button
             className="!cursor-pointer"
             variant="outline"
@@ -60,28 +69,28 @@ export const Header: React.FC<HeaderProps> = () => {
           >
             {showAllHeaderTags
               ? 'Show Less'
-              : `+${list.tags.length - MAX_HEADER_TAGS} more`}
+              : `+${list.allTags.length - MAX_HEADER_TAGS} more`}
           </Button>
         )}
       </Flex>
 
       <Heading size={'8'} weight={'bold'}>
-        {list.title}
+        {list.content.new.title}
       </Heading>
 
       <Text className="text-center max-w-3xl" as="p">
-        {list.description}
+        {list.content.new.description}
       </Text>
 
-      {list.thumbnail && (
+      {list.content.new.thumbnail && (
         <Box className="w-full max-w-2xl">
           <AspectRatio
             ratio={16 / 9}
             className="rounded-[var(--radius-4)] overflow-hidden ring-2 ring-[var(--accent-9)] border border-[var(--accent-9)] transition-all"
           >
             <img
-              src={list.thumbnail}
-              alt={`${list.title} thumbnail`}
+              src={list.content.new.thumbnail}
+              alt={`${list.content.new.title} thumbnail`}
               className="w-full h-full object-cover"
             />
           </AspectRatio>
@@ -89,17 +98,21 @@ export const Header: React.FC<HeaderProps> = () => {
       )}
 
       <div className="flex flex-wrap justify-center gap-2 max-w-xl mx-auto">
-        <Link rel="noopener noreferrer" href={list.repository} target="_blank">
+        <Link
+          rel="noopener noreferrer"
+          href={__REPOSITORY_URL__}
+          target="_blank"
+        >
           <Button className="!cursor-pointer" size={'3'} variant="classic">
             <GitHubLogoIcon />
             View on GitHub
           </Button>
         </Link>
-        {list.links &&
-          list.links.map((link, idx) => (
+        {list.content.new.links &&
+          list.content.new.links.map((url, idx) => (
             <Link
               key={idx}
-              href={link.url}
+              href={url}
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -109,7 +122,7 @@ export const Header: React.FC<HeaderProps> = () => {
                 variant="surface"
                 size={'3'}
               >
-                {link.label}
+                {url}
               </Button>
             </Link>
           ))}

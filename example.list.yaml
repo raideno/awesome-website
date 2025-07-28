@@ -1,69 +1,16 @@
-mode: 'detailed'
-title: 'Awesome Frontend Development'
+title: 'Awesomdsqdsdsdse Frontend Development'
 description: 'A curated list of amazing frontend development tools, libraries, and resources to supercharge your web development workflow.'
-version: '2.1.4'
-tags:
-  - 'frontend'
-  - 'javascript'
-  - 'typescript'
-  - 'react'
-  - 'vue'
-  - 'angular'
-  - 'css'
-  - 'html'
-  - 'tooling'
 author: 'Kichou Nadir'
-contributors:
-  - 'Mark Doe'
-  - 'Mike Doe'
-  - 'Anson Doe'
-date: '2025-07-22'
-last_updated: '2025-07-22'
-repository: 'https://github.com/raideno/awesome-list'
-website: 'https://awesome-frontend.dev'
-thumbnail: 'https://upload.wikimedia.org/wikipedia/commons/b/b6/Image_created_with_a_mobile_phone.png'
+# thumbnail: 'https://upload.wikimedia.org/wikipedia/commons/b/b6/Image_created_with_a_mobile_phone.png'
 links:
-  - label: 'Docs'
-    url: 'https://awesome-frontend.dev/docs'
-
-categories:
-  - name: 'React Libraries'
-    slug: 'react-libraries'
-    icon: '⚛️'
-  - name: 'CSS Frameworks'
-    slug: 'css-frameworks'
-    icon: '🎨'
-  - name: 'Build Tools'
-    slug: 'build-tools'
-    icon: '🔧'
-  - name: 'Testing Tools'
-    slug: 'testing-tools'
-    icon: '🧪'
-  - name: 'State Management'
-    slug: 'state-management'
-    icon: '📊'
-  - name: 'UI Components'
-    slug: 'ui-components'
-    icon: '🧩'
-  - name: 'Animation Libraries'
-    slug: 'animation-libraries'
-    icon: '✨'
-  - name: 'Data Visualization'
-    slug: 'data-visualization'
-    icon: '📈'
+  - 'https://awesome-frontend.dev/docs'
+  - 'https://awesome-frontend.dev/docs'
 
 elements:
   - name: 'TanStack Query'
     description: "Powerful data synchronization for web applications. Fetch, cache and update data in your React, Vue, Solid and Svelte applications without touching any 'global state'."
-    content: "TanStack Query (formerly React Query) is a data-fetching library that provides powerful caching, background updates, and stale data handling. It's the perfect solution for managing server state in modern web applications with features like automatic refetching, optimistic updates, and infinite queries."
     urls:
-      - url: 'https://tanstack.com/query'
-        label: 'Website'
-      - url: 'https://github.com/tanstack/query'
-        label: 'GitHub'
-    thumbnail: 'https://tanstack.com/_build/assets/logo-color-600w-Bx4vtR8J.png'
-    category: 'react-libraries'
-    stars: 41500
+      - 'https://tanstack.com/query'
     tags:
       - 'react'
       - 'data-fetching'
@@ -74,15 +21,9 @@ elements:
 
   - name: 'Tailwind CSS'
     description: 'A utility-first CSS framework packed with classes like flex, pt-4, text-center and rotate-90 that can be composed to build any design, directly in your markup.'
-    content: "Tailwind CSS is a highly customizable, low-level CSS framework that gives you all of the building blocks you need to build bespoke designs without any annoying opinionated styles you have to fight to override. It's designed for rapid UI development with consistent design tokens."
     urls:
-      - url: 'https://tailwindcss.com'
-        label: 'Website'
-      - url: 'https://github.com/tailwindlabs/tailwindcss'
-        label: 'GitHub'
-    thumbnail: 'https://tailwindcss.com/_next/static/media/tailwindcss-mark.3c5441fc7a190fb1800d4a5c7f07ba4b1345a9c8.svg'
-    category: 'css-frameworks'
-    stars: 82300
+      - 'https://tailwindcss.com'
+      - 'https://github.com/tailwindlabs/tailwindcss'
     tags:
       - 'css'
       - 'utility-first'
@@ -91,15 +32,9 @@ elements:
 
   - name: 'Vite'
     description: "Next generation frontend tooling. It's fast! Instant server start, lightning fast HMR, and rich features for development and production builds."
-    content: 'Vite is a build tool that aims to provide a faster and leaner development experience for modern web projects. It consists of a dev server with rich features and pre-configured Rollup for production builds. Perfect for Vue, React, Svelte, and vanilla JavaScript projects.'
     urls:
-      - url: 'https://vitejs.dev'
-        label: 'Website'
-      - url: 'https://github.com/vitejs/vite'
-        label: 'GitHub'
-    thumbnail: 'https://vitejs.dev/logo-with-shadow.png'
-    category: 'build-tools'
-    stars: 67800
+      - 'https://vitejs.dev'
+      - 'https://github.com/vitejs/vite'
     tags:
       - 'build-tool'
       - 'dev-server'
@@ -109,15 +44,9 @@ elements:
 
   - name: 'Vitest'
     description: 'A blazing fast unit test framework powered by Vite. Native code coverage via c8, built-in TypeScript support, and JSX support out of the box.'
-    content: "Vitest is a testing framework that leverages Vite's config and transformation pipeline for testing. It provides a Jest-compatible API with native ES modules support, TypeScript integration, and incredibly fast execution through Vite's dev server."
     urls:
-      - url: 'https://vitest.dev'
-        label: 'Website'
-      - url: 'https://github.com/vitest-dev/vitest'
-        label: 'GitHub'
-    thumbnail: 'https://vitest.dev/logo-shadow.svg'
-    category: 'testing-tools'
-    stars: 12700
+      - 'https://vitest.dev'
+      - 'https://github.com/vitest-dev/vitest'
     tags:
       - 'testing'
       - 'unit-test'
@@ -127,15 +56,9 @@ elements:
 
   - name: 'Zustand'
     description: 'A small, fast and scalable bearbones state-management solution using simplified flux principles.'
-    content: "Zustand is a lightweight state management library that doesn't require providers, reducers, or extensive boilerplate. It's TypeScript-first, has a small bundle size, and works great with React's concurrent features. Perfect for both simple and complex state management needs."
     urls:
-      - url: 'https://github.com/pmndrs/zustand'
-        label: 'GitHub'
-      - url: 'https://docs.pmnd.rs/zustand/getting-started/introduction'
-        label: 'Documentation'
-    thumbnail: 'https://raw.githubusercontent.com/pmndrs/zustand/main/bear.jpg'
-    category: 'state-management'
-    stars: 46200
+      - 'https://github.com/pmndrs/zustand'
+      - 'https://docs.pmnd.rs/zustand/getting-started/introduction'
     tags:
       - 'state-management'
       - 'react'
@@ -145,15 +68,9 @@ elements:
 
   - name: 'Shadcn/ui'
     description: 'Beautifully designed components that you can copy and paste into your apps. Accessible. Customizable. Open Source.'
-    content: 'shadcn/ui is a collection of reusable components built using Radix UI and Tailwind CSS. Unlike traditional component libraries, you copy and paste the components into your codebase, giving you full ownership and customization control over your UI components.'
     urls:
-      - url: 'https://ui.shadcn.com'
-        label: 'Website'
-      - url: 'https://github.com/shadcn-ui/ui'
-        label: 'GitHub'
-    thumbnail: 'https://ui.shadcn.com/og.jpg'
-    category: 'ui-components'
-    stars: 71800
+      - 'https://ui.shadcn.com'
+      - 'https://github.com/shadcn-ui/ui'
     tags:
       - 'ui-components'
       - 'react'
@@ -164,15 +81,9 @@ elements:
 
   - name: 'Framer Motion'
     description: 'A production-ready motion library for React. Utilize the power behind Framer, the best prototyping tool for teams.'
-    content: 'Framer Motion is a declarative animation library for React that makes it easy to create fluid animations and interactions. It provides simple yet powerful APIs for complex animations, gestures, layout animations, and shared element transitions.'
     urls:
-      - url: 'https://www.framer.com/motion/'
-        label: 'Website'
-      - url: 'https://github.com/framer/motion'
-        label: 'GitHub'
-    thumbnail: 'https://www.framer.com/images/meta/motion.png'
-    category: 'animation-libraries'
-    stars: 23400
+      - 'https://www.framer.com/motion/'
+      - 'https://github.com/framer/motion'
     tags:
       - 'animation'
       - 'react'
@@ -182,15 +93,9 @@ elements:
 
   - name: 'D3.js'
     description: 'Data-Driven Documents. Bring data to life with SVG, Canvas and HTML using a powerful visualization library.'
-    content: 'D3.js is a JavaScript library for manipulating documents based on data. It helps you bring data to life using HTML, SVG, and CSS by providing powerful visualization components and a data-driven approach to DOM manipulation. Perfect for creating interactive charts, graphs, and data visualizations.'
     urls:
-      - url: 'https://d3js.org'
-        label: 'Website'
-      - url: 'https://github.com/d3/d3'
-        label: 'GitHub'
-    thumbnail: 'https://d3js.org/logo.svg'
-    category: 'data-visualization'
-    stars: 108000
+      - 'https://d3js.org'
+      - 'https://github.com/d3/d3'
     tags:
       - 'data-visualization'
       - 'svg'
@@ -200,15 +105,9 @@ elements:
 
   - name: 'Chart.js'
     description: 'Simple yet flexible JavaScript charting for designers & developers. 8 chart types with responsive design and animation support.'
-    content: 'Chart.js is a free, open-source JavaScript library for creating beautiful, responsive charts. It supports 8 different chart types including line, bar, radar, doughnut, pie, polar area, bubble, and scatter charts. Easy to use with extensive customization options and animation support.'
     urls:
-      - url: 'https://www.chartjs.org'
-        label: 'Website'
-      - url: 'https://github.com/chartjs/Chart.js'
-        label: 'GitHub'
-    thumbnail: 'https://www.chartjs.org/img/chartjs-logo.svg'
-    category: 'data-visualization'
-    stars: 64200
+      - 'https://www.chartjs.org'
+      - 'https://github.com/chartjs/Chart.js'
     tags:
       - 'charts'
       - 'visualization'
@@ -218,15 +117,9 @@ elements:
 
   - name: 'React Hook Form'
     description: 'Performant, flexible and extensible forms with easy validation. Minimal re-renders and intuitive API.'
-    content: 'React Hook Form is a library that helps you build forms with easy validation, minimal re-renders, and better performance. It embraces uncontrolled components and native HTML form validation while providing a great developer experience with TypeScript support.'
     urls:
-      - url: 'https://react-hook-form.com'
-        label: 'Website'
-      - url: 'https://github.com/react-hook-form/react-hook-form'
-        label: 'GitHub'
-    thumbnail: 'https://react-hook-form.com/images/logo/react-hook-form-logo-only.png'
-    category: 'react-libraries'
-    stars: 41000
+      - 'https://react-hook-form.com'
+      - 'https://github.com/react-hook-form/react-hook-form'
     tags:
       - 'react'
       - 'forms'
@@ -236,15 +129,9 @@ elements:
 
   - name: 'Playwright'
     description: 'Fast and reliable end-to-end testing for modern web apps. Test across all modern browsers with a single API.'
-    content: 'Playwright is an end-to-end testing framework that enables reliable testing across Chromium, Firefox, and WebKit browsers. It provides powerful features like auto-wait, network interception, screenshot comparison, and mobile device emulation for comprehensive web app testing.'
     urls:
-      - url: 'https://playwright.dev'
-        label: 'Website'
-      - url: 'https://github.com/microsoft/playwright'
-        label: 'GitHub'
-    thumbnail: 'https://playwright.dev/img/playwright-logo.svg'
-    category: 'testing-tools'
-    stars: 66000
+      - 'https://playwright.dev'
+      - 'https://github.com/microsoft/playwright'
     tags:
       - 'testing'
       - 'e2e'
@@ -254,15 +141,9 @@ elements:
 
   - name: 'Storybook'
     description: 'Build component libraries. Develop, test, and document React, Vue, Angular, and more UI components in isolation.'
-    content: 'Storybook is a frontend workshop for building UI components and pages in isolation. It helps you develop hard-to-reach states and edge cases without needing to run your whole app. Thousands of teams use it for UI development, testing, and documentation.'
     urls:
-      - url: 'https://storybook.js.org'
-        label: 'Website'
-      - url: 'https://github.com/storybookjs/storybook'
-        label: 'GitHub'
-    thumbnail: 'https://storybook.js.org/images/placeholders/350x150.png'
-    category: 'ui-components'
-    stars: 84100
+      - 'https://storybook.js.org'
+      - 'https://github.com/storybookjs/storybook'
     tags:
       - 'component-library'
       - 'documentation'
@@ -272,15 +153,9 @@ elements:
 
   - name: 'Next.js'
     description: 'The React framework for production. Hybrid static & server rendering, TypeScript support, smart bundling, route pre-fetching, and more.'
-    content: 'Next.js is a React framework that gives you building blocks to create web applications. It handles tooling and configuration needed for React, and provides additional structure, features, and optimizations for your application including SSR, SSG, API routes, and automatic code splitting.'
     urls:
-      - url: 'https://nextjs.org'
-        label: 'Website'
-      - url: 'https://github.com/vercel/next.js'
-        label: 'GitHub'
-    thumbnail: 'https://nextjs.org/static/blog/next-13-4/twitter-card.png'
-    category: 'react-libraries'
-    stars: 125000
+      - 'https://nextjs.org'
+      - 'https://github.com/vercel/next.js'
     tags:
       - 'react'
       - 'framework'
@@ -291,15 +166,9 @@ elements:
 
   - name: 'Remix'
     description: 'Build Better Websites. Create modern, resilient user experiences with web fundamentals.'
-    content: 'Remix is a full-stack web framework focused on web standards and modern web app UX. It provides server-side rendering, progressive enhancement, and nested routing out of the box. Built by the creators of React Router with a focus on performance and user experience.'
     urls:
-      - url: 'https://remix.run'
-        label: 'Website'
-      - url: 'https://github.com/remix-run/remix'
-        label: 'GitHub'
-    thumbnail: 'https://remix.run/_build/assets/remix-letter-glowing-BpLTdecq.png'
-    category: 'react-libraries'
-    stars: 29300
+      - 'https://remix.run'
+      - 'https://github.com/remix-run/remix'
     tags:
       - 'react'
       - 'framework'
@@ -309,15 +178,9 @@ elements:
 
   - name: 'Astro'
     description: 'Build fast websites with less client-side JavaScript. The web framework for content-driven websites.'
-    content: 'Astro is a modern static site generator that lets you use your favorite JavaScript frameworks (React, Vue, Svelte, etc.) while shipping zero JavaScript by default. Perfect for content-heavy sites that need great performance and SEO.'
     urls:
-      - url: 'https://astro.build'
-        label: 'Website'
-      - url: 'https://github.com/withastro/astro'
-        label: 'GitHub'
-    thumbnail: 'https://astro.build/assets/press/astro-icon-light-gradient.svg'
-    category: 'build-tools'
-    stars: 45900
+      - 'https://astro.build'
+      - 'https://github.com/withastro/astro'
     tags:
       - 'static-site-generator'
       - 'performance'

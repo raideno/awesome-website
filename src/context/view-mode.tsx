@@ -1,11 +1,17 @@
-import React, { createContext, useContext, useState } from 'react'
-import type { AwesomeList } from '@/data/awesome-list-schema'
+import React, { createContext, useContext } from 'react'
 
-import { getList } from '@/data/awesome-list'
+// @ts-ignore: allow custom accentColor value
+import list_ from 'virtual:awesome-list'
+
+import type { ViewMode } from '@/types/view-mode'
+
+import { useLocalStorageState } from '@/hooks/local-storage-state'
+
+const DEFAULT_MODE: ViewMode = 'detailed'
 
 interface ViewModeContextType {
-  mode: AwesomeList['mode']
-  setMode: (mode: AwesomeList['mode']) => void
+  mode: ViewMode
+  setMode: (mode: ViewMode) => void
 }
 
 const ViewModeContext = createContext<ViewModeContextType | undefined>(
@@ -23,9 +29,10 @@ export const useViewMode = () => {
 export const ViewModeProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const list = getList()
-
-  const [mode, setMode] = useState<AwesomeList['mode']>(list.mode)
+  const [mode, setMode] = useLocalStorageState<ViewMode>(
+    'display.mode',
+    DEFAULT_MODE,
+  )
 
   return (
     <ViewModeContext.Provider

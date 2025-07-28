@@ -13,24 +13,26 @@ import {
 
 import React from 'react'
 
-import { getList } from '@/data/awesome-list'
-import { useTagFilter } from '@/context/tag-filter'
-import { ResourceCard } from '@/components/resource-card'
 import { useViewMode } from '@/context/view-mode'
+import { useTagFilter } from '@/context/tag-filter'
+
+import { ResourceCard } from '@/components/modules/resource/card'
+import { ResourceCardContextMenu } from '@/components/modules/resource/card-context-menu'
+import { useList } from '@/context/list'
 
 export interface ResourceGridProps {}
 
 export const ResourceGrid: React.FC<ResourceGridProps> = () => {
   const { selectedTags, clearTags } = useTagFilter()
 
-  const list = getList()
+  const list = useList()
 
   const { mode } = useViewMode()
 
   const filteredElements =
     selectedTags.length === 0
-      ? list.elements
-      : list.elements.filter((element) =>
+      ? list.content.new.elements
+      : list.content.new.elements.filter((element) =>
           selectedTags.some((tag) => element.tags.includes(tag)),
         )
 
@@ -76,7 +78,9 @@ export const ResourceGrid: React.FC<ResourceGridProps> = () => {
             gap={mode === 'minimal' ? '4' : '6'}
           >
             {filteredElements.map((element) => (
-              <ResourceCard element={element} key={element.name} />
+              <ResourceCardContextMenu key={element.name} element={element}>
+                <ResourceCard element={element} />
+              </ResourceCardContextMenu>
             ))}
           </Grid>
         ))}

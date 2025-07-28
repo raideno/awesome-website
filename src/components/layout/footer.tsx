@@ -7,7 +7,7 @@ export interface FooterProps {}
 
 export const Footer: React.FC<FooterProps> = () => {
   return (
-    <Flex direction="column" align="center" gap="2" py="8" mt="12">
+    <Flex direction="column" align="center" gap="2" py="8">
       <Flex align="center" gap="2">
         <Text size="2" color="gray">
           Made with ❤️ by

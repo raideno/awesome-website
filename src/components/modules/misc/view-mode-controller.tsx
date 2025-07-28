@@ -1,4 +1,4 @@
-import '@/components/view-mode-controller.css'
+import '@/components/modules/misc/view-mode-controller.css'
 
 import { RowsIcon, TableIcon, ViewGridIcon } from '@radix-ui/react-icons'
 import * as ToggleGroup from '@radix-ui/react-toggle-group'

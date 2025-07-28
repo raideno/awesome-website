@@ -2,6 +2,8 @@
   "include": [
     "**/*.ts",
     "**/*.tsx",
+    "src",
+    "src/global.d.ts",
     "eslint.config.js",
     "prettier.config.js",
     "vite.config.js"
