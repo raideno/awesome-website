@@ -2,7 +2,7 @@ import React from 'react'
 
 import { ContextMenu } from '@radix-ui/themes'
 
-import type { Element } from '@/types/awesome-list'
+import type { AwesomeListElement } from '@/types/awesome-list'
 
 import { AdminOnly } from '@/components/utils/admin-only'
 import { ResourceEditSheet } from '@/components/modules/resource/edit-sheet'
@@ -11,7 +11,7 @@ import { useList } from '@/context/list'
 
 export interface ResourceCardContextMenuProps {
   children?: React.ReactNode
-  element: Element
+  element: AwesomeListElement
 }
 
 export const ResourceCardContextMenu: React.FC<

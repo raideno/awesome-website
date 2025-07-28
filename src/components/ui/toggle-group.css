@@ -12,10 +12,10 @@
 }
 
 .ToggleGroupItem {
-  background-color: white;
+  background-color: var(--color-panel-solid);
   color: var(--accent-11);
-  height: 32px;
-  width: 32px;
+  height: 30px;
+  width: 30px;
   display: flex;
   font-size: 15px;
   line-height: 1;

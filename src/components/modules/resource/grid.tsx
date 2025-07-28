@@ -14,7 +14,7 @@ import {
 import React from 'react'
 
 import { useViewMode } from '@/context/view-mode'
-import { useTagFilter } from '@/context/tag-filter'
+import { useFilter } from '@/context/filter'
 
 import { ResourceCard } from '@/components/modules/resource/card'
 import { ResourceCardContextMenu } from '@/components/modules/resource/card-context-menu'
@@ -23,18 +23,23 @@ import { useList } from '@/context/list'
 export interface ResourceGridProps {}
 
 export const ResourceGrid: React.FC<ResourceGridProps> = () => {
-  const { selectedTags, clearTags } = useTagFilter()
+  const { selectedTags, tagsFilterOperator, clearTags } = useFilter()
 
   const list = useList()
 
   const { mode } = useViewMode()
 
-  const filteredElements =
-    selectedTags.length === 0
-      ? list.content.new.elements
-      : list.content.new.elements.filter((element) =>
-          selectedTags.some((tag) => element.tags.includes(tag)),
-        )
+  const filteredElements = React.useMemo(() => {
+    if (selectedTags.length === 0) {
+      return list.content.new.elements
+    }
+
+    return list.content.new.elements.filter((element) =>
+      tagsFilterOperator === 'and'
+        ? selectedTags.every((tag) => element.tags.includes(tag))
+        : selectedTags.some((tag) => element.tags.includes(tag)),
+    )
+  }, [list.content.new.elements, selectedTags, tagsFilterOperator])
 
   return (
     <Box>

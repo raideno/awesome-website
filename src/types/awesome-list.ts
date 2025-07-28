@@ -1,19 +1,27 @@
 import { z } from 'zod/v4'
 
-export const ElementSchema = z.object({
+import { MetadataRegistry } from '../components/modules/form/registry'
+
+export const AwesomeListElementSchema = z.object({
   name: z.string().max(128),
-  description: z.string().meta({ type: 'textarea' }).max(512),
+  description: z
+    .string()
+    .register(MetadataRegistry, { type: 'textarea' })
+    .max(512),
   urls: z.array(z.url()).max(4),
   tags: z.array(z.string()).max(16),
 })
-export type Element = z.infer<typeof ElementSchema>
+export type AwesomeListElement = z.infer<typeof AwesomeListElementSchema>
 
 export const AwesomeListSchema = z.object({
   title: z.string().max(128),
-  description: z.string().max(512).meta({ type: 'textarea' }),
+  description: z
+    .string()
+    .max(512)
+    .register(MetadataRegistry, { type: 'textarea' }),
   author: z.string().max(64),
   thumbnail: z.string().optional(),
-  elements: z.array(ElementSchema),
+  elements: z.array(AwesomeListElementSchema),
   links: z.array(z.url()).max(8).optional(),
 })
 export type AwesomeList = z.infer<typeof AwesomeListSchema>

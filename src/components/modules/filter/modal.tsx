@@ -14,8 +14,11 @@ import {
 } from '@radix-ui/themes'
 import { Cross1Icon, MagnifyingGlassIcon } from '@radix-ui/react-icons'
 
-import { useTagFilter } from '@/context/tag-filter'
+import type { TagsFilterOperator } from '@/context/filter'
+
 import { useList } from '@/context/list'
+import { useFilter } from '@/context/filter'
+import { ToggleGroup } from '@/components/ui/toggle-group'
 
 export interface FilterModalProps {
   children: React.ReactNode
@@ -24,14 +27,21 @@ export interface FilterModalProps {
 export const TagFilterModal: React.FC<FilterModalProps> = ({
   children: trigger,
 }) => {
-  const { selectedTags, addTag, removeTag, clearTags } = useTagFilter()
+  const {
+    tagsFilterOperator,
+    setTagsFilterOperator,
+    selectedTags,
+    addTag,
+    removeTag,
+    clearTags,
+  } = useFilter()
 
-  const [value, setValue] = React.useState<string>('')
+  const [search, setSearch] = React.useState<string>('')
 
   const { allTags } = useList()
 
   const modalFilteredTags = allTags.filter((tag) =>
-    tag.toLowerCase().includes(value.toLowerCase()),
+    tag.toLowerCase().includes(search.toLowerCase()),
   )
 
   return (
@@ -39,28 +49,57 @@ export const TagFilterModal: React.FC<FilterModalProps> = ({
       <Dialog.Trigger>{trigger}</Dialog.Trigger>
       <Dialog.Content aria-label="Select tags to filter">
         <Flex direction={'column'} gap={'4'}>
-          <Flex direction={'column'} gap={'2'}>
-            <Heading size={'4'} slot="title" className="text-lg font-bold mb-4">
+          <Box>
+            <Heading size={'4'} slot="title" className="text-lg font-bold">
               Select Tags
             </Heading>
-            <TextField.Root
-              className="w-full"
-              placeholder="Search tags..."
-              value={value}
-              onChange={(e) => setValue(e.target.value)}
-              autoFocus
-            >
-              <TextField.Slot side="left">
-                <MagnifyingGlassIcon height="16" width="16" />
-              </TextField.Slot>
-              {value && (
-                <TextField.Slot side="right">
-                  <IconButton variant="ghost" onClick={() => setValue('')}>
-                    <Cross1Icon />
-                  </IconButton>
+            <Text>
+              Select tags to filter the resources. You can use "Or" to match any
+              tag or "&" to match all selected tags.
+            </Text>
+          </Box>
+          <Flex direction={'column'} gap={'2'}>
+            <Flex direction={'row'} gap={'2'} align={'center'}>
+              <TextField.Root
+                className="w-full"
+                placeholder="Search tags..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                autoFocus
+              >
+                <TextField.Slot side="left">
+                  <MagnifyingGlassIcon height="16" width="16" />
                 </TextField.Slot>
-              )}
-            </TextField.Root>
+                {search && (
+                  <TextField.Slot side="right">
+                    <IconButton variant="ghost" onClick={() => setSearch('')}>
+                      <Cross1Icon />
+                    </IconButton>
+                  </TextField.Slot>
+                )}
+              </TextField.Root>
+              <ToggleGroup.Root
+                type="single"
+                defaultValue="and"
+                value={tagsFilterOperator}
+                onValueChange={(value) =>
+                  value && setTagsFilterOperator(value as TagsFilterOperator)
+                }
+              >
+                <ToggleGroup.Item
+                  className="group data-[state=on]:font-bold"
+                  value="or"
+                >
+                  <Text>Or</Text>
+                </ToggleGroup.Item>
+                <ToggleGroup.Item
+                  className="group data-[state=on]:font-bold"
+                  value="and"
+                >
+                  <Text>&</Text>
+                </ToggleGroup.Item>
+              </ToggleGroup.Root>
+            </Flex>
           </Flex>
 
           <Card className="!p-0">

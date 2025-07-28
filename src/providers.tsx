@@ -2,9 +2,10 @@ import { Theme } from '@radix-ui/themes'
 
 import type React from 'react'
 
+import { useTheme } from '@/context/theme'
 import { ListProvider } from '@/context/list'
+import { FilterProvider } from '@/context/filter'
 import { ViewModeProvider } from '@/context/view-mode'
-import { TagFilterProvider } from '@/context/tag-filter'
 
 import { AlertDialogProvider } from '@/components/utils/alert-dialog'
 
@@ -13,6 +14,8 @@ export interface ProvidersProps {
 }
 
 export const Providers: React.FC<ProvidersProps> = ({ children }) => {
+  const { theme } = useTheme()
+
   return (
     <>
       <Theme
@@ -20,14 +23,14 @@ export const Providers: React.FC<ProvidersProps> = ({ children }) => {
         accentColor="black"
         hasBackground={false}
         radius="none"
-        appearance="light"
+        appearance={theme}
         panelBackground="solid"
         scaling="100%"
       >
         <AlertDialogProvider>
           <ListProvider>
             <ViewModeProvider>
-              <TagFilterProvider>{children}</TagFilterProvider>
+              <FilterProvider>{children}</FilterProvider>
             </ViewModeProvider>
           </ListProvider>
         </AlertDialogProvider>

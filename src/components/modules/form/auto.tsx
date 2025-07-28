@@ -1,4 +1,5 @@
-import { zodResolver } from '@hookform/resolvers/zod'
+import * as z from 'zod/v4'
+import { standardSchemaResolver } from '@hookform/resolvers/standard-schema'
 import _ from 'lodash'
 import { createContext, useContext, useEffect, useState } from 'react'
 import {
@@ -23,9 +24,10 @@ import type {
   SubmitHandler,
   UseFormReturn,
 } from 'react-hook-form'
-import type * as z from 'zod/v4'
 // import { useToast } from "@/hooks/use-toast"; // Keep commented if not used/implemented
 import type { ButtonProps } from '@radix-ui/themes'
+import type { FieldMetadata } from './registry'
+// import type * as z from 'zod/v4'
 import {
   Form,
   FormControl,
@@ -39,22 +41,7 @@ import { FileUpload } from '@/components/ui/file-upload'
 
 import { cn } from '@/lib/utils'
 import { TagInput } from '@/components/ui/tag-input'
-
-// Define field metadata types
-export type FieldMetadata = {
-  disabled?: boolean | ((values: any) => boolean)
-  hidden?: boolean | ((values: any) => boolean)
-  readonly?: boolean | ((values: any) => boolean)
-  placeholder?: string
-  description?: string
-  label?: string
-  halfWidth?: boolean
-  type?: string | 'file' | 'files'
-  // --- --- --- --- --- ---
-  accept?: string
-  maxFiles?: number
-  maxSize?: number
-}
+// import { MetadataRegistry } from './registery'
 
 const isZodString = (schema: z.ZodTypeAny): schema is z.ZodString =>
   schema.def.type === 'string'
@@ -89,9 +76,14 @@ const isZodDate = (schema: z.ZodTypeAny): schema is z.ZodDate =>
 // --- Context ---
 
 // Use generic FieldValues for better type compatibility with react-hook-form
-interface AutoFormContextValue<TSchemaType extends z.ZodType> {
+interface AutoFormContextValue<TSchemaType extends z.ZodObject<any, any>> {
   // TODO: reset type
-  form: any
+  // form: any
+  form: UseFormReturn<
+    z.core.output<TSchemaType>,
+    any,
+    z.core.output<TSchemaType>
+  >
   // form: UseFormReturn<z.infer<TSchemaType>>;
   schema: TSchemaType
   isSubmitLoading: boolean
@@ -119,7 +111,7 @@ type FieldGroup = Array<FieldConfig>
 // Use a more specific generic type if possible, but 'any' works for broad compatibility
 const AutoFormContext = createContext<AutoFormContextValue<any> | null>(null)
 
-function useAutoForm<TSchemaType extends z.ZodType>() {
+function useAutoForm<TSchemaType extends z.ZodObject<any, any>>() {
   const context = useContext(AutoFormContext)
   if (!context) {
     throw new Error('useAutoForm must be used within an AutoForm.Root')
@@ -145,10 +137,11 @@ const DEFAULT_PLACEHOLDERS = {
   files: 'Upload multiple files',
 }
 
-interface RootProps_<TSchemaType extends z.ZodType> {
+interface RootProps_<TSchemaType extends z.ZodObject<any, any>> {
   schema: TSchemaType
   // TODO: some fields such as tags expect a specific format, thus the default values should account for it and not expect the exact format of the schema
-  defaultValues?: Partial<z.infer<TSchemaType>>
+  // defaultValues?: Partial<z.infer<TSchemaType>>
+  defaultValues?: z.output<TSchemaType>
   onSubmit: (values: z.infer<TSchemaType>) => Promise<void> | void
   onCancel?: () => void
   onError?: () => void // New callback for validation errors
@@ -158,9 +151,9 @@ interface RootProps_<TSchemaType extends z.ZodType> {
   labels?: boolean
 }
 
-function Root_<TSchemaType extends z.ZodObject<any>>({
+function Root_<TSchemaType extends z.ZodObject<any, any>>({
   schema,
-  defaultValues = {},
+  defaultValues,
   onSubmit,
   onCancel,
   onError, // New prop
@@ -188,11 +181,9 @@ function Root_<TSchemaType extends z.ZodObject<any>>({
 
   type FormValues = z.infer<TSchemaType>
 
-  // NOTE: we must call it conditionally
   const form = useForm<FormValues>({
-    resolver: zodResolver(schema as any),
-    // defaultValues: defaultValues as FormValues, // Cast necessary for partial defaults
-    defaultValues: async () => defaultValues as FormValues, // Cast necessary for partial defaults
+    resolver: standardSchemaResolver(schema),
+    defaultValues: defaultValues && (async () => await defaultValues),
   })
 
   // Watch for form changes and trigger onChange callback
@@ -211,9 +202,9 @@ function Root_<TSchemaType extends z.ZodObject<any>>({
     try {
       setIsSubmitLoading(true)
       await onSubmit(values)
-    } catch (error: any) {
+    } catch (error) {
       // Catch any error
-      console.error('Form submission error:', error)
+      console.error('[form-submission](error):', error)
       // toast({ // Uncomment if using toast
       //   variant: "destructive",
       //   title: "Something went wrong",
@@ -252,8 +243,8 @@ function Root_<TSchemaType extends z.ZodObject<any>>({
         // Default cancel behavior: reset the form to default values
         form.reset(defaultValues as FormValues)
       }
-    } catch (error: any) {
-      console.error('Form cancellation error:', error)
+    } catch (error) {
+      console.error('[form-submission](error):', error)
       // toast({ // Uncomment if using toast
       //   variant: "destructive",
       //   title: "Something went wrong during cancel",
@@ -293,7 +284,16 @@ function Root_<TSchemaType extends z.ZodObject<any>>({
     return undefined
   }
 
-  const getFieldType = (key: string, zodType: z.ZodTypeAny): FieldConfig => {
+  const getFieldType = (
+    key: string,
+    zodType: unknown | z.ZodTypeAny,
+  ): FieldConfig => {
+    if (!(zodType instanceof z.ZodType)) {
+      throw new Error(
+        `Expected ZodType for key "${key}", got ${typeof zodType}`,
+      )
+    }
+
     const meta = (zodType.meta() || {}) as FieldMetadata
 
     // console.log("[meta]:", meta);
@@ -451,7 +451,7 @@ function Root_<TSchemaType extends z.ZodObject<any>>({
   // Process fields and create field configs
   const fields: Array<FieldConfig> = Object.entries(zodShape).map(
     ([key, zodType]) => {
-      return getFieldType(key, zodType as z.ZodTypeAny)
+      return getFieldType(key, zodType)
     },
   )
 
@@ -512,17 +512,16 @@ function Root_<TSchemaType extends z.ZodObject<any>>({
 
 // --- Content Component ---
 
-interface ContentProps_<TSchemaType extends z.ZodType> {
+interface ContentProps_<TSchemaType extends z.ZodObject<any, any>> {
   className?: string
   renderField?: (params: {
     field: FieldConfig
     renderDefault: () => React.ReactNode
-    form: UseFormReturn<TSchemaType>
-    // form: AutoFormContextValue<TSchemaType>;
+    form: AutoFormContextValue<TSchemaType>['form']
   }) => React.ReactNode
 }
 
-function Content_<TSchemaType extends z.ZodType>({
+function Content_<TSchemaType extends z.ZodObject<any, any>>({
   className = '',
   renderField,
 }: ContentProps_<TSchemaType>) {
@@ -561,7 +560,7 @@ function Content_<TSchemaType extends z.ZodType>({
       case 'file':
         return (
           <FileUpload
-            value={form.watch(fieldName) || (isMultiple ? [] : undefined)}
+            value={form.watch(fieldName) as Array<File>}
             onChange={(files) => {
               const value = isMultiple ? files : files[0] || null
               form.setValue(fieldName, value as any, {
@@ -596,7 +595,7 @@ function Content_<TSchemaType extends z.ZodType>({
             value={currentTags}
             defaultValue={currentTags}
             onValueChange={(newTags) => {
-              form.setValue(fieldName, newTags, {
+              form.setValue(fieldName, newTags as any, {
                 shouldValidate: true,
               })
             }}
@@ -635,7 +634,7 @@ function Content_<TSchemaType extends z.ZodType>({
         return (
           <Select.Root
             size={'3'}
-            value={form.watch(fieldName) || ''}
+            value={String(form.watch(fieldName))}
             disabled={isDisabled}
             onValueChange={(value) => {
               form.setValue(fieldName, value as any, { shouldValidate: true })
@@ -661,7 +660,6 @@ function Content_<TSchemaType extends z.ZodType>({
       case 'url':
       case 'number':
       case 'date':
-      case 'color':
       case 'time':
       case 'datetime-local':
         return (
@@ -806,7 +804,7 @@ interface ActionProps_
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void
 }
 
-function Action_<TSchemaType extends z.ZodType>({
+function Action_<TSchemaType extends z.ZodObject<any, any>>({
   type = 'button',
   className,
   children,
@@ -851,11 +849,11 @@ function Action_<TSchemaType extends z.ZodType>({
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace AutoForm {
-  // TODO: fix typing issue
-  export type RootProps = RootProps_<any>
+  export type RootProps<TSchemaType extends z.ZodObject<any, any>> =
+    RootProps_<TSchemaType>
   export const Root = Root_
-  // TODO: fix typing issue
-  export type ContentProps = ContentProps_<any>
+  export type ContentProps<TSchemaType extends z.ZodObject<any, any>> =
+    ContentProps_<TSchemaType>
   export const Content = Content_
   export type ActionsProps = ActionsProps_
   export const Actions = Actions_

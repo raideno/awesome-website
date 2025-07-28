@@ -1,16 +1,19 @@
+import { useState } from 'react'
+
 import type React from 'react'
 import type { z } from 'zod/v4'
-import type { Element } from '@/types/awesome-list'
+import type { AwesomeListElement } from '@/types/awesome-list'
 
-import { ElementSchema } from '@/types/awesome-list'
+import { AwesomeListElementSchema } from '@/types/awesome-list'
 
 import { Sheet } from '@/components/ui/sheet'
 import { AutoForm } from '@/components/modules/form/auto'
+
 import { useList } from '@/context/list'
 
 export interface ResourceEditSheetProps {
   children?: React.ReactNode
-  element: Element
+  element: AwesomeListElement
   state?: { open: boolean; onOpenChange: (open: boolean) => void }
 }
 
@@ -21,21 +24,26 @@ export const ResourceEditSheet: React.FC<ResourceEditSheetProps> = ({
 }) => {
   const list = useList()
 
-  const handleSubmit = (data: z.infer<typeof ElementSchema>) => {
+  const [internalOpen, setInternalOpen] = useState(false)
+
+  const isOpen = state?.open ?? internalOpen
+  const setOpen = state?.onOpenChange ?? setInternalOpen
+
+  const handleSubmit = (data: z.infer<typeof AwesomeListElementSchema>) => {
     list.updateList({
       elements: list.content.new.elements.map((el) =>
         el.name === element.name ? { ...el, ...data } : el,
       ),
     })
-    state?.onOpenChange(false)
+    setOpen(false)
   }
 
   return (
-    <Sheet.Root open={state?.open} onOpenChange={state?.onOpenChange}>
+    <Sheet.Root open={isOpen} onOpenChange={setOpen}>
       {children && <Sheet.Trigger>{children}</Sheet.Trigger>}
       <Sheet.Content portal={false} side="right">
         <AutoForm.Root
-          schema={ElementSchema}
+          schema={AwesomeListElementSchema}
           defaultValues={{
             ...element,
           }}

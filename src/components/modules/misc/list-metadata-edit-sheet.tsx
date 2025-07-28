@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import type React from 'react'
 
 import type { z } from 'zod/v4'
@@ -19,15 +21,20 @@ export const ListMetadataEditSheet: React.FC<ListMetadataEditSheetProps> = ({
 }) => {
   const list = useList()
 
+  const [internalOpen, setInternalOpen] = useState(false)
+
+  const isOpen = state?.open ?? internalOpen
+  const setOpen = state?.onOpenChange ?? setInternalOpen
+
   const handleSubmit = (data: z.infer<typeof AwesomeListMetadata>) => {
     list.updateList({
       ...data,
     })
-    state?.onOpenChange(false)
+    setOpen(false)
   }
 
   return (
-    <Sheet.Root open={state?.open} onOpenChange={state?.onOpenChange}>
+    <Sheet.Root open={isOpen} onOpenChange={setOpen}>
       {children && <Sheet.Trigger>{children}</Sheet.Trigger>}
       <Sheet.Content portal={false} side="right">
         <AutoForm.Root
@@ -36,7 +43,7 @@ export const ListMetadataEditSheet: React.FC<ListMetadataEditSheetProps> = ({
             ...list.content.new,
           }}
           onSubmit={handleSubmit}
-          onError={() => console.log('errror!')}
+          onError={() => console.log('error!')}
           className="h-full grid grid-rows-[auto_1fr_auto] gap-4"
         >
           <Sheet.Header>

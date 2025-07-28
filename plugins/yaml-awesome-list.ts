@@ -43,17 +43,18 @@ export default (listPath: string): Plugin => {
         config.logger.info(`[yaml-awesome-list] Watching: ${absPath}`)
       }
     },
+    // TODO: fix; currently a change in the website result in a refresh rather than HMR
     // NOTE: https://github.com/antfu/vite-plugin-restart/blob/main/src/index.ts
-    configureServer(server) {
-      if (listPath) {
-        const absPath = path.resolve(server.config.root, listPath)
-        server.watcher.add(absPath)
-        server.watcher.on('change', () => {
-          server.moduleGraph.invalidateAll()
-          server.ws.send({ type: 'full-reload' })
-        })
-      }
-    },
+    // configureServer(server) {
+    //   if (listPath) {
+    //     const absPath = path.resolve(server.config.root, listPath)
+    //     server.watcher.add(absPath)
+    //     server.watcher.on('change', () => {
+    //       server.moduleGraph.invalidateAll()
+    //       server.ws.send({ type: 'full-reload' })
+    //     })
+    //   }
+    // },
     resolveId(id) {
       if (id === virtualModuleId) {
         return resolvedVirtualModuleId

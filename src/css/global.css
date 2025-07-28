@@ -12,7 +12,6 @@ body {
 }
 
 .pattern {
-  background-color: #e5e5f7;
   opacity: 0.05;
   background-image:
     linear-gradient(#000000 1px, transparent 1px),

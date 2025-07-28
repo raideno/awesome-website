@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite --port 3000",
+    "dev": "dotenv -e .env -- vite --port 3000",
     "start": "vite --port 3000",
     "build": "vite build && tsc",
     "serve": "vite preview",
@@ -23,6 +23,7 @@
     "@radix-ui/react-toggle-group": "^1.1.10",
     "@radix-ui/themes": "^3.2.1",
     "clsx": "^2.1.1",
+    "dotenv-cli": "^9.0.0",
     "js-yaml": "^4.1.0",
     "lodash": "^4.17.21",
     "react": "^19.0.0",

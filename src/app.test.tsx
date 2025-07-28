@@ -1,14 +1,15 @@
-import { render, screen } from '@testing-library/react'
 import { describe, expect, test } from 'vitest'
+import { render, screen } from '@testing-library/react'
+
 import { App } from '@/app'
-import { TagFilterProvider } from '@/context/tag-filter'
+import { Providers } from '@/providers'
 
 describe('App', () => {
   test('renders', () => {
     render(
-      <TagFilterProvider>
+      <Providers>
         <App />
-      </TagFilterProvider>,
+      </Providers>,
     )
     expect(screen.getByText('Awesome List')).toBeDefined()
   })

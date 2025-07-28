@@ -3,13 +3,13 @@ import React from 'react'
 import { Badge, Card, Flex, Heading, Link, Text } from '@radix-ui/themes'
 import type { CardProps } from '@radix-ui/themes'
 
-import type { Element } from '@/types/awesome-list'
+import type { AwesomeListElement } from '@/types/awesome-list'
 
 import { cn } from '@/lib/utils'
 import { useViewMode } from '@/context/view-mode'
 
 export interface ResourceCardProps extends CardProps {
-  element: Element
+  element: AwesomeListElement
 }
 
 export const ResourceCard: React.FC<ResourceCardProps> = ({
