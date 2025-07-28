@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "maxLength": 64
+    },
+    "description": {
+      "type": "textarea",
+      "maxLength": 512
+    },
+    "author": {
+      "type": "string",
+      "maxLength": 64
+    },
+    "thumbnail": {
+      "type": "string"
+    },
+    "elements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 512
+          },
+          "urls": {
+            "maxItems": 4,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          "tags": {
+            "maxItems": 16,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "name",
+          "description",
+          "urls",
+          "tags"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "links": {
+      "maxItems": 8,
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uri"
+      }
+    }
+  },
+  "required": [
+    "title",
+    "description",
+    "author",
+    "elements"
+  ],
+  "additionalProperties": false
+}
