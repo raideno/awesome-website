@@ -98,7 +98,7 @@ The `example.list.yaml` file has a clear structure that's easy to understand and
 | :------------ | :------------------- | :------------------------------------------------------------------------------- |
 | `name`        | String               | The name of the resource.                                                        |
 | `description` | String               | A short description of the resource.                                             |
-| `urls`        | Array of Url Strings | A list of relevant URLs for the resource (e.g., website, GitHub, documentation). |
+| `links`       | Array of Url Strings | A list of relevant URLs for the resource (e.g., website, GitHub, documentation). |
 | `tags`        | Array of Strings     | A list of tags specific to this resource for filtering.                          |
 
 ## Deployment

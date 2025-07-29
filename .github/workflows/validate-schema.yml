@@ -26,6 +26,6 @@ jobs:
       - name: check for schema changes
         run: |
           if ! git diff --exit-code awesome.list.schema.json; then
-            echo "❌ awesome.list.schema.json is out of date. Please run 'node scripts/gen-schema.ts' and commit the changes." >&2
+            echo "[error]: awesome.list.schema.json is out of date. Please run 'node scripts/gen-schema.ts' and commit the changes." >&2
             exit 1
           fi
