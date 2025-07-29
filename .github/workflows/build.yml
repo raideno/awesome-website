@@ -42,4 +42,8 @@ jobs:
         run: npm ci
 
       - name: run tests
+        env:
+          BASE_PATH: /${{ github.event.repository.name }}
+          LIST_FILE_PATH: example.list.yaml
+          GITHUB_REPOSITORY_URL: https://github.com/${{ github.repository }}
         run: npm run test
