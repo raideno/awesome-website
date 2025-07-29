@@ -9,6 +9,7 @@ import { AwesomeListMetadata } from '@/types/awesome-list'
 import { Sheet } from '@/components/ui/sheet'
 import { AutoForm } from '@/components/modules/form/auto'
 import { useList } from '@/context/list'
+import { ScrollArea } from '@radix-ui/themes'
 
 export interface ListMetadataEditSheetProps {
   children?: React.ReactNode
@@ -53,9 +54,11 @@ export const ListMetadataEditSheet: React.FC<ListMetadataEditSheetProps> = ({
               apply, or "Cancel" to discard.
             </Sheet.Description>
           </Sheet.Header>
-          <Sheet.Body>
-            <AutoForm.Content />
-          </Sheet.Body>
+          <ScrollArea scrollbars="horizontal">
+            <Sheet.Body className="h-full">
+              <AutoForm.Content />
+            </Sheet.Body>
+          </ScrollArea>
           <Sheet.Footer>
             <AutoForm.Actions className="flex flex-col w-full items-center">
               <Sheet.Close asChild className="!w-full">

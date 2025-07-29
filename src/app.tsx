@@ -41,7 +41,10 @@ export const App: React.FC<AppProps> = () => {
               direction={'row'}
               align={'center'}
               justify={{ initial: 'center', sm: 'end' }}
-              className="w-full fixed bottom-8 right-8 z-10"
+              bottom={{ initial: '4', sm: '8' }}
+              right={{ initial: '0', sm: '8' }}
+              position={'fixed'}
+              className="w-full z-10"
             >
               <Card>
                 <Flex direction={{ initial: 'row', sm: 'column' }} gap={'2'}>
@@ -57,15 +60,28 @@ export const App: React.FC<AppProps> = () => {
             </Flex>
 
             <Box>
-              <Flex
-                direction={'row'}
-                align={'center'}
-                justify={'between'}
-                mb={'3'}
-              >
-                <Heading size="6">Awesome List</Heading>
-                <Flex align={'center'} gap={'2'}>
+              <Flex direction={'column'} gap={'2'} className="w-full mb-3">
+                <Flex
+                  className="w-full"
+                  direction={'row'}
+                  justify={'between'}
+                  gap={'3'}
+                >
+                  <Heading size={{ initial: '5', sm: '6' }}>
+                    Awesome List
+                  </Heading>
+                  <Box>
+                    <ViewModeController />
+                  </Box>
+                </Flex>
+                <Flex
+                  className="w-full"
+                  direction={'row'}
+                  justify={'between'}
+                  gap={'3'}
+                >
                   <TextField.Root
+                    className="w-full max-w-96"
                     value={search}
                     onChange={(event) => setSearch(event.target.value)}
                     placeholder="Search resources..."
@@ -74,10 +90,11 @@ export const App: React.FC<AppProps> = () => {
                       <MagnifyingGlassIcon />
                     </TextField.Slot>
                   </TextField.Root>
-                  <TagFilterModal>
-                    <FilterModalTrigger />
-                  </TagFilterModal>
-                  <ViewModeController />
+                  <Box>
+                    <TagFilterModal>
+                      <FilterModalTrigger />
+                    </TagFilterModal>
+                  </Box>
                 </Flex>
               </Flex>
 
