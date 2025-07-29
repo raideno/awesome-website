@@ -109,23 +109,28 @@ export const Header: React.FC<HeaderProps> = () => {
           </Button>
         </Link>
         {list.content.new.links &&
-          list.content.new.links.map((url, idx) => (
-            <Link
-              key={idx}
-              href={url}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Button
-                color="gray"
-                className="!cursor-pointer"
-                variant="surface"
-                size={'3'}
+          list.content.new.links.map((link, idx) => {
+            const url = typeof link === 'string' ? link : link.url
+            const label = typeof link === 'string' ? link : link.label
+
+            return (
+              <Link
+                key={idx}
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
               >
-                {url}
-              </Button>
-            </Link>
-          ))}
+                <Button
+                  color="gray"
+                  className="!cursor-pointer"
+                  variant="surface"
+                  size={'3'}
+                >
+                  {label}
+                </Button>
+              </Link>
+            )
+          })}
       </div>
     </Flex>
   )

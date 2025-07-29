@@ -1,0 +1,49 @@
+name: build and test awesome website
+
+on:
+  pull_request:
+  push:
+    branches: ['*']
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v4
+
+      - name: setup up node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: install dependencies
+        run: npm ci
+
+      - name: build site
+        env:
+          BASE_PATH: /${{ github.event.repository.name }}
+          LIST_FILE_PATH: example.list.yaml
+          GITHUB_REPOSITORY_URL: https://github.com/${{ github.repository }}
+        run: npm run build
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v4
+
+      - name: setup up node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: install dependencies
+        run: npm ci
+
+      - name: run tests
+        env:
+          BASE_PATH: /${{ github.event.repository.name }}
+          LIST_FILE_PATH: example.list.yaml
+          GITHUB_REPOSITORY_URL: https://github.com/${{ github.repository }}
+        run: npm run test

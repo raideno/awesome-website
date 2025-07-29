@@ -4,6 +4,8 @@ import { useLocalStorageState } from '@/hooks/local-storage-state'
 export type TagsFilterOperator = 'or' | 'and'
 
 export interface FilterContextType {
+  search: string
+  setSearch: (search: string) => void
   tagsFilterOperator: TagsFilterOperator
   setTagsFilterOperator: (operator: TagsFilterOperator) => void
   selectedTags: Array<string>
@@ -29,6 +31,10 @@ export const useFilter = () => {
 export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
+  const [search, setSearch] = useLocalStorageState<FilterContextType['search']>(
+    'filtering.search',
+    '',
+  )
   const [selectedTags, setSelectedTags] = useLocalStorageState<
     FilterContextType['selectedTags']
   >('filtering.tags', DEFAULT_SELECTED_TAGS)
@@ -53,6 +59,8 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
   return (
     <FilterContext.Provider
       value={{
+        search,
+        setSearch,
         tagsFilterOperator,
         setTagsFilterOperator,
         selectedTags,

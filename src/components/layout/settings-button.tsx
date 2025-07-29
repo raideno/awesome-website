@@ -56,7 +56,7 @@ export const SettingsButton: React.FC<SettingsButtonProps> = () => {
         </IconButton>
       </Dialog.Trigger>
       <Portal container={document.body}>
-        <Dialog.Content style={{ minWidth: '600px' }}>
+        <Dialog.Content>
           <Flex direction={'column'} gap={'4'}>
             <Box>
               <Dialog.Title>Settings</Dialog.Title>

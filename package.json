@@ -4,10 +4,10 @@
   "type": "module",
   "scripts": {
     "dev": "dotenv -e .env -- vite --port 3000",
-    "start": "vite --port 3000",
-    "build": "vite build && tsc",
-    "serve": "vite preview",
-    "test": "vitest run",
+    "start": "dotenv -e .env -- vite --port 3000",
+    "build": "dotenv -e .env -- vite build && tsc",
+    "serve": "dotenv -e .env -- vite preview",
+    "test": "dotenv -e .env -- vitest run",
     "lint": "eslint",
     "format": "prettier",
     "check": "prettier --write . && eslint --fix"

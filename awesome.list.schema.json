@@ -4,10 +4,10 @@
   "properties": {
     "title": {
       "type": "string",
-      "maxLength": 64
+      "maxLength": 128
     },
     "description": {
-      "type": "textarea",
+      "type": "string",
       "maxLength": 512
     },
     "author": {
@@ -24,18 +24,40 @@
         "properties": {
           "name": {
             "type": "string",
-            "maxLength": 64
+            "maxLength": 128
           },
           "description": {
             "type": "string",
             "maxLength": 512
           },
-          "urls": {
+          "links": {
             "maxItems": 4,
             "type": "array",
             "items": {
-              "type": "string",
-              "format": "uri"
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uri"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "url": {
+                      "type": "string",
+                      "format": "uri"
+                    },
+                    "label": {
+                      "type": "string",
+                      "maxLength": 64
+                    }
+                  },
+                  "required": [
+                    "url",
+                    "label"
+                  ],
+                  "additionalProperties": false
+                }
+              ]
             }
           },
           "tags": {
@@ -49,18 +71,39 @@
         "required": [
           "name",
           "description",
-          "urls",
           "tags"
         ],
         "additionalProperties": false
       }
     },
     "links": {
-      "maxItems": 8,
+      "maxItems": 4,
       "type": "array",
       "items": {
-        "type": "string",
-        "format": "uri"
+        "anyOf": [
+          {
+            "type": "string",
+            "format": "uri"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "url": {
+                "type": "string",
+                "format": "uri"
+              },
+              "label": {
+                "type": "string",
+                "maxLength": 64
+              }
+            },
+            "required": [
+              "url",
+              "label"
+            ],
+            "additionalProperties": false
+          }
+        ]
       }
     }
   },

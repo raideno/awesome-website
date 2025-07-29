@@ -1,7 +1,16 @@
 import React from 'react'
 
-import { Pencil1Icon } from '@radix-ui/react-icons'
-import { Box, Card, Flex, Heading, IconButton } from '@radix-ui/themes'
+import { MagnifyingGlassIcon, Pencil1Icon } from '@radix-ui/react-icons'
+import {
+  Box,
+  Card,
+  Flex,
+  Heading,
+  IconButton,
+  TextField,
+} from '@radix-ui/themes'
+
+import { useFilter } from '@/context/filter'
 
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
@@ -19,6 +28,8 @@ export interface AppProps {}
 export const App: React.FC<AppProps> = () => {
   const [open, setOpen] = React.useState(false)
 
+  const { search, setSearch } = useFilter()
+
   return (
     <>
       <div className="w-full min-h-screen max-w-6xl mx-auto p-6 relative">
@@ -26,9 +37,17 @@ export const App: React.FC<AppProps> = () => {
           <Header />
 
           <Box>
-            <Box className="fixed bottom-8 right-8 z-10">
+            <Flex
+              direction={'row'}
+              align={'center'}
+              justify={{ initial: 'center', sm: 'end' }}
+              bottom={{ initial: '4', sm: '8' }}
+              right={{ initial: '0', sm: '8' }}
+              position={'fixed'}
+              className="w-full z-10"
+            >
               <Card>
-                <Flex direction={'column'} gap={'2'}>
+                <Flex direction={{ initial: 'row', sm: 'column' }} gap={'2'}>
                   <ScrollToButton to="top" />
                   <ScrollToButton to="bottom" />
                   <SettingsButton />
@@ -38,21 +57,44 @@ export const App: React.FC<AppProps> = () => {
                   <ThemeSwitchButton />
                 </Flex>
               </Card>
-            </Box>
+            </Flex>
 
             <Box>
-              <Flex
-                direction={'row'}
-                align={'center'}
-                justify={'between'}
-                mb={'3'}
-              >
-                <Heading size="6">Awesome List</Heading>
-                <Flex align={'center'} gap={'2'}>
-                  <ViewModeController />
-                  <TagFilterModal>
-                    <FilterModalTrigger />
-                  </TagFilterModal>
+              <Flex direction={'column'} gap={'2'} className="w-full mb-3">
+                <Flex
+                  className="w-full"
+                  direction={'row'}
+                  justify={'between'}
+                  gap={'3'}
+                >
+                  <Heading size={{ initial: '5', sm: '6' }}>
+                    Awesome List
+                  </Heading>
+                  <Box>
+                    <ViewModeController />
+                  </Box>
+                </Flex>
+                <Flex
+                  className="w-full"
+                  direction={'row'}
+                  justify={'between'}
+                  gap={'3'}
+                >
+                  <TextField.Root
+                    className="w-full max-w-96"
+                    value={search}
+                    onChange={(event) => setSearch(event.target.value)}
+                    placeholder="Search resources..."
+                  >
+                    <TextField.Slot side="left">
+                      <MagnifyingGlassIcon />
+                    </TextField.Slot>
+                  </TextField.Root>
+                  <Box>
+                    <TagFilterModal>
+                      <FilterModalTrigger />
+                    </TagFilterModal>
+                  </Box>
                 </Flex>
               </Flex>
 
