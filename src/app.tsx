@@ -26,9 +26,14 @@ export const App: React.FC<AppProps> = () => {
           <Header />
 
           <Box>
-            <Box className="fixed bottom-8 right-8 z-10">
+            <Flex
+              direction={'row'}
+              align={'center'}
+              justify={{ initial: 'center', sm: 'end' }}
+              className="w-full fixed bottom-8 right-8 z-10"
+            >
               <Card>
-                <Flex direction={'column'} gap={'2'}>
+                <Flex direction={{ initial: 'row', sm: 'column' }} gap={'2'}>
                   <ScrollToButton to="top" />
                   <ScrollToButton to="bottom" />
                   <SettingsButton />
@@ -38,7 +43,7 @@ export const App: React.FC<AppProps> = () => {
                   <ThemeSwitchButton />
                 </Flex>
               </Card>
-            </Box>
+            </Flex>
 
             <Box>
               <Flex
