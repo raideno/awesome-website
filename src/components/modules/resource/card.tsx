@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Badge, Card, Flex, Heading, Link, Text } from '@radix-ui/themes'
+import { Badge, Box, Card, Flex, Heading, Link, Text } from '@radix-ui/themes'
 import type { CardProps } from '@radix-ui/themes'
 
 import type { AwesomeListElement } from '@/types/awesome-list'
@@ -54,19 +54,28 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
             )}
           </div>
         </Flex>
-        <Flex direction={'row'} wrap={'wrap'} gap={'3'}>
-          {element.urls.map((url, index) => (
-            <Link
-              key={index + url}
-              href={url}
-              className="!underline"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {url}
-            </Link>
-          ))}
-        </Flex>
+        <Box>
+          {element.links && (
+            <Flex direction={'row'} wrap={'wrap'} gap={'3'}>
+              {element.links.map((link, index) => {
+                const url = typeof link === 'string' ? link : link.url
+                const label = typeof link === 'string' ? link : link.label
+
+                return (
+                  <Link
+                    key={index + url}
+                    href={url}
+                    className="!underline"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {label}
+                  </Link>
+                )
+              })}
+            </Flex>
+          )}
+        </Box>
       </Flex>
     </Card>
   )

@@ -77,8 +77,8 @@ const ChangesView: React.FC<ChangesViewProps> = ({ oldData, newData }) => {
         if (oldEl.description !== newEl.description) {
           fieldChanges.push('description')
         }
-        if (JSON.stringify(oldEl.urls) !== JSON.stringify(newEl.urls)) {
-          fieldChanges.push('urls')
+        if (JSON.stringify(oldEl.links) !== JSON.stringify(newEl.links)) {
+          fieldChanges.push('links')
         }
         if (JSON.stringify(oldEl.tags) !== JSON.stringify(newEl.tags)) {
           fieldChanges.push('tags')
@@ -219,15 +219,19 @@ const ChangesView: React.FC<ChangesViewProps> = ({ oldData, newData }) => {
                           </Text>
                         </Box>
                       )}
-                      {change.changes.includes('urls') && (
+                      {change.changes.includes('links') && (
                         <Box mb="2">
                           <Text size="1" weight="medium">
-                            URLs:
+                            Links:
                           </Text>
                           {renderArrayDiff(
-                            change.oldElement.urls,
-                            change.element.urls,
-                            'URLs',
+                            (change.oldElement.links || []).map((link: any) =>
+                              typeof link === 'string' ? link : link.url,
+                            ),
+                            (change.element.links || []).map((link: any) =>
+                              typeof link === 'string' ? link : link.url,
+                            ),
+                            'Links',
                           )}
                         </Box>
                       )}

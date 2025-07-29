@@ -8,7 +8,18 @@ export const AwesomeListElementSchema = z.object({
     .string()
     .register(MetadataRegistry, { type: 'textarea' })
     .max(512),
-  urls: z.array(z.url()).max(4),
+  links: z
+    .array(
+      z.union([
+        z.url(),
+        z.object({
+          url: z.url(),
+          label: z.string().max(64),
+        }),
+      ]),
+    )
+    .max(4)
+    .optional(),
   tags: z.array(z.string()).max(16),
 })
 export type AwesomeListElement = z.infer<typeof AwesomeListElementSchema>
@@ -22,7 +33,18 @@ export const AwesomeListSchema = z.object({
   author: z.string().max(64),
   thumbnail: z.string().optional(),
   elements: z.array(AwesomeListElementSchema),
-  links: z.array(z.url()).max(8).optional(),
+  links: z
+    .array(
+      z.union([
+        z.url(),
+        z.object({
+          url: z.url(),
+          label: z.string().max(64),
+        }),
+      ]),
+    )
+    .max(4)
+    .optional(),
 })
 export type AwesomeList = z.infer<typeof AwesomeListSchema>
 
