@@ -23,23 +23,42 @@ import { useList } from '@/context/list'
 export interface ResourceGridProps {}
 
 export const ResourceGrid: React.FC<ResourceGridProps> = () => {
-  const { selectedTags, tagsFilterOperator, clearTags } = useFilter()
+  const { search, selectedTags, tagsFilterOperator, clearTags } = useFilter()
 
   const list = useList()
 
   const { mode } = useViewMode()
 
   const filteredElements = React.useMemo(() => {
-    if (selectedTags.length === 0) {
+    if (selectedTags.length === 0 && search === '') {
       return list.content.new.elements
     }
 
-    return list.content.new.elements.filter((element) =>
-      tagsFilterOperator === 'and'
-        ? selectedTags.every((tag) => element.tags.includes(tag))
-        : selectedTags.some((tag) => element.tags.includes(tag)),
-    )
-  }, [list.content.new.elements, selectedTags, tagsFilterOperator])
+    const searchWords = search
+      .toLowerCase()
+      .split(/\s+/)
+      .filter((word) => word.length > 0)
+
+    return list.content.new.elements
+      .filter((element) =>
+        tagsFilterOperator === 'and'
+          ? selectedTags.every((tag) => element.tags.includes(tag))
+          : selectedTags.some((tag) => element.tags.includes(tag)),
+      )
+      .filter((element) => {
+        if (searchWords.length === 0) return true
+
+        const searchable = [
+          element.name.toLowerCase(),
+          element.description.toLowerCase(),
+          ...element.tags.map((tag) => tag.toLowerCase()),
+        ]
+
+        return searchWords.every((word) =>
+          searchable.some((field) => field.includes(word)),
+        )
+      })
+  }, [search, list.content.new.elements, selectedTags, tagsFilterOperator])
 
   return (
     <Box>

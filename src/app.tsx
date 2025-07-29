@@ -1,7 +1,16 @@
 import React from 'react'
 
-import { Pencil1Icon } from '@radix-ui/react-icons'
-import { Box, Card, Flex, Heading, IconButton } from '@radix-ui/themes'
+import { MagnifyingGlassIcon, Pencil1Icon } from '@radix-ui/react-icons'
+import {
+  Box,
+  Card,
+  Flex,
+  Heading,
+  IconButton,
+  TextField,
+} from '@radix-ui/themes'
+
+import { useFilter } from '@/context/filter'
 
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
@@ -18,6 +27,8 @@ export interface AppProps {}
 
 export const App: React.FC<AppProps> = () => {
   const [open, setOpen] = React.useState(false)
+
+  const { search, setSearch } = useFilter()
 
   return (
     <>
@@ -54,10 +65,19 @@ export const App: React.FC<AppProps> = () => {
               >
                 <Heading size="6">Awesome List</Heading>
                 <Flex align={'center'} gap={'2'}>
-                  <ViewModeController />
+                  <TextField.Root
+                    value={search}
+                    onChange={(event) => setSearch(event.target.value)}
+                    placeholder="Search resources..."
+                  >
+                    <TextField.Slot side="left">
+                      <MagnifyingGlassIcon />
+                    </TextField.Slot>
+                  </TextField.Root>
                   <TagFilterModal>
                     <FilterModalTrigger />
                   </TagFilterModal>
+                  <ViewModeController />
                 </Flex>
               </Flex>
 

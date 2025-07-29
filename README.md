@@ -10,6 +10,7 @@ This repository contains the source code for "Awesome Website", a project that t
 
 # TODOs
 
+- [ ] Add a button to create a new resource.
 - [ ] Auto resize card size when on grid mode to take more width or height depending on its content.
 - [ ] Have a right vertical bar where we'll have few actions such as settings, scroll to top / bottom, github, etc. On mobile we switch it to bottom tab.
 - [ ] When clicking on a card or on multiple ones it should get selected, shift clicking when some card is already selected should select the in between; ctrl+click should also be possible.
