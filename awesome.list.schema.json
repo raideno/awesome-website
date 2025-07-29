@@ -4,10 +4,10 @@
   "properties": {
     "title": {
       "type": "string",
-      "maxLength": 64
+      "maxLength": 128
     },
     "description": {
-      "type": "textarea",
+      "type": "string",
       "maxLength": 512
     },
     "author": {
@@ -24,7 +24,7 @@
         "properties": {
           "name": {
             "type": "string",
-            "maxLength": 64
+            "maxLength": 128
           },
           "description": {
             "type": "string",

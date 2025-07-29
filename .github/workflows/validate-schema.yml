@@ -21,7 +21,7 @@ jobs:
         run: npm ci
 
       - name: generate schema
-        run: node scripts/gen-schema.ts
+        run: node --import tsx scripts/gen-schema.ts
 
       - name: check for schema changes
         run: |
