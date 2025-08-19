@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Button, Text } from '@radix-ui/themes'
+import { Button, Flex, Text } from '@radix-ui/themes'
 import { InfoCircledIcon } from '@radix-ui/react-icons'
 
 import { useList } from '@/context/list'
@@ -9,7 +9,7 @@ import { Banner } from '@/components/ui/banner'
 import { PushChangesDialog } from '@/components/modules/misc/push-changes-dialog'
 
 export const ChangesBanner: React.FC = () => {
-  const { hasUnsavedChanges, content } = useList()
+  const { hasUnsavedChanges, content, clearChanges } = useList()
 
   if (!hasUnsavedChanges) return null
 
@@ -23,11 +23,16 @@ export const ChangesBanner: React.FC = () => {
         </>
       }
       right={
-        <PushChangesDialog yamlContent={content.new}>
-          <Button variant="soft" size="1">
-            Push Changes
+        <Flex direction={'row'} align={'center'} gap={'2'}>
+          <Button onClick={clearChanges} variant="soft" size="1">
+            Discard Changes
           </Button>
-        </PushChangesDialog>
+          <PushChangesDialog yamlContent={content.new}>
+            <Button variant="classic" size="1">
+              Push Changes
+            </Button>
+          </PushChangesDialog>
+        </Flex>
       }
     />
   )
