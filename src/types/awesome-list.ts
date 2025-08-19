@@ -1,13 +1,14 @@
 import { z } from 'zod/v4'
 
-import { MetadataRegistry } from '../components/modules/form/registry'
+import { MetadataRegistry } from '../components/modules/auto-form/registry'
 
 export const AwesomeListElementSchema = z.object({
   name: z.string().max(128),
   description: z
     .string()
-    .register(MetadataRegistry, { type: 'textarea' })
-    .max(512),
+    .max(512)
+    .register(MetadataRegistry, { type: 'textarea' }),
+  notes: z.string().optional().register(MetadataRegistry, { type: 'textarea' }),
   links: z
     .array(
       z.union([

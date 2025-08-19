@@ -8,6 +8,7 @@
     "build": "dotenv -e .env -- vite build && tsc",
     "serve": "dotenv -e .env -- vite preview",
     "test": "dotenv -e .env -- vitest run",
+    "generate-schema": "node --import tsx scripts/gen-schema.ts",
     "lint": "eslint",
     "format": "prettier",
     "check": "prettier --write . && eslint --fix"
@@ -22,6 +23,7 @@
     "@radix-ui/react-slot": "^1.2.3",
     "@radix-ui/react-toggle-group": "^1.1.10",
     "@radix-ui/themes": "^3.2.1",
+    "@tanstack/react-query": "^5.85.5",
     "clsx": "^2.1.1",
     "dotenv-cli": "^9.0.0",
     "js-yaml": "^4.1.0",

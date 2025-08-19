@@ -40,7 +40,7 @@ export default (listPath: string): Plugin => {
 
       if (listPath) {
         const absPath = path.resolve(config.root, listPath)
-        config.logger.info(`[yaml-awesome-list] Watching: ${absPath}`)
+        config.logger.info(`[yaml-awesome-list](watching): ${absPath}`)
       }
     },
     // TODO: fix; currently a change in the website result in a refresh rather than HMR

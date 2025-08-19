@@ -1,15 +1,15 @@
 import { useState } from 'react'
 
-import type React from 'react'
+import { ScrollArea } from '@radix-ui/themes'
 
+import type React from 'react'
 import type { z } from 'zod/v4'
 
 import { AwesomeListMetadata } from '@/types/awesome-list'
 
-import { Sheet } from '@/components/ui/sheet'
-import { AutoForm } from '@/components/modules/form/auto'
 import { useList } from '@/context/list'
-import { ScrollArea } from '@radix-ui/themes'
+import { Sheet } from '@/components/ui/sheet'
+import { AutoForm } from '@/components/modules/auto-form'
 
 export interface ListMetadataEditSheetProps {
   children?: React.ReactNode
@@ -27,16 +27,22 @@ export const ListMetadataEditSheet: React.FC<ListMetadataEditSheetProps> = ({
   const isOpen = state?.open ?? internalOpen
   const setOpen = state?.onOpenChange ?? setInternalOpen
 
-  const handleSubmit = (data: z.infer<typeof AwesomeListMetadata>) => {
-    list.updateList({
-      ...data,
-    })
-    setOpen(false)
+  const handleSubmit = async (data: z.infer<typeof AwesomeListMetadata>) => {
+    try {
+      await list.updateList({
+        ...data,
+      })
+      setOpen(false)
+    } catch (error) {
+      alert(error instanceof Error ? error.message : 'Failed to save changes')
+    }
   }
 
   return (
-    <Sheet.Root open={isOpen} onOpenChange={setOpen}>
-      {children && <Sheet.Trigger>{children}</Sheet.Trigger>}
+    <Sheet.Root open={isOpen && list.canEdit} onOpenChange={setOpen}>
+      {children && (
+        <Sheet.Trigger disabled={!list.canEdit}>{children}</Sheet.Trigger>
+      )}
       <Sheet.Content portal={false} side="right">
         <AutoForm.Root
           schema={AwesomeListMetadata}

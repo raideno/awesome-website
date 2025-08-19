@@ -1,4 +1,6 @@
+import { useState } from 'react'
 import { Theme } from '@radix-ui/themes'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 import type React from 'react'
 
@@ -16,6 +18,8 @@ export interface ProvidersProps {
 export const Providers: React.FC<ProvidersProps> = ({ children }) => {
   const { theme } = useTheme()
 
+  const [queryClient] = useState(() => new QueryClient())
+
   return (
     <>
       <Theme
@@ -27,13 +31,15 @@ export const Providers: React.FC<ProvidersProps> = ({ children }) => {
         panelBackground="solid"
         scaling="100%"
       >
-        <AlertDialogProvider>
-          <ListProvider>
-            <ViewModeProvider>
-              <FilterProvider>{children}</FilterProvider>
-            </ViewModeProvider>
-          </ListProvider>
-        </AlertDialogProvider>
+        <QueryClientProvider client={queryClient}>
+          <AlertDialogProvider>
+            <ListProvider>
+              <ViewModeProvider>
+                <FilterProvider>{children}</FilterProvider>
+              </ViewModeProvider>
+            </ListProvider>
+          </AlertDialogProvider>
+        </QueryClientProvider>
       </Theme>
     </>
   )
