@@ -10,15 +10,17 @@ import {
   TextField,
 } from '@radix-ui/themes'
 
+import { useList } from '@/context/list'
 import { useFilter } from '@/context/filter'
 
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
+import { ChangesBanner } from '@/components/layout/changes-banner'
+import { WorkflowStatusBanner } from '@/components/layout/workflow-status-banner'
 import { TagFilterModal } from '@/components/modules/filter/modal'
 import { ResourceGrid } from '@/components/modules/resource/grid'
 import { FilterModalTrigger } from '@/components/modules/filter/modal-trigger'
 import { ViewModeController } from '@/components/modules/misc/view-mode-controller'
-import { SettingsButton } from '@/components/layout/settings-button'
 import { ScrollToButton } from '@/components/layout/scroll-to-button'
 import { ThemeSwitchButton } from '@/components/layout/theme-switch-button'
 import { ListMetadataEditSheet } from '@/components/modules/misc/list-metadata-edit-sheet'
@@ -27,11 +29,14 @@ export interface AppProps {}
 
 export const App: React.FC<AppProps> = () => {
   const [open, setOpen] = React.useState(false)
-
+  const list = useList()
   const { search, setSearch } = useFilter()
 
   return (
     <>
+      <WorkflowStatusBanner />
+      <ChangesBanner />
+
       <div className="w-full min-h-screen max-w-6xl mx-auto p-6 relative">
         <div className="w-full min-h-screen grid grid-rows-[auto_1fr_auto]">
           <Header />
@@ -50,8 +55,11 @@ export const App: React.FC<AppProps> = () => {
                 <Flex direction={{ initial: 'row', sm: 'column' }} gap={'2'}>
                   <ScrollToButton to="top" />
                   <ScrollToButton to="bottom" />
-                  <SettingsButton />
-                  <IconButton variant="classic" onClick={() => setOpen(true)}>
+                  <IconButton
+                    variant="classic"
+                    disabled={!list.canEdit}
+                    onClick={() => setOpen(true)}
+                  >
                     <Pencil1Icon />
                   </IconButton>
                   <ThemeSwitchButton />

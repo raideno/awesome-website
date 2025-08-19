@@ -4,10 +4,11 @@ import { ContextMenu } from '@radix-ui/themes'
 
 import type { AwesomeListElement } from '@/types/awesome-list'
 
-import { AdminOnly } from '@/components/utils/admin-only'
-import { ResourceEditSheet } from '@/components/modules/resource/edit-sheet'
-import { useConfirm } from '@/components/utils/alert-dialog'
 import { useList } from '@/context/list'
+
+import { AdminOnly } from '@/components/utils/admin-only'
+import { useConfirm } from '@/components/utils/alert-dialog'
+import { ResourceEditSheet } from '@/components/modules/resource/edit-sheet'
 
 export interface ResourceCardContextMenuProps {
   children?: React.ReactNode
@@ -23,17 +24,30 @@ export const ResourceCardContextMenu: React.FC<
   const confirm = useConfirm()
 
   const handleDeleteButtonClick = async () => {
+    if (!list.canEdit) {
+      alert(
+        'Cannot edit while website is being updated. Please wait for the build to complete.',
+      )
+      return
+    }
+
     const confirmation = await confirm({
       title: 'Delete Resource',
       body: `Are you sure you want to delete the resource "${element.name}"? This action cannot be undone.`,
     })
 
     if (confirmation) {
-      list.updateList({
-        elements: list.content.new.elements.filter(
-          (el) => el.name !== element.name,
-        ),
-      })
+      try {
+        await list.updateList({
+          elements: list.content.new.elements.filter(
+            (el) => el.name !== element.name,
+          ),
+        })
+      } catch (error) {
+        alert(
+          error instanceof Error ? error.message : 'Failed to delete resource',
+        )
+      }
     }
   }
 
@@ -46,11 +60,15 @@ export const ResourceCardContextMenu: React.FC<
           <ContextMenu.Item>Share</ContextMenu.Item>
           <AdminOnly>
             <ContextMenu.Separator />
-            <ContextMenu.Item onClick={() => setOpen(true)}>
+            <ContextMenu.Item
+              disabled={!list.canEdit}
+              onClick={() => setOpen(true)}
+            >
               Modify
             </ContextMenu.Item>
             <ContextMenu.Item
               color="red"
+              disabled={!list.canEdit}
               onClick={() => handleDeleteButtonClick()}
             >
               Delete

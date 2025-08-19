@@ -1,4 +1,5 @@
 import React from 'react'
+
 import * as yaml from 'js-yaml'
 
 import {
@@ -15,6 +16,7 @@ import { CopyIcon, GearIcon } from '@radix-ui/react-icons'
 
 import { useList } from '@/context/list'
 
+import { PushChangesDialog } from '@/components/modules/misc/push-changes-dialog'
 import ChangesView from '@/components/layout/changes'
 
 export interface SettingsButtonProps {}
@@ -138,9 +140,14 @@ export const SettingsButton: React.FC<SettingsButtonProps> = () => {
                       <CopyIcon />
                       <Text>Copy Content</Text>
                     </Button>
-                    <Button variant="classic">
-                      <Text>Push Changes</Text>
-                    </Button>
+                    <PushChangesDialog yamlContent={list.content.new}>
+                      <Button
+                        variant="classic"
+                        className="!w-full cursor-pointer"
+                      >
+                        <Text>Push Changes</Text>
+                      </Button>
+                    </PushChangesDialog>
                   </Flex>
                 </Tabs.Content>
               </Box>

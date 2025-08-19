@@ -22,17 +22,17 @@ const BASE_PATH = process.env.BASE_PATH
   ? process.env.BASE_PATH
   : `/${GITHUB_REPOSITORY_NAME}`
 
+const YAML_FILE_PATH = process.env.LIST_FILE_PATH || ''
+
 console.log('[BASE_PATH]:', BASE_PATH)
 console.log('[GITHUB_REPOSITORY_URL]:', GITHUB_REPOSITORY_URL)
 console.log('[GITHUB_REPOSITORY_OWNER]:', GITHUB_REPOSITORY_OWNER)
 console.log('[GITHUB_REPOSITORY_NAME]:', GITHUB_REPOSITORY_NAME)
+console.log('[YAML_FILE_PATH]:', YAML_FILE_PATH)
 
 // NOTE: https://vitejs.dev/config/
 export default vite.defineConfig({
-  plugins: [
-    viteReact(),
-    yamlAwesomeListPlugin(process.env.LIST_FILE_PATH || ''),
-  ],
+  plugins: [viteReact(), yamlAwesomeListPlugin(YAML_FILE_PATH)],
   test: {
     globals: true,
     environment: 'jsdom',
@@ -42,6 +42,7 @@ export default vite.defineConfig({
     __REPOSITORY_URL__: JSON.stringify(GITHUB_REPOSITORY_URL),
     __REPOSITORY_OWNER__: JSON.stringify(GITHUB_REPOSITORY_OWNER),
     __REPOSITORY_NAME__: JSON.stringify(GITHUB_REPOSITORY_NAME),
+    __YAML_FILE_PATH__: JSON.stringify(YAML_FILE_PATH),
   },
   base: BASE_PATH,
   resolve: {

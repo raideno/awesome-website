@@ -29,18 +29,26 @@ export const ResourceEditSheet: React.FC<ResourceEditSheetProps> = ({
   const isOpen = state?.open ?? internalOpen
   const setOpen = state?.onOpenChange ?? setInternalOpen
 
-  const handleSubmit = (data: z.infer<typeof AwesomeListElementSchema>) => {
-    list.updateList({
-      elements: list.content.new.elements.map((el) =>
-        el.name === element.name ? { ...el, ...data } : el,
-      ),
-    })
-    setOpen(false)
+  const handleSubmit = async (
+    data: z.infer<typeof AwesomeListElementSchema>,
+  ) => {
+    try {
+      await list.updateList({
+        elements: list.content.new.elements.map((el) =>
+          el.name === element.name ? { ...el, ...data } : el,
+        ),
+      })
+      setOpen(false)
+    } catch (error) {
+      alert(error instanceof Error ? error.message : 'Failed to save changes')
+    }
   }
 
   return (
-    <Sheet.Root open={isOpen} onOpenChange={setOpen}>
-      {children && <Sheet.Trigger>{children}</Sheet.Trigger>}
+    <Sheet.Root open={isOpen && list.canEdit} onOpenChange={setOpen}>
+      {children && (
+        <Sheet.Trigger disabled={!list.canEdit}>{children}</Sheet.Trigger>
+      )}
       <Sheet.Content portal={false} side="right">
         <AutoForm.Root
           schema={AwesomeListElementSchema}
