@@ -8,6 +8,7 @@
     "build": "dotenv -e .env -- vite build && tsc",
     "serve": "dotenv -e .env -- vite preview",
     "test": "dotenv -e .env -- vitest run",
+    "generate-schema": "node --import tsx scripts/gen-schema.ts",
     "lint": "eslint",
     "format": "prettier",
     "check": "prettier --write . && eslint --fix"

@@ -30,6 +30,9 @@
             "type": "string",
             "maxLength": 512
           },
+          "notes": {
+            "type": "string"
+          },
           "links": {
             "maxItems": 4,
             "type": "array",
