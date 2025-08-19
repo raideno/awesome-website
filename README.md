@@ -17,6 +17,9 @@ This repository contains the source code for "Awesome Website", a project that t
 - [ ] Auto generate contributors list.
 - [ ] Add an LLM version where it is possible to provide a github url and the LLM scrape it to generate a .yaml file from it.
 
+- [ ] Externalize the pushing library to a separate package.
+- [ ] Use the package to build a more general storage website, capable of storing files, images, videos, etc for personal use. A sort of cloud.
+
 ## Getting Started
 
 To create your own awesome list website, you'll need to fork this repository and modify the `example.list.yaml` file.

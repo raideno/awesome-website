@@ -28,9 +28,16 @@ const PushChangesFormSchema = z.object({
     placeholder: 'ghp_xxxxxxxxxxxx',
     label: 'Github Token*',
   }),
-  repository: z.string().register(MetadataRegistry, { label: 'Repository*' }),
-  path: z.string().register(MetadataRegistry, { label: 'YAML File Path*' }),
-  message: z.string().register(MetadataRegistry, { label: 'Commit Message*' }),
+  repository: z
+    .string()
+    .register(MetadataRegistry, { label: 'Repository*', disabled: true }),
+  path: z
+    .string()
+    .register(MetadataRegistry, { label: 'YAML File Path*', disabled: true }),
+  // TODO: encode something into the message title & description to know the commit origin
+  message: z
+    .string()
+    .register(MetadataRegistry, { label: 'Commit Message*', disabled: true }),
 })
 
 export const PushChangesDialog: React.FC<PushChangesDialogProps> = ({

@@ -35,7 +35,9 @@ export const Providers: React.FC<ProvidersProps> = ({ children }) => {
           <AlertDialogProvider>
             <ListProvider>
               <ViewModeProvider>
-                <FilterProvider>{children}</FilterProvider>
+                <FilterProvider>
+                  <>{children}</>
+                </FilterProvider>
               </ViewModeProvider>
             </ListProvider>
           </AlertDialogProvider>

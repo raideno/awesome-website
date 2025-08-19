@@ -1,11 +1,16 @@
 // @ts-ignore: allow custom accentColor value
 import list_ from 'virtual:awesome-list'
 
-import React, { createContext, useContext, useMemo } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import React, { createContext, useContext, useMemo, useState } from 'react'
 
 import type { AwesomeList } from '@/types/awesome-list'
 
-import { useSessionStorageState } from '@/hooks/session-storage-state'
+import { AwesomeListSchema } from '@/types/awesome-list'
+
+import { GitHubService } from '@/lib/github'
+
+import { useGitHubAuth } from '@/hooks/github-auth'
 import { useBeforeUnload } from '@/hooks/before-unload'
 import { useDocumentTitle } from '@/hooks/document-title'
 import { useWorkflowStatus } from '@/hooks/workflow-status'
@@ -21,6 +26,8 @@ interface ListContextType {
   hasUnsavedChanges: boolean
   isWorkflowRunning: boolean
   canEdit: boolean
+  isLoading: boolean
+  error: string | null
 }
 
 const ListContext = createContext<ListContextType | undefined>(undefined)
@@ -36,28 +43,46 @@ export const useList = () => {
 export const ListProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [changes, setChanges, clearStoredChanges] = useSessionStorageState<
-    Partial<AwesomeList>
-  >('awesome-list-changes', {})
+  const [changes, setChanges] = useState<Partial<AwesomeList>>({})
 
+  const { token } = useGitHubAuth()
   const { isWorkflowRunning, checkWorkflowStatus } = useWorkflowStatus()
 
-  // NOTE: migration, cleanup old local storage data
-  React.useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const oldData = localStorage.getItem('awesome-list-changes')
-      if (oldData) {
-        localStorage.removeItem('awesome-list-changes')
-        console.log(
-          'Migrated from localStorage to sessionStorage - old data cleared',
-        )
-      }
-    }
-  }, [])
+  const {
+    data: remoteList,
+    isLoading,
+    error: queryError,
+  } = useQuery({
+    queryKey: ['awesome-list'],
+    queryFn: async () => {
+      try {
+        const github = new GitHubService({
+          token: token || undefined,
+          owner: __REPOSITORY_OWNER__,
+          repo: __REPOSITORY_NAME__,
+        })
+        const file = await github.getYamlFile(__YAML_FILE_PATH__)
 
+        const parsing = AwesomeListSchema.safeParse(file.content)
+
+        if (parsing.error) throw parsing.error
+
+        return parsing.data
+      } catch (err) {
+        console.warn('Failed to fetch remote YAML, using preloaded data:', err)
+        return list_
+      }
+    },
+    initialData: list_,
+    // NOTE: 5 minutes
+    // staleTime: 5 * 60 * 1000,
+    retry: (failureCount, _error) => failureCount < 3,
+  })
+
+  const baseList = remoteList || list_
   const list = useMemo<AwesomeList>(() => {
-    return { ...list_, ...changes }
-  }, [changes])
+    return { ...baseList, ...changes }
+  }, [baseList, changes])
 
   const allTags = useMemo(() => {
     return [...new Set(list.elements.flatMap((element) => element.tags))].sort()
@@ -74,11 +99,12 @@ export const ListProvider: React.FC<{ children: React.ReactNode }> = ({
   }
 
   const clearChanges = () => {
-    clearStoredChanges()
+    setChanges({})
   }
 
   const hasUnsavedChanges = Object.keys(changes).length > 0
   const canEdit = !isWorkflowRunning
+  const error = queryError?.message || null
 
   useBeforeUnload(
     hasUnsavedChanges,
@@ -91,7 +117,7 @@ export const ListProvider: React.FC<{ children: React.ReactNode }> = ({
     <ListContext.Provider
       value={{
         content: {
-          old: list_,
+          old: baseList,
           new: list,
         },
         allTags,
@@ -100,6 +126,8 @@ export const ListProvider: React.FC<{ children: React.ReactNode }> = ({
         hasUnsavedChanges,
         isWorkflowRunning,
         canEdit,
+        isLoading,
+        error,
       }}
     >
       {children}
