@@ -138,6 +138,9 @@ export const SettingsButton: React.FC<SettingsButtonProps> = () => {
                       <CopyIcon />
                       <Text>Copy Content</Text>
                     </Button>
+                    <Button variant="classic">
+                      <Text>Push Changes</Text>
+                    </Button>
                   </Flex>
                 </Tabs.Content>
               </Box>

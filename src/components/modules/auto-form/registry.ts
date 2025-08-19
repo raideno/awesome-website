@@ -21,5 +21,11 @@ export type FieldMetadata = {
 // https://zod.dev/metadata?id=referencing-inferred-types
 export const MetadataRegistry = z.registry<
   FieldMetadata,
-  z.ZodString | z.ZodNumber | z.ZodBoolean | z.ZodArray
+  // z.ZodString | z.ZodNumber | z.ZodBoolean | z.ZodArray
+  | z.ZodType
+  | z.ZodString
+  | z.ZodNumber
+  | z.ZodBoolean
+  | z.ZodArray
+  | z.ZodOptional<any>
 >()

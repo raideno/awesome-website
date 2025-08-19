@@ -7,7 +7,7 @@ import type { AwesomeListElement } from '@/types/awesome-list'
 import { AwesomeListElementSchema } from '@/types/awesome-list'
 
 import { Sheet } from '@/components/ui/sheet'
-import { AutoForm } from '@/components/modules/form/auto'
+import { AutoForm } from '@/components/modules/auto-form'
 
 import { useList } from '@/context/list'
 
