@@ -30,24 +30,23 @@ export const ResourceGrid: React.FC<ResourceGridProps> = () => {
   const { mode } = useViewMode()
 
   const filteredElements = React.useMemo(() => {
-    if (selectedTags.length === 0 && search === '') {
-      return list.content.new.elements
-    }
+    let elements = list.content.new.elements
 
-    const searchWords = search
-      .toLowerCase()
-      .split(/\s+/)
-      .filter((word) => word.length > 0)
-
-    return list.content.new.elements
-      .filter((element) =>
+    if (selectedTags.length > 0) {
+      elements = elements.filter((element) =>
         tagsFilterOperator === 'and'
           ? selectedTags.every((tag) => element.tags.includes(tag))
           : selectedTags.some((tag) => element.tags.includes(tag)),
       )
-      .filter((element) => {
-        if (searchWords.length === 0) return true
+    }
 
+    if (search.trim() !== '') {
+      const searchWords = search
+        .toLowerCase()
+        .split(/\s+/)
+        .filter((word) => word.length > 0)
+
+      elements = elements.filter((element) => {
         const searchable = [
           element.name.toLowerCase(),
           element.description.toLowerCase(),
@@ -58,6 +57,9 @@ export const ResourceGrid: React.FC<ResourceGridProps> = () => {
           searchable.some((field) => field.includes(word)),
         )
       })
+    }
+
+    return elements
   }, [search, list.content.new.elements, selectedTags, tagsFilterOperator])
 
   return (
@@ -109,49 +111,58 @@ export const ResourceGrid: React.FC<ResourceGridProps> = () => {
           </Grid>
         ))}
 
-      {filteredElements.length === 0 && selectedTags.length > 0 && (
-        <Flex
-          direction={'column'}
-          align={'center'}
-          justify={'center'}
-          gap={'4'}
-          py={'12'}
-        >
-          <FileTextIcon height="48" width="48" />
+      {filteredElements.length === 0 &&
+        (selectedTags.length > 0 || search !== '') && (
+          <Flex
+            direction={'column'}
+            align={'center'}
+            justify={'center'}
+            gap={'4'}
+            py={'12'}
+          >
+            <FileTextIcon height="48" width="48" />
 
-          <Flex direction="column" align="center" gap="2">
-            <Heading>No resource found</Heading>
+            <Flex direction="column" align="center" gap="2">
+              <Heading>No resource found</Heading>
 
-            <Text as="p" color="gray">
-              Try selecting different tags or clearing your current selection.
-            </Text>
+              <Text as="p" color="gray">
+                {selectedTags.length > 0 && search !== ''
+                  ? 'No resources match your search and selected tags.'
+                  : selectedTags.length > 0
+                    ? 'Try selecting different tags or clearing your current selection.'
+                    : 'No resources match your search query. Try different keywords.'}
+              </Text>
+            </Flex>
+
+            {selectedTags.length > 0 && (
+              <Button variant="classic" onClick={() => clearTags()}>
+                Clear filters
+              </Button>
+            )}
           </Flex>
+        )}
 
-          <Button variant="classic" onClick={() => clearTags()}>
-            Clear filters
-          </Button>
-        </Flex>
-      )}
+      {filteredElements.length === 0 &&
+        selectedTags.length === 0 &&
+        search === '' && (
+          <Flex
+            direction={'column'}
+            align={'center'}
+            justify={'center'}
+            gap={'4'}
+            py={'12'}
+          >
+            <FileTextIcon height="48" width="48" />
 
-      {filteredElements.length === 0 && selectedTags.length === 0 && (
-        <Flex
-          direction={'column'}
-          align={'center'}
-          justify={'center'}
-          gap={'4'}
-          py={'12'}
-        >
-          <FileTextIcon height="48" width="48" />
+            <Flex direction="column" align="center" gap="2">
+              <Heading>No resource uploaded</Heading>
 
-          <Flex direction="column" align="center" gap="2">
-            <Heading>No resource uploaded</Heading>
-
-            <Text as="p" color="gray">
-              The awesome list's owner haven't uploaded any elements yet.
-            </Text>
+              <Text as="p" color="gray">
+                The awesome list's owner haven't uploaded any elements yet.
+              </Text>
+            </Flex>
           </Flex>
-        </Flex>
-      )}
+        )}
     </Box>
   )
 }

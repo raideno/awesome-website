@@ -5,7 +5,7 @@ import * as yaml from 'js-yaml'
 import type { AwesomeList } from '@/types/awesome-list'
 
 export interface GitHubConfig {
-  token: string
+  token?: string
   owner: string
   repo: string
   branch?: string
@@ -25,7 +25,9 @@ export class GitHubService {
     })
   }
 
-  async getYamlFile(path: string): Promise<{ content: string; sha: string }> {
+  async getYamlFile(
+    path: string,
+  ): Promise<{ content: Record<string, any>; sha: string }> {
     try {
       const response = await this.octokit.rest.repos.getContent({
         owner: this.config.owner,
@@ -35,8 +37,12 @@ export class GitHubService {
       })
 
       if ('content' in response.data && !Array.isArray(response.data)) {
+        const content = yaml.load(
+          decodeURIComponent(escape(atob(response.data.content))),
+        ) as Record<string, any>
+
         return {
-          content: decodeURIComponent(escape(atob(response.data.content))),
+          content: content,
           sha: response.data.sha,
         }
       }
