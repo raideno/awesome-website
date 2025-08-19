@@ -12,16 +12,9 @@ This repository contains the source code for "Awesome Website", a project that t
 
 - [ ] Add a button to create a new resource.
 - [ ] Auto resize card size when on grid mode to take more width or height depending on its content.
-- [ ] Have a right vertical bar where we'll have few actions such as settings, scroll to top / bottom, github, etc. On mobile we switch it to bottom tab.
 - [ ] When clicking on a card or on multiple ones it should get selected, shift clicking when some card is already selected should select the in between; ctrl+click should also be possible.
-- [ ] A go bottom and go up arrow.
-- [ ] The tag filtering, add possibility to chose whether when selecting multiple tags it is an OR or an AND filtering.
-- [ ] Add a searchbar to search through titles, texts, urls and description / content + highlight mathces.
 - [ ] Have a README version of the list automatically generated as well.
 - [ ] Auto generate contributors list.
-- [ ] Editing will be done on a side panel just like supabase, side panel will take the whole screen width on mobile.
-- [ ] We could stack changes locally and commit them by group rather than doing it after each edit.
-- [ ] Rather than making it Auth, just provide the new .yaml file content after changes for the user to copy paste it into github.
 - [ ] Add an LLM version where it is possible to provide a github url and the LLM scrape it to generate a .yaml file from it.
 
 ## Getting Started
