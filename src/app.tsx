@@ -1,40 +1,30 @@
 import React from 'react'
 
-import { MagnifyingGlassIcon, Pencil1Icon } from '@radix-ui/react-icons'
-import {
-  Box,
-  Card,
-  Flex,
-  Heading,
-  IconButton,
-  TextField,
-} from '@radix-ui/themes'
+import { MagnifyingGlassIcon } from '@radix-ui/react-icons'
+import { Box, Flex, Heading, TextField } from '@radix-ui/themes'
 
-import { useList } from '@/context/list'
 import { useFilter } from '@/context/filter'
 
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
-import { ChangesBanner } from '@/components/layout/changes-banner'
-import { WorkflowStatusBanner } from '@/components/layout/workflow-status-banner'
-import { TagFilterModal } from '@/components/modules/filter/modal'
 import { ResourceGrid } from '@/components/modules/resource/grid'
+import { TagFilterModal } from '@/components/modules/filter/modal'
+import { ChangesBanner } from '@/components/layout/changes-banner'
+import { NewVersionBanner } from '@/components/layout/new-version-banner'
+import { FloatingActionBar } from '@/components/layout/floating-action-bar'
 import { FilterModalTrigger } from '@/components/modules/filter/modal-trigger'
+import { WorkflowStatusBanner } from '@/components/layout/workflow-status-banner'
 import { ViewModeController } from '@/components/modules/misc/view-mode-controller'
-import { ScrollToButton } from '@/components/layout/scroll-to-button'
-import { ThemeSwitchButton } from '@/components/layout/theme-switch-button'
-import { ListMetadataEditSheet } from '@/components/modules/misc/list-metadata-edit-sheet'
 
 export interface AppProps {}
 
 export const App: React.FC<AppProps> = () => {
-  const [open, setOpen] = React.useState(false)
-  const list = useList()
   const { search, setSearch } = useFilter()
 
   return (
     <>
       <WorkflowStatusBanner />
+      <NewVersionBanner />
       <ChangesBanner />
 
       <div className="w-full min-h-screen max-w-6xl mx-auto p-6 relative">
@@ -42,30 +32,7 @@ export const App: React.FC<AppProps> = () => {
           <Header />
 
           <Box>
-            <Flex
-              direction={'row'}
-              align={'center'}
-              justify={{ initial: 'center', sm: 'end' }}
-              bottom={{ initial: '4', sm: '8' }}
-              right={{ initial: '0', sm: '8' }}
-              position={'fixed'}
-              className="w-full z-10"
-            >
-              <Card>
-                <Flex direction={{ initial: 'row', sm: 'column' }} gap={'2'}>
-                  <ScrollToButton to="top" />
-                  <ScrollToButton to="bottom" />
-                  <IconButton
-                    variant="classic"
-                    disabled={!list.canEdit}
-                    onClick={() => setOpen(true)}
-                  >
-                    <Pencil1Icon />
-                  </IconButton>
-                  <ThemeSwitchButton />
-                </Flex>
-              </Card>
-            </Flex>
+            <FloatingActionBar />
 
             <Box>
               <Flex direction={'column'} gap={'2'} className="w-full mb-3">
@@ -113,7 +80,6 @@ export const App: React.FC<AppProps> = () => {
           <Footer />
         </div>
       </div>
-      <ListMetadataEditSheet state={{ open: open, onOpenChange: setOpen }} />
     </>
   )
 }

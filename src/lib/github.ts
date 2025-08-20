@@ -237,4 +237,40 @@ export class GitHubService {
       return { isRunning: false }
     }
   }
+
+  async getLatestCommit(branch: string = 'main'): Promise<{
+    sha: string
+    commit: {
+      message: string
+      author: {
+        name: string
+        date: string
+      }
+    }
+    html_url: string
+  }> {
+    try {
+      const response = await this.octokit.rest.repos.getCommit({
+        owner: this.config.owner,
+        repo: this.config.repo,
+        ref: branch,
+      })
+
+      return {
+        sha: response.data.sha,
+        commit: {
+          message: response.data.commit.message,
+          author: {
+            name: response.data.commit.author?.name || 'Unknown',
+            date: response.data.commit.author?.date || '',
+          },
+        },
+        html_url: response.data.html_url,
+      }
+    } catch (error) {
+      throw new Error(
+        `Failed to get latest commit: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      )
+    }
+  }
 }
