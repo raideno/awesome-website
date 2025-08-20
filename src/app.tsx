@@ -17,6 +17,7 @@ import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
 import { ChangesBanner } from '@/components/layout/changes-banner'
 import { WorkflowStatusBanner } from '@/components/layout/workflow-status-banner'
+import { NewVersionBanner } from '@/components/layout/new-version-banner'
 import { TagFilterModal } from '@/components/modules/filter/modal'
 import { ResourceGrid } from '@/components/modules/resource/grid'
 import { FilterModalTrigger } from '@/components/modules/filter/modal-trigger'
@@ -35,6 +36,7 @@ export const App: React.FC<AppProps> = () => {
   return (
     <>
       <WorkflowStatusBanner />
+      <NewVersionBanner />
       <ChangesBanner />
 
       <div className="w-full min-h-screen max-w-6xl mx-auto p-6 relative">
