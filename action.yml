@@ -33,7 +33,7 @@ runs:
 
     - name: copy user YAML file
       run: |
-        cp ${{ github.workspace }}/${{ inputs.yaml-path }} awesome-website-src/list.yaml
+        cp ${{ github.workspace }}/${{ inputs.yaml-path }} awesome-website-src/${{ inputs.yaml-path }}
       shell: bash
 
     - name: determine BASE_PATH
@@ -49,7 +49,7 @@ runs:
     - name: build awesome website
       env:
         BASE_PATH: ${{ steps.base.outputs.value }}
-        LIST_FILE_PATH: list.yaml
+        LIST_FILE_PATH: ${{ inputs.yaml-path }}
         GITHUB_REPOSITORY_URL: https://github.com/${{ github.repository }}
       run: |
         cd awesome-website-src
