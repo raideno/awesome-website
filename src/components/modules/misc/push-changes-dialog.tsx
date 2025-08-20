@@ -187,7 +187,7 @@ export const PushChangesDialog: React.FC<PushChangesDialogProps> = ({
                   <AutoForm.Action variant="soft" color="gray" type="reset">
                     Cancel
                   </AutoForm.Action>
-                  <AutoForm.Action type="submit">
+                  <AutoForm.Action variant="classic" type="submit">
                     {isWorkflowRunning
                       ? 'Build in Progress...'
                       : 'Push Changes'}
