@@ -1,190 +1,23 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/raideno/awesome-website/refs/heads/main/awesome.list.schema.json
-title: 'Awesome Frontend Development'
-description: 'A curated list of amazing frontend development tools, libraries, and resources to supercharge your web development workflow.'
+title: 'Easy Awesome Website'
+description: 'A curated list of easy awesome website.'
 author: 'Kichou Nadir'
-# thumbnail: 'https://upload.wikimedia.org/wikipedia/commons/b/b6/Image_created_with_a_mobile_phone.png'
+thumbnail: 'https://upoevdcxa3.ufs.sh/f/IN4OjmY4wMHByjvZeTSh3g4bLHz1flExrasd69SQcRTVjKFy'
 links:
-  - 'https://awesome-frontend.dev/docs'
-  - 'https://awesome-frontend.dev/docs'
+  - 'https://github.com/raideno/awesome-website'
 
 elements:
-  - name: 'TanStack Query'
-    description: "Powerful data synchronization for web applications. Fetch, cache and update data in your React, Vue, Solid and Svelte applications without touching any 'global state'."
+  - name: 'Awesome Website'
+    description: 'A tool to generate an awesome website for your awesome lists.'
     links:
-      - 'https://tanstack.com/query'
+      - 'https://github.com/raideno/awesome-website'
     tags:
-      - 'react'
-      - 'data-fetching'
-      - 'caching'
-      - 'typescript'
-      - 'vue'
-      - 'svelte'
-
-  - name: 'Tailwind CSS'
-    description: 'A utility-first CSS framework packed with classes like flex, pt-4, text-center and rotate-90 that can be composed to build any design, directly in your markup.'
+      - 'awesome list'
+      - 'awesome website'
+  - name: 'Easy Awesome Website'
+    description: 'A tool to easily generate an awesome website for your awesome lists.'
     links:
-      - 'https://tailwindcss.com'
-      - 'https://github.com/tailwindlabs/tailwindcss'
+      - 'https://github.com/raideno/easy-awesome-website'
     tags:
-      - 'css'
-      - 'utility-first'
-      - 'responsive'
-      - 'customizable'
-
-  - name: 'Vite'
-    description: "Next generation frontend tooling. It's fast! Instant server start, lightning fast HMR, and rich features for development and production builds."
-    links:
-      - 'https://vitejs.dev'
-      - 'https://github.com/vitejs/vite'
-    tags:
-      - 'build-tool'
-      - 'dev-server'
-      - 'hmr'
-      - 'rollup'
-      - 'esbuild'
-
-  - name: 'Vitest'
-    description: 'A blazing fast unit test framework powered by Vite. Native code coverage via c8, built-in TypeScript support, and JSX support out of the box.'
-    links:
-      - 'https://vitest.dev'
-      - 'https://github.com/vitest-dev/vitest'
-    tags:
-      - 'testing'
-      - 'unit-test'
-      - 'vite'
-      - 'typescript'
-      - 'jest-compatible'
-
-  - name: 'Zustand'
-    description: 'A small, fast and scalable bearbones state-management solution using simplified flux principles.'
-    links:
-      - 'https://github.com/pmndrs/zustand'
-      - 'https://docs.pmnd.rs/zustand/getting-started/introduction'
-    tags:
-      - 'state-management'
-      - 'react'
-      - 'typescript'
-      - 'lightweight'
-      - 'flux'
-
-  - name: 'Shadcn/ui'
-    description: 'Beautifully designed components that you can copy and paste into your apps. Accessible. Customizable. Open Source.'
-    links:
-      - 'https://ui.shadcn.com'
-      - 'https://github.com/shadcn-ui/ui'
-    tags:
-      - 'ui-components'
-      - 'react'
-      - 'tailwind'
-      - 'radix-ui'
-      - 'accessible'
-      - 'customizable'
-
-  - name: 'Framer Motion'
-    description: 'A production-ready motion library for React. Utilize the power behind Framer, the best prototyping tool for teams.'
-    links:
-      - 'https://www.framer.com/motion/'
-      - 'https://github.com/framer/motion'
-    tags:
-      - 'animation'
-      - 'react'
-      - 'gestures'
-      - 'layout-animation'
-      - 'spring-physics'
-
-  - name: 'D3.js'
-    description: 'Data-Driven Documents. Bring data to life with SVG, Canvas and HTML using a powerful visualization library.'
-    links:
-      - 'https://d3js.org'
-      - 'https://github.com/d3/d3'
-    tags:
-      - 'data-visualization'
-      - 'svg'
-      - 'charts'
-      - 'interactive'
-      - 'dom-manipulation'
-
-  - name: 'Chart.js'
-    description: 'Simple yet flexible JavaScript charting for designers & developers. 8 chart types with responsive design and animation support.'
-    links:
-      - 'https://www.chartjs.org'
-      - 'https://github.com/chartjs/Chart.js'
-    tags:
-      - 'charts'
-      - 'visualization'
-      - 'canvas'
-      - 'responsive'
-      - 'animation'
-
-  - name: 'React Hook Form'
-    description: 'Performant, flexible and extensible forms with easy validation. Minimal re-renders and intuitive API.'
-    links:
-      - 'https://react-hook-form.com'
-      - 'https://github.com/react-hook-form/react-hook-form'
-    tags:
-      - 'react'
-      - 'forms'
-      - 'validation'
-      - 'performance'
-      - 'typescript'
-
-  - name: 'Playwright'
-    description: 'Fast and reliable end-to-end testing for modern web apps. Test across all modern browsers with a single API.'
-    links:
-      - 'https://playwright.dev'
-      - 'https://github.com/microsoft/playwright'
-    tags:
-      - 'testing'
-      - 'e2e'
-      - 'automation'
-      - 'cross-browser'
-      - 'microsoft'
-
-  - name: 'Storybook'
-    description: 'Build component libraries. Develop, test, and document React, Vue, Angular, and more UI components in isolation.'
-    links:
-      - 'https://storybook.js.org'
-      - 'https://github.com/storybookjs/storybook'
-    tags:
-      - 'component-library'
-      - 'documentation'
-      - 'testing'
-      - 'isolation'
-      - 'development'
-
-  - name: 'Next.js'
-    description: 'The React framework for production. Hybrid static & server rendering, TypeScript support, smart bundling, route pre-fetching, and more.'
-    links:
-      - 'https://nextjs.org'
-      - 'https://github.com/vercel/next.js'
-    tags:
-      - 'react'
-      - 'framework'
-      - 'ssr'
-      - 'ssg'
-      - 'vercel'
-      - 'full-stack'
-
-  - name: 'Remix'
-    description: 'Build Better Websites. Create modern, resilient user experiences with web fundamentals.'
-    links:
-      - 'https://remix.run'
-      - 'https://github.com/remix-run/remix'
-    tags:
-      - 'react'
-      - 'framework'
-      - 'ssr'
-      - 'web-standards'
-      - 'progressive-enhancement'
-
-  - name: 'Astro'
-    description: 'Build fast websites with less client-side JavaScript. The web framework for content-driven websites.'
-    links:
-      - 'https://astro.build'
-      - 'https://github.com/withastro/astro'
-    tags:
-      - 'static-site-generator'
-      - 'performance'
-      - 'seo'
-      - 'multi-framework'
-      - 'islands-architecture'
+      - 'awesome list'
+      - 'easy awesome website'

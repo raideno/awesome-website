@@ -4,21 +4,9 @@
 
 This repository contains the source code for "Awesome Website", a project that transforms a simple YAML file into a beautiful, interactive, and easily deployable website. It's the perfect solution for creating and maintaining "awesome lists" with a polished and professional look.
 
-**[Demo:](https://raideno.github.io/awesome-website/)** [https://raideno.github.io/awesome-website](https://raideno.github.io/awesome-website/)
+**Demo:** [https://raideno.github.io/awesome-website](https://raideno.github.io/awesome-website/)
 
 ![website-preview](./assets/preview.png)
-
-# TODOs
-
-- [ ] Add a button to create a new resource.
-- [ ] Auto resize card size when on grid mode to take more width or height depending on its content.
-- [ ] When clicking on a card or on multiple ones it should get selected, shift clicking when some card is already selected should select the in between; ctrl+click should also be possible.
-- [ ] Have a README version of the list automatically generated as well.
-- [ ] Auto generate contributors list.
-- [ ] Add an LLM version where it is possible to provide a github url and the LLM scrape it to generate a .yaml file from it.
-
-- [ ] Externalize the pushing library to a separate package.
-- [ ] Use the package to build a more general storage website, capable of storing files, images, videos, etc for personal use. A sort of cloud.
 
 ## Getting Started
 
@@ -103,8 +91,22 @@ This project includes a GitHub Actions workflow that automatically builds and de
 
 To enable automated deployments, make sure to configure GitHub Pages to use the "GitHub Actions" source in your repository's settings.
 
-## Development
+## Contribution & Development
 
-- Development: `LIST_FILE_PATH=./example.list.yaml npm run dev`
-- Build: `LIST_FILE_PATH=./example.list.yaml npm run build`
-- Start Build: `LIST_FILE_PATH=./example.list.yaml npm run start`
+Copy the [`.env.example`](./.env.example) file to `.env` and fill in the required values.
+
+- Development: `npm run dev`
+- Build: `npm run build`
+- Start Build: `npm run start`
+
+Do your changes in a separate branch and create a pull request to merge them into the `main` branch or `develop` branch if you are working on a feature.
+
+# TODOs
+
+- [ ] When clicking on a card or on multiple ones it should get selected, shift clicking when some card is already selected should select the in between; ctrl+click should also be possible.
+- [ ] Have a README version of the list automatically generated as well.
+- [ ] Auto generate contributors list.
+- [ ] Add an LLM version where it is possible to provide a github url and the LLM scrape it to generate a .yaml file from it.
+
+- [ ] Externalize the pushing library to a separate package.
+- [ ] Use the package to build a more general storage website, capable of storing files, images, videos, etc for personal use. A sort of cloud.
