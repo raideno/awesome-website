@@ -42,10 +42,10 @@ export const Banner: React.FC<BannerProps> = ({
 }) => {
   return (
     <Box
-      className={cn('top-0 left-0 right-0 z-50', className)}
+      className={cn(className)}
       style={{
         borderBottom: '1px solid var(--gray-7)',
-        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+        // boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
       }}
     >
       <Flex

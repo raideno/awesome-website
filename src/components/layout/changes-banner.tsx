@@ -1,12 +1,11 @@
 import React from 'react'
 
 import { Button, Flex, Text } from '@radix-ui/themes'
-import { InfoCircledIcon } from '@radix-ui/react-icons'
 
 import { useList } from '@/context/list'
 
-import { Banner } from '@/components/ui/banner'
 import { PushChangesDialog } from '@/components/modules/misc/push-changes-dialog'
+import { Banner } from '@/components/ui/banner'
 
 export const ChangesBanner: React.FC = () => {
   const { hasUnsavedChanges, content, clearChanges } = useList()
@@ -18,7 +17,7 @@ export const ChangesBanner: React.FC = () => {
       color="blue"
       left={
         <>
-          <InfoCircledIcon width={14} height={14} />
+          {/* <InfoCircledIcon width={14} height={14} /> */}
           <Text size="1">You have unsaved changes</Text>
         </>
       }

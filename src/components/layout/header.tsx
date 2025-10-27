@@ -126,7 +126,7 @@ export const Header: React.FC<HeaderProps> = () => {
                   variant="surface"
                   size={'3'}
                 >
-                  {label}
+                  <Text className="line-clamp-1">{label}</Text>
                 </Button>
               </Link>
             )
