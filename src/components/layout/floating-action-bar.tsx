@@ -28,7 +28,7 @@ export const FloatingActionBar: React.FC<FloatingActionBarProps> = () => {
           bottom={{ initial: '4', sm: '8' }}
           right={{ initial: '0', sm: '8' }}
           position={'fixed'}
-          className="w-full z-10"
+          className="w-full sm:!w-auto z-10"
         >
           <Card>
             <Flex direction={{ initial: 'row', sm: 'column' }} gap={'2'}>

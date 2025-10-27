@@ -10,7 +10,10 @@ export interface UseGitHubAuth {
 export function useGitHubAuth(): UseGitHubAuth {
   const [token, setTokenState] = useState<string | null>(() => {
     if (typeof window !== 'undefined') {
-      return sessionStorage.getItem('github-token')
+      return (
+        sessionStorage.getItem('github-token') ||
+        localStorage.getItem('github-token-persistent')
+      )
     }
     return null
   })

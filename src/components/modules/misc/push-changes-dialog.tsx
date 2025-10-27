@@ -1,17 +1,16 @@
-import React, { useState } from 'react'
-import { z } from 'zod/v4'
-import { Box, Callout, Dialog, Flex } from '@radix-ui/themes'
 import { Portal } from '@radix-ui/react-dialog'
 import { ExclamationTriangleIcon, InfoCircledIcon } from '@radix-ui/react-icons'
+import { Box, Callout, Dialog, Flex } from '@radix-ui/themes'
+import { MetadataRegistry } from '@raideno/auto-form/registry'
+import { AutoForm } from '@raideno/auto-form/ui'
+import React, { useState } from 'react'
+import { z } from 'zod/v4'
 
 import type { AwesomeList } from '@/types/awesome-list'
 
-import { AutoForm } from '@/components/modules/auto-form'
-import { MetadataRegistry } from '@/components/modules/auto-form/registry'
-
-import { GitHubService } from '@/lib/github'
 import { useGitHubAuth } from '@/hooks/github-auth'
 import { useWorkflowStatus } from '@/hooks/workflow-status'
+import { GitHubService } from '@/lib/github'
 
 interface PushChangesDialogProps {
   children?: React.ReactNode
@@ -27,6 +26,11 @@ const PushChangesFormSchema = z.object({
     type: 'password',
     placeholder: 'ghp_xxxxxxxxxxxx',
     label: 'Github Token*',
+  }),
+  rememberToken: z.boolean().register(MetadataRegistry, {
+    type: 'checkbox',
+    label: 'Remember my token',
+    description: 'Save token for future sessions',
   }),
   repository: z
     .string()
@@ -79,7 +83,17 @@ export const PushChangesDialog: React.FC<PushChangesDialogProps> = ({
 
       await github.updateYamlFile(data.path, yamlContent, data.message)
 
-      githubAuth.setToken(data.token.trim())
+      const trimmedToken = data.token.trim()
+
+      // Save to session storage (always)
+      githubAuth.setToken(trimmedToken)
+
+      // Save to local storage if remember token is checked
+      if (data.rememberToken) {
+        localStorage.setItem('github-token-persistent', trimmedToken)
+      } else {
+        localStorage.removeItem('github-token-persistent')
+      }
 
       setSuccess(
         'Changes pushed successfully! The repository has been updated.',
@@ -116,7 +130,13 @@ export const PushChangesDialog: React.FC<PushChangesDialogProps> = ({
             defaultValues={{
               path: __YAML_FILE_PATH__,
               repository: `${__REPOSITORY_OWNER__}/${__REPOSITORY_NAME__}`,
-              token: githubAuth.token || '',
+              token:
+                githubAuth.token ||
+                localStorage.getItem('github-token-persistent') ||
+                '',
+              rememberToken: Boolean(
+                localStorage.getItem('github-token-persistent'),
+              ),
               message: 'chore: update',
             }}
             schema={PushChangesFormSchema}

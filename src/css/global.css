@@ -19,6 +19,18 @@ body {
   background-size: 20px 20px;
 }
 
+.radix-themes {
+  --cursor-button: pointer;
+  --cursor-checkbox: pointer;
+  --cursor-disabled: default;
+  --cursor-link: pointer;
+  --cursor-menu-item: pointer;
+  --cursor-radio: pointer;
+  --cursor-slider-thumb: grab;
+  --cursor-slider-thumb-active: grabbing;
+  --cursor-switch: pointer;
+}
+
 code {
   font-family:
     source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;

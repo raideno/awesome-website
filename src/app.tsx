@@ -23,12 +23,14 @@ export const App: React.FC<AppProps> = () => {
 
   return (
     <>
-      <WorkflowStatusBanner />
-      <NewVersionBanner />
-      <ChangesBanner />
+      <Box className="top-0 sticky z-50">
+        <WorkflowStatusBanner />
+        <NewVersionBanner />
+        <ChangesBanner />
+      </Box>
 
-      <div className="w-full min-h-screen max-w-6xl mx-auto p-6 relative">
-        <div className="w-full min-h-screen grid grid-rows-[auto_1fr_auto]">
+      <div className="min-h-screen max-w-6xl mx-auto relative px-4 sm:px-6 lg:px-8">
+        <div className="w-full py-6 min-h-screen grid grid-rows-[auto_1fr_auto]">
           <Header />
 
           <Box>

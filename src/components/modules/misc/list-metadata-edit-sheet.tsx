@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
 import { ScrollArea } from '@radix-ui/themes'
+import { AutoForm } from '@raideno/auto-form/ui'
 
 import type React from 'react'
 import type { z } from 'zod/v4'
@@ -9,7 +10,6 @@ import { AwesomeListMetadata } from '@/types/awesome-list'
 
 import { useList } from '@/context/list'
 import { Sheet } from '@/components/ui/sheet'
-import { AutoForm } from '@/components/modules/auto-form'
 
 export interface ListMetadataEditSheetProps {
   children?: React.ReactNode
