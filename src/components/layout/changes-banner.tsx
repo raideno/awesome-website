@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Button, Flex, Text } from '@radix-ui/themes'
+import { Button, Flex } from '@radix-ui/themes'
 
 import { useList } from '@/context/list'
 
@@ -15,24 +15,21 @@ export const ChangesBanner: React.FC = () => {
   return (
     <Banner
       color="blue"
-      left={
-        <>
-          {/* <InfoCircledIcon width={14} height={14} /> */}
-          <Text size="1">You have unsaved changes</Text>
-        </>
-      }
-      right={
-        <Flex direction={'row'} align={'center'} gap={'2'}>
-          <Button onClick={clearChanges} variant="soft" size="1">
-            Discard Changes
-          </Button>
-          <PushChangesDialog yamlContent={content.new}>
-            <Button variant="classic" size="1">
-              Push Changes
+      text={'You have unsaved changes'}
+      action={{
+        component: (
+          <Flex direction={'row'} align={'center'} gap={'2'}>
+            <Button onClick={clearChanges} variant="soft" size="1">
+              Discard Changes
             </Button>
-          </PushChangesDialog>
-        </Flex>
-      }
+            <PushChangesDialog yamlContent={content.new}>
+              <Button variant="classic" size="1">
+                Push Changes
+              </Button>
+            </PushChangesDialog>
+          </Flex>
+        ),
+      }}
     />
   )
 }

@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Box, Flex } from '@radix-ui/themes'
+import { Box, Button, Flex, Text } from '@radix-ui/themes'
 
 import type { BoxProps } from '@radix-ui/themes'
 
@@ -9,10 +9,16 @@ import { cn } from '@/lib/utils'
 export type BannerColor = 'blue' | 'green' | 'red' | 'orange' | 'amber' | 'gray'
 
 export type BannerProps = BoxProps & {
-  left: React.ReactNode
-  right: React.ReactNode
+  text: React.ReactNode
+  action:
+    | {
+        text: string
+        onClick: () => void
+      }
+    | {
+        component: React.ReactNode
+      }
   color: BannerColor
-  onDismiss?: () => void
 }
 
 const getColorClass = (color: BannerColor): string => {
@@ -36,9 +42,10 @@ const getColorClass = (color: BannerColor): string => {
 
 export const Banner: React.FC<BannerProps> = ({
   color,
-  left,
-  right,
+  text,
+  action,
   className,
+  ...props
 }) => {
   return (
     <Box
@@ -47,22 +54,32 @@ export const Banner: React.FC<BannerProps> = ({
         borderBottom: '1px solid var(--gray-7)',
         // boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
       }}
+      {...props}
     >
       <Flex
         direction={'row'}
         justify={'between'}
         align={'center'}
         py={'2'}
-        px={'6'}
+        px={'2'}
         className={cn(getColorClass(color))}
       >
-        <Flex justify="between" align="center" style={{ width: '100%' }}>
-          <Flex align={'center'} justify={'center'} gap={'2'}>
-            {left}
+        <Flex
+          className="w-full"
+          direction={{ initial: 'column', lg: 'row' }}
+          justify="between"
+          align={'center'}
+        >
+          <Flex align={'center'} justify={{ initial: 'start' }} gap={'2'}>
+            <Text>{text}</Text>
           </Flex>
-          <Flex gap="2" align="center">
-            {right}
-          </Flex>
+          {'component' in action ? (
+            action.component
+          ) : (
+            <Button variant="outline" onClick={action.onClick}>
+              {action.text}
+            </Button>
+          )}
         </Flex>
       </Flex>
     </Box>

@@ -1,1 +1,1 @@
-export type ViewMode = 'table' | 'detailed' | 'minimal'
+export type ViewMode = 'detailed' | 'group'

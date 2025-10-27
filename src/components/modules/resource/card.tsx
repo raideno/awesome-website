@@ -11,7 +11,6 @@ import { ResourceCardDialog } from './card-dialog'
 import type { AwesomeListElement } from '@/types/awesome-list'
 import type { CardProps } from '@radix-ui/themes'
 
-import { useViewMode } from '@/context/view-mode'
 import { cn } from '@/lib/utils'
 
 export interface ResourceCardProps extends CardProps {
@@ -26,8 +25,6 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
   'aria-label': ariaLabel = element.name,
   ...props
 }) => {
-  const { mode } = useViewMode()
-
   return (
     <ResourceCardDialog element={element}>
       <Card
@@ -48,16 +45,14 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
             >
               {element.name}
             </Heading>
-            {mode !== 'minimal' && (
-              <Text className="leading-relaxed flex-grow markdown-content">
-                <ReactMarkdown
-                  remarkPlugins={[remarkMath]}
-                  rehypePlugins={[rehypeKatex]}
-                >
-                  {element.description}
-                </ReactMarkdown>
-              </Text>
-            )}
+            <Text className="leading-relaxed flex-grow markdown-content">
+              <ReactMarkdown
+                remarkPlugins={[remarkMath]}
+                rehypePlugins={[rehypeKatex]}
+              >
+                {element.description}
+              </ReactMarkdown>
+            </Text>
             <div className="flex flex-wrap gap-2">
               {element.tags.slice(0, 4).map((tag) => (
                 <Badge size={'1'} key={tag} tabIndex={0} role="button">
