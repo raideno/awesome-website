@@ -58,7 +58,7 @@ export const ResourceEditSheet: React.FC<ResourceEditSheetProps> = ({
           }}
           onSubmit={handleSubmit}
           onError={() => console.log('errror!')}
-          className="h-full grid grid-rows-[auto_1fr_auto] gap-4"
+          className="w-full h-full grid grid-rows-[auto_1fr_auto] gap-4"
         >
           <Sheet.Header>
             <Sheet.Title>Edit Resource</Sheet.Title>
@@ -83,7 +83,7 @@ export const ResourceEditSheet: React.FC<ResourceEditSheetProps> = ({
               </Sheet.Close>
               <AutoForm.Action
                 type="submit"
-                className="!w-full"
+                className="w-full"
                 variant="classic"
               >
                 Save
