@@ -8,7 +8,7 @@
     },
     "description": {
       "type": "string",
-      "maxLength": 512
+      "maxLength": 192
     },
     "author": {
       "type": "string",
@@ -28,7 +28,7 @@
           },
           "description": {
             "type": "string",
-            "maxLength": 512
+            "maxLength": 192
           },
           "notes": {
             "type": "string"
@@ -47,6 +47,10 @@
             "items": {
               "type": "string"
             }
+          },
+          "group": {
+            "type": "string",
+            "maxLength": 64
           }
         },
         "required": [

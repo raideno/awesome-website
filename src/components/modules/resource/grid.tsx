@@ -1,15 +1,5 @@
 import { FileTextIcon } from '@radix-ui/react-icons'
-import {
-  Badge,
-  Box,
-  Button,
-  Card,
-  Flex,
-  Grid,
-  Heading,
-  Table,
-  Text,
-} from '@radix-ui/themes'
+import { Box, Button, Flex, Grid, Heading, Text } from '@radix-ui/themes'
 
 import React from 'react'
 
@@ -18,6 +8,7 @@ import { useFilter } from '@/context/filter'
 
 import { ResourceCard } from '@/components/modules/resource/card'
 import { ResourceCardContextMenu } from '@/components/modules/resource/card-context-menu'
+import { GroupedResourceGrid } from '@/components/modules/resource/grouped-grid'
 import { useList } from '@/context/list'
 
 export interface ResourceGridProps {}
@@ -28,6 +19,11 @@ export const ResourceGrid: React.FC<ResourceGridProps> = () => {
   const list = useList()
 
   const { mode } = useViewMode()
+
+  // If mode is 'group', use the grouped grid component
+  if (mode === 'group') {
+    return <GroupedResourceGrid />
+  }
 
   const filteredElements = React.useMemo(() => {
     let elements = list.content.new.elements
@@ -64,52 +60,22 @@ export const ResourceGrid: React.FC<ResourceGridProps> = () => {
 
   return (
     <Box>
-      {filteredElements.length > 0 &&
-        (mode === 'table' ? (
-          <Card className="!p-0">
-            <Table.Root>
-              <Table.Header>
-                <Table.Row>
-                  <Table.ColumnHeaderCell>Name</Table.ColumnHeaderCell>
-                  <Table.ColumnHeaderCell>Description</Table.ColumnHeaderCell>
-                  <Table.ColumnHeaderCell>Tags</Table.ColumnHeaderCell>
-                </Table.Row>
-              </Table.Header>
-              <Table.Body>
-                {filteredElements.map((element) => (
-                  <Table.Row key={element.name}>
-                    <Table.Cell>{element.name}</Table.Cell>
-                    <Table.Cell>{element.description}</Table.Cell>
-                    <Table.Cell>
-                      <Flex gap="1" wrap="wrap">
-                        {element.tags.map((tag) => (
-                          <Badge key={tag} size="1">
-                            {tag}
-                          </Badge>
-                        ))}
-                      </Flex>
-                    </Table.Cell>
-                  </Table.Row>
-                ))}
-              </Table.Body>
-            </Table.Root>
-          </Card>
-        ) : (
-          <Grid
-            columns={{
-              initial: '1',
-              md: mode === 'minimal' ? '3' : '2',
-              lg: mode === 'minimal' ? '4' : '3',
-            }}
-            gap={mode === 'minimal' ? '4' : '6'}
-          >
-            {filteredElements.map((element) => (
-              <ResourceCardContextMenu key={element.name} element={element}>
-                <ResourceCard element={element} />
-              </ResourceCardContextMenu>
-            ))}
-          </Grid>
-        ))}
+      {filteredElements.length > 0 && (
+        <Grid
+          columns={{
+            initial: '1',
+            md: '2',
+            lg: '3',
+          }}
+          gap="6"
+        >
+          {filteredElements.map((element) => (
+            <ResourceCardContextMenu key={element.name} element={element}>
+              <ResourceCard element={element} />
+            </ResourceCardContextMenu>
+          ))}
+        </Grid>
+      )}
 
       {filteredElements.length === 0 &&
         (selectedTags.length > 0 || search !== '') && (

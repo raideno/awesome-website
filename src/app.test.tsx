@@ -15,6 +15,6 @@ describe('App', () => {
         ,
       </ThemeProvider>,
     )
-    expect(screen.getByText('Awesome List')).toBeDefined()
+    expect(screen.getByPlaceholderText('Search resources...')).toBeDefined()
   })
 })

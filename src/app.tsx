@@ -1,20 +1,20 @@
 import React from 'react'
 
 import { MagnifyingGlassIcon } from '@radix-ui/react-icons'
-import { Box, Flex, Heading, TextField } from '@radix-ui/themes'
+import { Box, Flex, TextField } from '@radix-ui/themes'
 
 import { useFilter } from '@/context/filter'
 
-import { Header } from '@/components/layout/header'
-import { Footer } from '@/components/layout/footer'
-import { ResourceGrid } from '@/components/modules/resource/grid'
-import { TagFilterModal } from '@/components/modules/filter/modal'
 import { ChangesBanner } from '@/components/layout/changes-banner'
-import { NewVersionBanner } from '@/components/layout/new-version-banner'
 import { FloatingActionBar } from '@/components/layout/floating-action-bar'
-import { FilterModalTrigger } from '@/components/modules/filter/modal-trigger'
+import { Footer } from '@/components/layout/footer'
+import { Header } from '@/components/layout/header'
+import { NewVersionBanner } from '@/components/layout/new-version-banner'
 import { WorkflowStatusBanner } from '@/components/layout/workflow-status-banner'
+import { TagFilterModal } from '@/components/modules/filter/modal'
+import { FilterModalTrigger } from '@/components/modules/filter/modal-trigger'
 import { ViewModeController } from '@/components/modules/misc/view-mode-controller'
+import { ResourceGrid } from '@/components/modules/resource/grid'
 
 export interface AppProps {}
 
@@ -44,19 +44,6 @@ export const App: React.FC<AppProps> = () => {
                   justify={'between'}
                   gap={'3'}
                 >
-                  <Heading size={{ initial: '5', sm: '6' }}>
-                    Awesome List
-                  </Heading>
-                  <Box>
-                    <ViewModeController />
-                  </Box>
-                </Flex>
-                <Flex
-                  className="w-full"
-                  direction={'row'}
-                  justify={'between'}
-                  gap={'3'}
-                >
                   <TextField.Root
                     className="w-full max-w-96"
                     value={search}
@@ -68,9 +55,12 @@ export const App: React.FC<AppProps> = () => {
                     </TextField.Slot>
                   </TextField.Root>
                   <Box>
-                    <TagFilterModal>
-                      <FilterModalTrigger />
-                    </TagFilterModal>
+                    <Flex direction={'row'} gap={'2'}>
+                      <ViewModeController />
+                      <TagFilterModal>
+                        <FilterModalTrigger />
+                      </TagFilterModal>
+                    </Flex>
                   </Box>
                 </Flex>
               </Flex>
