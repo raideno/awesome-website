@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { Button, Text } from '@radix-ui/themes'
-import { Cross1Icon, ExternalLinkIcon, UpdateIcon } from '@radix-ui/react-icons'
+import { Cross1Icon, ExternalLinkIcon } from '@radix-ui/react-icons'
 
 import { Banner } from '@/components/ui/banner'
 import { useVersionCheck } from '@/hooks/version-check'
@@ -20,10 +20,9 @@ export const NewVersionBanner: React.FC = () => {
       color="orange"
       left={
         <>
-          <UpdateIcon width={14} height={14} />
           <Text size="1">
-            A new version is available! Please re-run the workflow to update to
-            the latest version.
+            A new template version is available! Re-run the workflow to get the
+            latest update.
           </Text>
         </>
       }

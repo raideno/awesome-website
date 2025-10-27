@@ -58,8 +58,10 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
           {element.links && (
             <Flex direction={'row'} wrap={'wrap'} gap={'3'}>
               {element.links.map((link, index) => {
-                const url = typeof link === 'string' ? link : link.url
-                const label = typeof link === 'string' ? link : link.label
+                // const url = typeof link === 'string' ? link : link.url
+                const url = link
+                // const label = typeof link === 'string' ? link : link.label
+                const label = link
 
                 return (
                   <Link

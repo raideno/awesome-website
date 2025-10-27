@@ -37,30 +37,8 @@
             "maxItems": 4,
             "type": "array",
             "items": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "format": "uri"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "url": {
-                      "type": "string",
-                      "format": "uri"
-                    },
-                    "label": {
-                      "type": "string",
-                      "maxLength": 64
-                    }
-                  },
-                  "required": [
-                    "url",
-                    "label"
-                  ],
-                  "additionalProperties": false
-                }
-              ]
+              "type": "string",
+              "format": "uri"
             }
           },
           "tags": {
@@ -83,30 +61,8 @@
       "maxItems": 4,
       "type": "array",
       "items": {
-        "anyOf": [
-          {
-            "type": "string",
-            "format": "uri"
-          },
-          {
-            "type": "object",
-            "properties": {
-              "url": {
-                "type": "string",
-                "format": "uri"
-              },
-              "label": {
-                "type": "string",
-                "maxLength": 64
-              }
-            },
-            "required": [
-              "url",
-              "label"
-            ],
-            "additionalProperties": false
-          }
-        ]
+        "type": "string",
+        "format": "uri"
       }
     }
   },

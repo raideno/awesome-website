@@ -110,8 +110,10 @@ export const Header: React.FC<HeaderProps> = () => {
         </Link>
         {list.content.new.links &&
           list.content.new.links.map((link, idx) => {
-            const url = typeof link === 'string' ? link : link.url
-            const label = typeof link === 'string' ? link : link.label
+            // const url = typeof link === 'string' ? link : link.url
+            const url = link
+            // const label = typeof link === 'string' ? link : link.label
+            const label = link
 
             return (
               <Link
