@@ -115,7 +115,9 @@ export const GroupedResourceGrid: React.FC<GroupedResourceGridProps> = () => {
       elements = elements.filter((element) =>
         tagsFilterOperator === 'and'
           ? selectedTags.every((tag) => element.tags.includes(tag))
-          : selectedTags.some((tag) => element.tags.includes(tag)),
+          : tagsFilterOperator === 'or'
+            ? selectedTags.some((tag) => element.tags.includes(tag))
+            : !selectedTags.some((tag) => element.tags.includes(tag)),
       )
     }
 
