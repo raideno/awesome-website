@@ -1,0 +1,37 @@
+.w-md-editor-area {
+  padding: 0 !important ;
+  height: 100% !important;
+}
+
+.w-md-editor-input {
+  padding: 0 !important ;
+  height: 100% !important;
+}
+
+.w-md-editor-text {
+  height: 100% !important;
+  padding: 1rem 1rem 1rem 0 !important;
+}
+
+.w-md-editor-text-input {
+  height: 100% !important;
+  /* padding: 0 !important ; */
+}
+
+.wmde-markdown {
+  background-color: transparent !important;
+}
+
+.wmde-markdown-color {
+  background-color: transparent !important;
+}
+
+/* --- --- --- */
+
+.w-md-editor-preview {
+  background-color: transparent !important;
+  padding: 0.75rem 0 !important;
+  /* box-shadow: inset 1px 0 0 0 var(--md-editor-box-shadow-color) */
+  /* box-shadow: inset 1px 0 0 0 var(--gray-7) !important; */
+  box-shadow: none !important;
+}

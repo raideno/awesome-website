@@ -1,7 +1,12 @@
+import './card-dialog.css'
+
+import '@uiw/react-markdown-preview/markdown.css'
+import '@uiw/react-md-editor/markdown-editor.css'
 import 'katex/dist/katex.min.css'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
+import { EyeOpenIcon, Half1Icon, Pencil1Icon } from '@radix-ui/react-icons'
 import {
   Badge,
   Box,
@@ -13,17 +18,17 @@ import {
   ScrollArea,
   Text,
 } from '@radix-ui/themes'
-import ReactMarkdown from 'react-markdown'
-import remarkMath from 'remark-math'
+import MDEditor from '@uiw/react-md-editor'
 import rehypeKatex from 'rehype-katex'
-
-import { AutoForm } from '@raideno/auto-form/ui'
-import type { z } from 'zod/v4'
+import remarkMath from 'remark-math'
 
 import type { AwesomeListElement } from '@/types/awesome-list'
-import { AwesomeListElementSchema } from '@/types/awesome-list'
+
+import { ToggleGroup } from '@/components/ui/toggle-group'
+import { useEditing } from '@/context/editing'
 import { useList } from '@/context/list'
-import { AdminOnly } from '@/components/utils/admin-only'
+
+type ViewMode = 'edit' | 'live' | 'preview'
 
 export interface ResourceCardDialogProps {
   children?: React.ReactNode
@@ -37,33 +42,36 @@ export const ResourceCardDialog: React.FC<ResourceCardDialogProps> = ({
   state,
 }) => {
   const list = useList()
-  const [isEditMode, setIsEditMode] = useState(false)
+  const { editingEnabled } = useEditing()
   const [internalOpen, setInternalOpen] = useState(false)
+  const [editedNotes, setEditedNotes] = useState(element.notes || '')
+  const [viewMode, setViewMode] = useState<ViewMode>('live')
 
   const isOpen = state?.open ?? internalOpen
   const setOpen = state?.onOpenChange ?? setInternalOpen
+  const canEdit = list.canEdit && editingEnabled
 
-  const handleSubmit = async (
-    data: z.infer<typeof AwesomeListElementSchema>,
-  ) => {
-    try {
-      await list.updateList({
-        elements: list.content.new.elements.map((el) =>
-          el.name === element.name ? { ...el, ...data } : el,
-        ),
-      })
-      setIsEditMode(false)
-    } catch (error) {
-      alert(error instanceof Error ? error.message : 'Failed to save changes')
+  useEffect(() => {
+    setEditedNotes(element.notes || '')
+  }, [element.notes])
+
+  const handleOpenChange = async (open: boolean) => {
+    if (!open && canEdit && editedNotes !== element.notes) {
+      try {
+        await list.updateList({
+          elements: list.content.new.elements.map((el) =>
+            el.name === element.name ? { ...el, notes: editedNotes } : el,
+          ),
+        })
+      } catch (error) {
+        console.error('Failed to save notes:', error)
+      }
     }
-  }
-
-  const handleCancel = () => {
-    setIsEditMode(false)
+    setOpen(open)
   }
 
   return (
-    <Dialog.Root open={isOpen} onOpenChange={setOpen}>
+    <Dialog.Root open={isOpen} onOpenChange={handleOpenChange}>
       {children && <Dialog.Trigger>{children}</Dialog.Trigger>}
       <style>
         {`
@@ -81,136 +89,137 @@ export const ResourceCardDialog: React.FC<ResourceCardDialogProps> = ({
           style={{ height: '100%' }}
           className="max-w-5xl pt-8 mx-auto"
         >
-          {isEditMode ? (
-            <AutoForm.Root
-              schema={AwesomeListElementSchema}
-              defaultValues={{
-                ...element,
-              }}
-              onCancel={handleCancel}
-              onSubmit={handleSubmit}
-              onError={() => console.log('error!')}
-              className="h-full"
-            >
-              {/* <Flex direction="column" p="6" gap="4"> */}
-              <Flex direction="column" p="0" gap="4">
-                <Flex
-                  direction={'row'}
-                  gap={'4'}
-                  justify={'between'}
-                  align={'center'}
-                >
+          <Flex direction="column" p="0" gap="4">
+            <Box>
+              <Flex
+                direction={'row'}
+                gap={'4'}
+                justify={'between'}
+                align={'center'}
+              >
+                <Box>
                   <Dialog.Title size="8" weight="bold" className="!m-0">
-                    Edit
+                    {element.name}
                   </Dialog.Title>
-                  <Flex direction={'row'} gap={'2'} align={'center'}>
-                    <AutoForm.Action type="reset" variant="outline">
-                      Cancel
-                    </AutoForm.Action>
-                    <AutoForm.Action type="submit" variant="classic">
-                      Save
-                    </AutoForm.Action>
-                  </Flex>
+                </Box>
+                <Flex direction={'row'} gap={'2'} align={'center'}>
+                  <Dialog.Close>
+                    <Button variant="outline">Close</Button>
+                  </Dialog.Close>
                 </Flex>
-
-                <AutoForm.Content />
               </Flex>
-            </AutoForm.Root>
-          ) : (
-            // <Flex direction="column" p="6" gap="4">
-            <Flex direction="column" p="0" gap="4">
-              <Box>
-                <Flex
-                  direction={'row'}
-                  gap={'4'}
-                  justify={'between'}
-                  align={'center'}
-                >
-                  <Box>
-                    <Dialog.Title size="8" weight="bold" className="!m-0">
-                      {element.name}
-                    </Dialog.Title>
-                  </Box>
-                  <Flex direction={'row'} gap={'2'} align={'center'}>
-                    <AdminOnly>
-                      <Button
-                        variant="soft"
-                        disabled={!list.canEdit}
-                        onClick={() => setIsEditMode(true)}
-                      >
-                        Edit
-                      </Button>
-                    </AdminOnly>
-                    <Dialog.Close>
-                      <Button variant="outline">Close</Button>
-                    </Dialog.Close>
-                  </Flex>
-                </Flex>
-                {element.description && (
-                  <Text size="4" className="markdown-content leading-relaxed">
-                    <ReactMarkdown
-                      remarkPlugins={[remarkMath]}
-                      rehypePlugins={[rehypeKatex]}
+              {element.description && (
+                <Text size="4" className="markdown-content leading-relaxed">
+                  {element.description}
+                </Text>
+              )}
+            </Box>
+
+            {element.links && element.links.length > 0 && (
+              <Flex direction="column" gap="2">
+                <Heading size="5" weight="medium">
+                  Links
+                </Heading>
+                <Flex direction="column" gap="2">
+                  {element.links.map((link, index) => (
+                    <Link
+                      key={index}
+                      href={link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="!underline"
                     >
-                      {element.description}
-                    </ReactMarkdown>
-                  </Text>
+                      {link}
+                    </Link>
+                  ))}
+                </Flex>
+              </Flex>
+            )}
+
+            {element.tags.length > 0 && (
+              <Flex direction="column" gap="2">
+                <Heading size="5" weight="medium">
+                  Tags
+                </Heading>
+                <Flex direction="row" wrap="wrap" gap="2">
+                  {element.tags.map((tag) => (
+                    <Badge key={tag} size="2">
+                      {tag}
+                    </Badge>
+                  ))}
+                </Flex>
+              </Flex>
+            )}
+
+            <Flex direction="column" gap="0">
+              <Flex
+                direction="row"
+                justify="between"
+                align="center"
+                // className="mb-2"
+              >
+                <Heading size="5" weight="medium" className="!mb-0">
+                  Notes
+                </Heading>
+                {canEdit && (
+                  <ToggleGroup.Root
+                    type="single"
+                    value={viewMode}
+                    onValueChange={(value) => {
+                      if (value) setViewMode(value as ViewMode)
+                    }}
+                  >
+                    <ToggleGroup.Item value="edit" aria-label="Edit only">
+                      <Pencil1Icon />
+                    </ToggleGroup.Item>
+                    <ToggleGroup.Item value="live" aria-label="Split view">
+                      <Half1Icon />
+                    </ToggleGroup.Item>
+                    <ToggleGroup.Item value="preview" aria-label="Preview only">
+                      <EyeOpenIcon />
+                    </ToggleGroup.Item>
+                  </ToggleGroup.Root>
                 )}
-              </Box>
+              </Flex>
+              {!canEdit && !editedNotes ? (
+                <Text color="gray" size="3">
+                  No notes available.
+                </Text>
+              ) : (
+                <Box data-color-mode="light">
+                  <style>{`
+                    .w-md-editor-text-input,
+                    .w-md-editor-text-pre .code-line {
+                      font-size: 1rem !important;
+                      line-height: 1rem !important;
+                    }
 
-              {element.links && element.links.length > 0 && (
-                <Flex direction="column" gap="2">
-                  <Heading size="5" weight="medium">
-                    Links
-                  </Heading>
-                  <Flex direction="column" gap="2">
-                    {element.links.map((link, index) => (
-                      <Link
-                        key={index}
-                        href={link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="!underline"
-                      >
-                        {link}
-                      </Link>
-                    ))}
-                  </Flex>
-                </Flex>
-              )}
-
-              {element.tags.length > 0 && (
-                <Flex direction="column" gap="2">
-                  <Heading size="5" weight="medium">
-                    Tags
-                  </Heading>
-                  <Flex direction="row" wrap="wrap" gap="2">
-                    {element.tags.map((tag) => (
-                      <Badge key={tag} size="2">
-                        {tag}
-                      </Badge>
-                    ))}
-                  </Flex>
-                </Flex>
-              )}
-
-              {element.notes && (
-                <Flex direction="column" gap="2">
-                  <Heading size="5" weight="medium">
-                    Notes
-                  </Heading>
-                  <Text size="4" className="markdown-content leading-relaxed">
-                    <ReactMarkdown
-                      remarkPlugins={[remarkMath]}
-                      rehypePlugins={[rehypeKatex]}
-                    >
-                      {element.notes}
-                    </ReactMarkdown>
-                  </Text>
-                </Flex>
+                    .w-md-editor-text-pre .code-line {
+                      display: block;
+                    }
+                  `}</style>
+                  <MDEditor
+                    textareaProps={{
+                      placeholder: 'Add your notes here...',
+                    }}
+                    hideToolbar
+                    value={editedNotes}
+                    onChange={(value) => {
+                      setEditedNotes(value || '')
+                    }}
+                    preview={canEdit ? viewMode : 'preview'}
+                    height={400}
+                    visibleDragbar={false}
+                    className="!bg-transparent !border-none !shadow-none !p-0"
+                    previewOptions={{
+                      remarkPlugins: [remarkMath],
+                      rehypePlugins: [rehypeKatex],
+                    }}
+                  />
+                </Box>
               )}
             </Flex>
-          )}
+          </Flex>
         </ScrollArea>
       </Dialog.Content>
     </Dialog.Root>

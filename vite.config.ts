@@ -48,6 +48,9 @@ export default vite.defineConfig({
     yamlAwesomeListPlugin(YAML_FILE_PATH),
     VitePWA({
       registerType: 'autoUpdate',
+      workbox: {
+        maximumFileSizeToCacheInBytes: 3 * 1024 * 1024, // 3 MB
+      },
     }),
   ],
   test: {
