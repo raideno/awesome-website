@@ -8,13 +8,12 @@ import {
 } from '@radix-ui/react-icons'
 import { Box, Card, Flex, IconButton } from '@radix-ui/themes'
 
-import { useList } from '@/context/list'
 import { useEditing } from '@/context/editing'
+import { useList } from '@/context/list'
 
-import { ScrollToButton } from '@/components/layout/scroll-to-button'
 import { ThemeSwitchButton } from '@/components/layout/theme-switch-button'
-import { ResourceCreateSheet } from '@/components/modules/resource/create-sheet'
 import { ListMetadataEditSheet } from '@/components/modules/misc/list-metadata-edit-sheet'
+import { ResourceCreateSheet } from '@/components/modules/resource/create-sheet'
 
 export interface FloatingActionBarProps {}
 
@@ -32,16 +31,14 @@ export const FloatingActionBar: React.FC<FloatingActionBarProps> = () => {
           direction={'row'}
           align={'center'}
           justify={{ initial: 'center', sm: 'end' }}
-          bottom={{ initial: '4', sm: '8' }}
-          right={{ initial: '0', sm: '8' }}
+          bottom={{ initial: '5', sm: '5' }}
+          right={{ initial: '0', sm: '5' }}
+          width={{ initial: '100%', sm: 'auto' }}
           position={'fixed'}
-          className="w-full sm:!w-auto z-10"
+          className="z-10"
         >
           <Card>
             <Flex direction={{ initial: 'row', sm: 'column' }} gap={'2'}>
-              <ScrollToButton to="top" />
-              <ScrollToButton to="bottom" />
-
               {editingEnabled && (
                 <>
                   <IconButton

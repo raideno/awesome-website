@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
 import { AutoForm } from '@raideno/auto-form/ui'
+import { Heading, Text } from '@radix-ui/themes'
 
 import type React from 'react'
 import type { z } from 'zod/v4'
@@ -56,16 +57,24 @@ export const ResourceEditSheet: React.FC<ResourceEditSheetProps> = ({
           defaultValues={{
             ...element,
           }}
+          onCancel={() => setOpen(false)}
           onSubmit={handleSubmit}
           onError={() => console.log('errror!')}
           className="w-full h-full grid grid-rows-[auto_1fr_auto] gap-4"
         >
           <Sheet.Header>
-            <Sheet.Title>Edit Resource</Sheet.Title>
-            <Sheet.Description>
+            <>
+              <Sheet.Title className="sr-only">Edit Resource</Sheet.Title>
+              <Sheet.Description className="sr-only">
+                Edit the resource details below. Make changes and click "Save"
+                to apply, or "Cancel" to discard.
+              </Sheet.Description>
+            </>
+            <Heading>Edit Resource</Heading>
+            <Text>
               Edit the resource details below. Make changes and click "Save" to
               apply, or "Cancel" to discard.
-            </Sheet.Description>
+            </Text>
           </Sheet.Header>
           <Sheet.Body>
             <AutoForm.Content />

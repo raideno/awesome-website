@@ -17,7 +17,7 @@ elements:
   - name: 'Easy Awesome Website'
     description: 'A tool to easily generate an awesome website for your awesome lists.'
     links:
-      - 'https://github.com/raideno/easy-awesome-website'
+      - 'github.com/raideno/easy-awesome-website'
     tags:
       - 'awesome list'
       - 'easy awesome website'
