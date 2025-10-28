@@ -3,16 +3,7 @@ import {
   ChevronUpIcon,
   FileTextIcon,
 } from '@radix-ui/react-icons'
-import {
-  Badge,
-  Box,
-  Button,
-  Card,
-  Flex,
-  Grid,
-  Heading,
-  Text,
-} from '@radix-ui/themes'
+import { Box, Button, Card, Flex, Grid, Heading, Text } from '@radix-ui/themes'
 
 import React from 'react'
 

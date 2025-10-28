@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { MagnifyingGlassIcon } from '@radix-ui/react-icons'
-import { Box, Flex, TextField } from '@radix-ui/themes'
+import { Box, TextField } from '@radix-ui/themes'
 
 import { useFilter } from '@/context/filter'
 
