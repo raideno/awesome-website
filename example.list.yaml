@@ -5,15 +5,13 @@ thumbnail: https://upoevdcxa3.ufs.sh/f/IN4OjmY4wMHByjvZeTSh3g4bLHz1flExrasd69SQc
 elements:
   - name: Awesome Website
     description: A tool to generate an awesome website for your awesome lists.
-    links:
-      - https://github.com/raideno/awesome-website
+    link: https://github.com/raideno/awesome-website
     tags:
       - awesome list
       - awesome website
   - name: Easy Awesome Website
     description: A tool to easily generate an awesome website for your awesome lists.
-    links:
-      - https://github.com/raideno/easy-awesome-website
+    link: https://github.com/raideno/easy-awesome-website
     tags:
       - awesome list
       - easy awesome website

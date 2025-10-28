@@ -10,12 +10,13 @@ import React from 'react'
 import type { AwesomeListElement } from '@/types/awesome-list'
 
 import { useFilter } from '@/context/filter'
-import { useList } from '@/context/list'
 
 import { ResourceCard } from '@/components/modules/resource/card'
 import { ResourceCardContextMenu } from '@/components/modules/resource/card-context-menu'
 
-export interface GroupedResourceGridProps {}
+export interface GroupedResourceGridProps {
+  filteredElements: Array<AwesomeListElement>
+}
 
 const GroupContainer: React.FC<{
   groupName: string
@@ -104,44 +105,10 @@ const getGroupColor = (index: number): string => {
   return colors[index % colors.length]
 }
 
-export const GroupedResourceGrid: React.FC<GroupedResourceGridProps> = () => {
-  const { search, selectedTags, tagsFilterOperator, clearTags } = useFilter()
-  const list = useList()
-
-  const filteredElements = React.useMemo(() => {
-    let elements = list.content.new.elements
-
-    if (selectedTags.length > 0) {
-      elements = elements.filter((element) =>
-        tagsFilterOperator === 'and'
-          ? selectedTags.every((tag) => element.tags.includes(tag))
-          : tagsFilterOperator === 'or'
-            ? selectedTags.some((tag) => element.tags.includes(tag))
-            : !selectedTags.some((tag) => element.tags.includes(tag)),
-      )
-    }
-
-    if (search.trim() !== '') {
-      const searchWords = search
-        .toLowerCase()
-        .split(/\s+/)
-        .filter((word) => word.length > 0)
-
-      elements = elements.filter((element) => {
-        const searchable = [
-          element.name.toLowerCase(),
-          element.description.toLowerCase(),
-          ...element.tags.map((tag) => tag.toLowerCase()),
-        ]
-
-        return searchWords.every((word) =>
-          searchable.some((field) => field.includes(word)),
-        )
-      })
-    }
-
-    return elements
-  }, [search, list.content.new.elements, selectedTags, tagsFilterOperator])
+export const GroupedResourceGrid: React.FC<GroupedResourceGridProps> = ({
+  filteredElements,
+}) => {
+  const { search, selectedTags, clearTags } = useFilter()
 
   const groupedElements = React.useMemo(() => {
     const groups = new Map<string, Array<AwesomeListElement>>()

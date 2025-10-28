@@ -77,7 +77,9 @@ export const ResourceEditSheet: React.FC<ResourceEditSheetProps> = ({
             </Text>
           </Sheet.Header>
           <Sheet.Body>
-            <AutoForm.Content />
+            <AutoForm.Content
+              fields={['name', 'description', 'link', 'tags', 'group']}
+            />
           </Sheet.Body>
           <Sheet.Footer>
             <AutoForm.Actions className="flex flex-col gap-4 w-full items-center">

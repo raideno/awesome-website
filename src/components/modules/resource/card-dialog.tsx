@@ -117,24 +117,19 @@ export const ResourceCardDialog: React.FC<ResourceCardDialogProps> = ({
               )}
             </Box>
 
-            {element.links && element.links.length > 0 && (
+            {element.link && (
               <Flex direction="column" gap="2">
                 <Heading size="5" weight="medium">
                   Links
                 </Heading>
-                <Flex direction="column" gap="2">
-                  {element.links.map((link, index) => (
-                    <Link
-                      key={index}
-                      href={link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="!underline"
-                    >
-                      {link}
-                    </Link>
-                  ))}
-                </Flex>
+                <Link
+                  href={element.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="!underline"
+                >
+                  {element.link}
+                </Link>
               </Flex>
             )}
 
