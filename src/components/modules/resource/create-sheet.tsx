@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+import { Heading, Text } from '@radix-ui/themes'
 import { AutoForm } from '@raideno/auto-form/ui'
 
 import type React from 'react'
@@ -62,17 +63,24 @@ export const ResourceCreateSheet: React.FC<ResourceCreateSheetProps> = ({
           className="h-full grid grid-rows-[auto_1fr_auto] gap-4"
         >
           <Sheet.Header>
-            <Sheet.Title>Create Resource</Sheet.Title>
-            <Sheet.Description>
+            <>
+              <Sheet.Title className="sr-only">Create Resource</Sheet.Title>
+              <Sheet.Description className="sr-only">
+                Create a new resource. Fill in the details below and click
+                "Create" to add it to your awesome list, or "Cancel" to discard.
+              </Sheet.Description>
+            </>
+            <Heading>Create Resource</Heading>
+            <Text>
               Create a new resource. Fill in the details below and click
               "Create" to add it to your awesome list, or "Cancel" to discard.
-            </Sheet.Description>
+            </Text>
           </Sheet.Header>
           <Sheet.Body>
             <AutoForm.Content />
           </Sheet.Body>
           <Sheet.Footer>
-            <AutoForm.Actions className="flex flex-col w-full items-center">
+            <AutoForm.Actions className="flex flex-col gap-4 w-full items-center">
               <Sheet.Close asChild className="!w-full">
                 <AutoForm.Action
                   type="reset"

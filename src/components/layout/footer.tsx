@@ -3,6 +3,9 @@ import { Flex, Link, Text } from '@radix-ui/themes'
 
 import type React from 'react'
 
+const AWESOME_WEBSITE_REPOSITORY_URL =
+  'https://github.com/raideno/awesome-website'
+
 export interface FooterProps {}
 
 export const Footer: React.FC<FooterProps> = () => {
@@ -12,7 +15,7 @@ export const Footer: React.FC<FooterProps> = () => {
         <Text size="2" color="gray">
           Made with ❤️ by
         </Text>
-        <Link href="https://github.com/raideno/awesome-site" target="_blank">
+        <Link href={AWESOME_WEBSITE_REPOSITORY_URL} target="_blank">
           <Flex align="center" gap="1">
             <GitHubLogoIcon />
             <Text

@@ -29,7 +29,7 @@ const GroupContainer: React.FC<{
 
   return (
     <Card
-      className="transition-all"
+      className="transition-all contain-none"
       style={{
         borderLeft: `4px solid ${color}`,
         backgroundColor: `${color}08`,

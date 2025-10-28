@@ -1,6 +1,14 @@
 import { Portal } from '@radix-ui/react-dialog'
 import { ExclamationTriangleIcon, InfoCircledIcon } from '@radix-ui/react-icons'
-import { Box, Callout, Dialog, Flex } from '@radix-ui/themes'
+import {
+  Box,
+  Button,
+  Callout,
+  Dialog,
+  Flex,
+  Heading,
+  Text,
+} from '@radix-ui/themes'
 import { MetadataRegistry } from '@raideno/auto-form/registry'
 import { AutoForm } from '@raideno/auto-form/ui'
 import React, { useState } from 'react'
@@ -8,6 +16,7 @@ import { z } from 'zod/v4'
 
 import type { AwesomeList } from '@/types/awesome-list'
 
+import { useList } from '@/context/list'
 import { useGitHubAuth } from '@/hooks/github-auth'
 import { useWorkflowStatus } from '@/hooks/workflow-status'
 import { GitHubService } from '@/lib/github'
@@ -54,6 +63,7 @@ export const PushChangesDialog: React.FC<PushChangesDialogProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false)
   const githubAuth = useGitHubAuth()
+  const { clearChanges } = useList()
 
   const { isWorkflowRunning, checkWorkflowStatus } = useWorkflowStatus()
 
@@ -123,6 +133,13 @@ export const PushChangesDialog: React.FC<PushChangesDialogProps> = ({
     setSuccess(null)
   }
 
+  const handleDiscardChanges = () => {
+    clearChanges()
+    setDialogOpen(false)
+    setError(null)
+    setSuccess(null)
+  }
+
   return (
     <Dialog.Root open={dialogOpen} onOpenChange={setDialogOpen}>
       {children && <Dialog.Trigger>{children}</Dialog.Trigger>}
@@ -147,11 +164,20 @@ export const PushChangesDialog: React.FC<PushChangesDialogProps> = ({
           >
             <Flex direction="column" gap="4">
               <Box>
-                <Dialog.Title>Push Changes to Repository</Dialog.Title>
-                <Dialog.Description>
+                <>
+                  <Dialog.Title className="sr-only">
+                    Push Changes to Repository
+                  </Dialog.Title>
+                  <Dialog.Description className="sr-only">
+                    Enter your GitHub personal access token and repository
+                    details to push the changes.
+                  </Dialog.Description>
+                </>
+                <Heading>Push Changes to Repository</Heading>
+                <Text>
                   Enter your GitHub personal access token and repository details
                   to push the changes.
-                </Dialog.Description>
+                </Text>
               </Box>
 
               <Callout.Root>
@@ -205,7 +231,14 @@ export const PushChangesDialog: React.FC<PushChangesDialogProps> = ({
               )}
 
               <AutoForm.Actions>
-                <Flex gap="3" justify="end">
+                <Flex direction={'column'} gap="3" justify="end">
+                  <Button
+                    variant="soft"
+                    color="red"
+                    onClick={handleDiscardChanges}
+                  >
+                    Discard Changes
+                  </Button>
                   <AutoForm.Action variant="soft" color="gray" type="reset">
                     Cancel
                   </AutoForm.Action>

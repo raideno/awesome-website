@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { ScrollArea } from '@radix-ui/themes'
+import { Heading, ScrollArea, Text } from '@radix-ui/themes'
 import { AutoForm } from '@raideno/auto-form/ui'
 
 import type React from 'react'
@@ -54,11 +54,18 @@ export const ListMetadataEditSheet: React.FC<ListMetadataEditSheetProps> = ({
           className="h-full grid grid-rows-[auto_1fr_auto] gap-4"
         >
           <Sheet.Header>
-            <Sheet.Title>Edit List</Sheet.Title>
-            <Sheet.Description>
+            <>
+              <Sheet.Title className="sr-only">Edit List</Sheet.Title>
+              <Sheet.Description className="sr-only">
+                Edit the list details below. Make changes and click "Save" to
+                apply, or "Cancel" to discard.
+              </Sheet.Description>
+            </>
+            <Heading>Edit List</Heading>
+            <Text>
               Edit the list details below. Make changes and click "Save" to
               apply, or "Cancel" to discard.
-            </Sheet.Description>
+            </Text>
           </Sheet.Header>
           <ScrollArea scrollbars="horizontal">
             <Sheet.Body className="h-full">
@@ -66,7 +73,7 @@ export const ListMetadataEditSheet: React.FC<ListMetadataEditSheetProps> = ({
             </Sheet.Body>
           </ScrollArea>
           <Sheet.Footer>
-            <AutoForm.Actions className="flex flex-col w-full items-center">
+            <AutoForm.Actions className="flex flex-col gap-4 w-full items-center">
               <Sheet.Close asChild className="!w-full">
                 <AutoForm.Action
                   type="reset"
