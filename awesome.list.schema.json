@@ -33,13 +33,9 @@
           "notes": {
             "type": "string"
           },
-          "links": {
-            "maxItems": 4,
-            "type": "array",
-            "items": {
-              "type": "string",
-              "format": "uri"
-            }
+          "link": {
+            "type": "string",
+            "format": "uri"
           },
           "tags": {
             "maxItems": 16,
