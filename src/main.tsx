@@ -6,11 +6,21 @@ import '@/css/theme.light.css'
 
 import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
+import { registerSW } from 'virtual:pwa-register'
 
 import { App } from '@/app'
 import { Providers } from '@/providers'
 
 import { ThemeProvider } from '@/context/theme'
+
+registerSW({
+  onNeedRefresh() {
+    console.log('New content available; refresh the page.')
+  },
+  onOfflineReady() {
+    console.log('App ready to work offline!')
+  },
+})
 
 const rootElement = document.getElementById('app')
 if (rootElement && !rootElement.innerHTML) {
