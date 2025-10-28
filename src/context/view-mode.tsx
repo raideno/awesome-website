@@ -7,7 +7,7 @@ import type { ViewMode } from '@/types/view-mode'
 
 import { useLocalStorageState } from '@/hooks/local-storage-state'
 
-const DEFAULT_MODE: ViewMode = 'detailed'
+const DEFAULT_MODE: ViewMode = 'group'
 
 interface ViewModeContextType {
   mode: ViewMode
