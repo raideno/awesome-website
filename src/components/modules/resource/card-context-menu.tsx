@@ -52,12 +52,32 @@ export const ResourceCardContextMenu: React.FC<
     }
   }
 
+  const handleCopyButtonClick = async () => {
+    const firstLink =
+      element.links && element.links.length > 0 ? element.links[0] : null
+
+    if (!firstLink) {
+      alert('No link available to copy')
+      return
+    }
+
+    try {
+      await navigator.clipboard.writeText(firstLink)
+
+      alert('Copied link to clipboard')
+    } catch (error) {
+      alert(error instanceof Error ? error.message : 'Failed to copy link')
+    }
+  }
+
   return (
     <>
       <ContextMenu.Root>
         <ContextMenu.Trigger>{children}</ContextMenu.Trigger>
         <ContextMenu.Content>
-          <ContextMenu.Item>Copy</ContextMenu.Item>
+          <ContextMenu.Item onClick={() => handleCopyButtonClick()}>
+            Copy
+          </ContextMenu.Item>
 
           {/* Admin-only menu items are also gated by the editing toggle via AdminOnly */}
           {editingEnabled && (
