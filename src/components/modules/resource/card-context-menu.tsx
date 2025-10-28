@@ -5,6 +5,7 @@ import { ContextMenu } from '@radix-ui/themes'
 import type { AwesomeListElement } from '@/types/awesome-list'
 
 import { useList } from '@/context/list'
+import { useEditing } from '@/context/editing'
 
 import { AdminOnly } from '@/components/utils/admin-only'
 import { useConfirm } from '@/components/utils/alert-dialog'
@@ -19,9 +20,9 @@ export const ResourceCardContextMenu: React.FC<
   ResourceCardContextMenuProps
 > = ({ children, element }) => {
   const [open, setOpen] = React.useState(false)
-
   const list = useList()
   const confirm = useConfirm()
+  const { editingEnabled } = useEditing()
 
   const handleDeleteButtonClick = async () => {
     if (!list.canEdit) {
@@ -58,29 +59,35 @@ export const ResourceCardContextMenu: React.FC<
         <ContextMenu.Content>
           <ContextMenu.Item>Copy</ContextMenu.Item>
           <ContextMenu.Item>Share</ContextMenu.Item>
-          <AdminOnly>
-            <ContextMenu.Separator />
-            <ContextMenu.Item
-              disabled={!list.canEdit}
-              onClick={() => setOpen(true)}
-            >
-              Modify
-            </ContextMenu.Item>
-            <ContextMenu.Item
-              color="red"
-              disabled={!list.canEdit}
-              onClick={() => handleDeleteButtonClick()}
-            >
-              Delete
-            </ContextMenu.Item>
-          </AdminOnly>
+
+          {/* Admin-only menu items are also gated by the editing toggle via AdminOnly */}
+          {editingEnabled && (
+            <AdminOnly>
+              <ContextMenu.Separator />
+              <ContextMenu.Item
+                disabled={!list.canEdit}
+                onClick={() => setOpen(true)}
+              >
+                Modify
+              </ContextMenu.Item>
+              <ContextMenu.Item
+                color="red"
+                disabled={!list.canEdit}
+                onClick={() => handleDeleteButtonClick()}
+              >
+                Delete
+              </ContextMenu.Item>
+            </AdminOnly>
+          )}
         </ContextMenu.Content>
       </ContextMenu.Root>
 
-      <ResourceEditSheet
-        element={element}
-        state={{ open, onOpenChange: setOpen }}
-      />
+      {editingEnabled && (
+        <ResourceEditSheet
+          element={element}
+          state={{ open, onOpenChange: setOpen }}
+        />
+      )}
     </>
   )
 }

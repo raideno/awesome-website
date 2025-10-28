@@ -71,7 +71,7 @@ export const ResourceEditSheet: React.FC<ResourceEditSheetProps> = ({
             <AutoForm.Content />
           </Sheet.Body>
           <Sheet.Footer>
-            <AutoForm.Actions className="flex flex-col w-full items-center">
+            <AutoForm.Actions className="flex flex-col gap-4 w-full items-center">
               <Sheet.Close asChild className="!w-full">
                 <AutoForm.Action
                   type="reset"

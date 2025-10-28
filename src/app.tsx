@@ -4,6 +4,7 @@ import { MagnifyingGlassIcon } from '@radix-ui/react-icons'
 import { Box, TextField } from '@radix-ui/themes'
 
 import { useFilter } from '@/context/filter'
+import { useEditing } from '@/context/editing'
 
 import { ChangesBanner } from '@/components/layout/changes-banner'
 import { FloatingActionBar } from '@/components/layout/floating-action-bar'
@@ -20,13 +21,18 @@ export interface AppProps {}
 
 export const App: React.FC<AppProps> = () => {
   const { search, setSearch } = useFilter()
+  const { editingEnabled } = useEditing()
 
   return (
     <>
       <Box className="top-0 sticky z-50">
-        <WorkflowStatusBanner />
-        <NewVersionBanner />
-        <ChangesBanner />
+        {editingEnabled && (
+          <>
+            <WorkflowStatusBanner />
+            <NewVersionBanner />
+            <ChangesBanner />
+          </>
+        )}
       </Box>
 
       <div className="min-h-screen max-w-6xl mx-auto relative px-4 sm:px-6 lg:px-8">

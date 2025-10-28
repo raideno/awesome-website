@@ -66,7 +66,7 @@ export const ListMetadataEditSheet: React.FC<ListMetadataEditSheetProps> = ({
             </Sheet.Body>
           </ScrollArea>
           <Sheet.Footer>
-            <AutoForm.Actions className="flex flex-col w-full items-center">
+            <AutoForm.Actions className="flex flex-col gap-4 w-full items-center">
               <Sheet.Close asChild className="!w-full">
                 <AutoForm.Action
                   type="reset"

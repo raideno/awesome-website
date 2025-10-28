@@ -1,9 +1,15 @@
 import React from 'react'
 
-import { Pencil1Icon, PlusIcon } from '@radix-ui/react-icons'
+import {
+  Pencil1Icon,
+  PlusIcon,
+  StarFilledIcon,
+  StarIcon,
+} from '@radix-ui/react-icons'
 import { Box, Card, Flex, IconButton } from '@radix-ui/themes'
 
 import { useList } from '@/context/list'
+import { useEditing } from '@/context/editing'
 
 import { ScrollToButton } from '@/components/layout/scroll-to-button'
 import { ThemeSwitchButton } from '@/components/layout/theme-switch-button'
@@ -17,6 +23,7 @@ export const FloatingActionBar: React.FC<FloatingActionBarProps> = () => {
   const [createResourceOpen, setCreateResourceOpen] = React.useState(false)
 
   const list = useList()
+  const { editingEnabled, setEditingEnabled } = useEditing()
 
   return (
     <>
@@ -34,35 +41,65 @@ export const FloatingActionBar: React.FC<FloatingActionBarProps> = () => {
             <Flex direction={{ initial: 'row', sm: 'column' }} gap={'2'}>
               <ScrollToButton to="top" />
               <ScrollToButton to="bottom" />
-              <IconButton
-                variant="classic"
-                disabled={!list.canEdit}
-                onClick={() => setCreateResourceOpen(true)}
-              >
-                <PlusIcon />
-              </IconButton>
-              <IconButton
-                variant="classic"
-                disabled={!list.canEdit}
-                onClick={() => setEditMetadataOpen(true)}
-              >
-                <Pencil1Icon />
-              </IconButton>
+
+              {editingEnabled && (
+                <>
+                  <IconButton
+                    variant="classic"
+                    disabled={!list.canEdit}
+                    onClick={() => setCreateResourceOpen(true)}
+                  >
+                    <PlusIcon />
+                  </IconButton>
+                  <IconButton
+                    variant="classic"
+                    disabled={!list.canEdit}
+                    onClick={() => setEditMetadataOpen(true)}
+                  >
+                    <Pencil1Icon />
+                  </IconButton>
+                </>
+              )}
+
               <ThemeSwitchButton />
+
+              <IconButton
+                variant={'classic'}
+                onClick={() => {
+                  const next = !editingEnabled
+                  setEditingEnabled(next)
+                  if (!next) {
+                    setCreateResourceOpen(false)
+                    setEditMetadataOpen(false)
+                  }
+                }}
+                aria-label={
+                  editingEnabled ? 'Disable editing' : 'Enable editing'
+                }
+              >
+                {editingEnabled ? <StarFilledIcon /> : <StarIcon />}
+              </IconButton>
             </Flex>
           </Card>
         </Flex>
       </Box>
 
-      <ListMetadataEditSheet
-        state={{ open: editMetadataOpen, onOpenChange: setEditMetadataOpen }}
-      />
-      <ResourceCreateSheet
-        state={{
-          open: createResourceOpen,
-          onOpenChange: setCreateResourceOpen,
-        }}
-      />
+      {editingEnabled && (
+        <>
+          <ListMetadataEditSheet
+            state={{
+              open: editMetadataOpen,
+              onOpenChange: setEditMetadataOpen,
+            }}
+          />
+          <ResourceCreateSheet
+            state={{
+              open: createResourceOpen,
+              onOpenChange: setCreateResourceOpen,
+            }}
+          />
+        </>
+      )}
     </>
   )
 }

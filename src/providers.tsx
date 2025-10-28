@@ -8,6 +8,7 @@ import { useTheme } from '@/context/theme'
 import { ListProvider } from '@/context/list'
 import { FilterProvider } from '@/context/filter'
 import { ViewModeProvider } from '@/context/view-mode'
+import { EditingProvider } from '@/context/editing'
 
 import { AlertDialogProvider } from '@/components/utils/alert-dialog'
 
@@ -33,13 +34,15 @@ export const Providers: React.FC<ProvidersProps> = ({ children }) => {
       >
         <QueryClientProvider client={queryClient}>
           <AlertDialogProvider>
-            <ListProvider>
-              <ViewModeProvider>
-                <FilterProvider>
-                  <>{children}</>
-                </FilterProvider>
-              </ViewModeProvider>
-            </ListProvider>
+            <EditingProvider>
+              <ListProvider>
+                <ViewModeProvider>
+                  <FilterProvider>
+                    <>{children}</>
+                  </FilterProvider>
+                </ViewModeProvider>
+              </ListProvider>
+            </EditingProvider>
           </AlertDialogProvider>
         </QueryClientProvider>
       </Theme>
