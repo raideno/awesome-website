@@ -47,8 +47,22 @@ export const TagFilterModal: React.FC<FilterModalProps> = ({
   return (
     <Dialog.Root>
       <Dialog.Trigger>{trigger}</Dialog.Trigger>
-      <Dialog.Content aria-label="Select tags to filter">
-        <Flex direction={'column'} gap={'4'}>
+      <style>
+        {`
+          .rt-BaseDialogScrollPadding {
+            padding: 0 !important;
+          }
+          `}
+      </style>
+      <Dialog.Content className="!w-full" aria-label="Select tags to filter">
+        <style>
+          {`
+          .rt-BaseDialogScrollPadding {
+            padding: 0 !important;
+          }
+          `}
+        </style>
+        <Flex className="w-full" direction={'column'} gap={'4'}>
           <Box>
             <Heading size={'4'} slot="title" className="text-lg font-bold">
               Select Tags

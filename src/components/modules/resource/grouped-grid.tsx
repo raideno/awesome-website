@@ -58,9 +58,6 @@ const GroupContainer: React.FC<{
             <Heading size="5" weight="bold">
               {groupName}
             </Heading>
-            <Badge color="gray" size="1">
-              {elements.length} {elements.length === 1 ? 'item' : 'items'}
-            </Badge>
           </Flex>
           {hasMore && (
             <Button

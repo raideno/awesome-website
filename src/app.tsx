@@ -37,15 +37,42 @@ export const App: React.FC<AppProps> = () => {
             <FloatingActionBar />
 
             <Box>
-              <Flex direction={'column'} gap={'2'} className="w-full mb-3">
-                <Flex
-                  className="w-full"
-                  direction={'row'}
-                  justify={'between'}
-                  gap={'3'}
-                >
+              <style>
+                {`
+                  .controls {
+                    display: grid;
+                    grid-template-columns: 1fr;
+                    grid-template-areas: "search 1fr filter viewmode";
+                    gap: 0.5rem;
+                    align-items: center;
+                  }
+
+                  .controls__search {
+                    grid-area: search;
+                  }
+
+                  .controls__viewmode {
+                    grid-area: viewmode;
+                  }
+
+                  .controls__filter {
+                    grid-area: filter;
+                  }
+
+                  @media (max-width: 600px) {
+                    .controls {
+                      grid-template-columns: 1fr;
+                      grid-template-areas:
+                        "search search"
+                        "filter viewmode";
+                      gap: 0.5rem;
+                    }
+                  }
+                `}
+              </style>
+              <div className="controls mb-4">
+                <Box className="controls__search">
                   <TextField.Root
-                    className="w-full max-w-96"
                     value={search}
                     onChange={(event) => setSearch(event.target.value)}
                     placeholder="Search resources..."
@@ -54,16 +81,16 @@ export const App: React.FC<AppProps> = () => {
                       <MagnifyingGlassIcon />
                     </TextField.Slot>
                   </TextField.Root>
-                  <Box>
-                    <Flex direction={'row'} gap={'2'}>
-                      <ViewModeController />
-                      <TagFilterModal>
-                        <FilterModalTrigger />
-                      </TagFilterModal>
-                    </Flex>
-                  </Box>
-                </Flex>
-              </Flex>
+                </Box>
+                <Box className="controls__filter">
+                  <TagFilterModal>
+                    <FilterModalTrigger className="w-full" />
+                  </TagFilterModal>
+                </Box>
+                <Box className="controls__viewmode">
+                  <ViewModeController />
+                </Box>
+              </div>
 
               <ResourceGrid />
             </Box>
