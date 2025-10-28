@@ -41,7 +41,9 @@ export const useVersionCheck = () => {
       })
       return githubService.getLatestCommit('main')
     },
-    enabled: Boolean(repositoryOwner && repositoryName && buildCommitHash),
+    enabled: Boolean(
+      token && repositoryOwner && repositoryName && buildCommitHash,
+    ),
     refetchInterval: 5 * 60 * 1000,
     staleTime: 2 * 60 * 1000,
   })

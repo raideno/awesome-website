@@ -3,8 +3,8 @@ import child from 'node:child_process'
 
 import * as vite from 'vite'
 
+import { VitePWA } from 'vite-plugin-pwa'
 import viteReact from '@vitejs/plugin-react'
-
 import yamlAwesomeListPlugin from './plugins/yaml-awesome-list'
 
 console.log('[process.env.BASE_PATH]:', process.env.BASE_PATH)
@@ -43,7 +43,13 @@ console.log('[BUILD_COMMIT_HASH]:', BUILD_COMMIT_HASH)
 
 // NOTE: https://vitejs.dev/config/
 export default vite.defineConfig({
-  plugins: [viteReact(), yamlAwesomeListPlugin(YAML_FILE_PATH)],
+  plugins: [
+    viteReact(),
+    yamlAwesomeListPlugin(YAML_FILE_PATH),
+    VitePWA({
+      registerType: 'autoUpdate',
+    }),
+  ],
   test: {
     globals: true,
     environment: 'jsdom',

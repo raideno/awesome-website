@@ -47,15 +47,30 @@ export const TagFilterModal: React.FC<FilterModalProps> = ({
   return (
     <Dialog.Root>
       <Dialog.Trigger>{trigger}</Dialog.Trigger>
-      <Dialog.Content aria-label="Select tags to filter">
-        <Flex direction={'column'} gap={'4'}>
+      <style>
+        {`
+          .rt-BaseDialogScrollPadding {
+            padding: 0 !important;
+          }
+          `}
+      </style>
+      <Dialog.Content className="!w-full" aria-label="Select tags to filter">
+        <style>
+          {`
+          .rt-BaseDialogScrollPadding {
+            padding: 0 !important;
+          }
+          `}
+        </style>
+        <Flex className="w-full" direction={'column'} gap={'4'}>
           <Box>
             <Heading size={'4'} slot="title" className="text-lg font-bold">
               Select Tags
             </Heading>
             <Text>
               Select tags to filter the resources. You can use "Or" to match any
-              tag or "&" to match all selected tags.
+              tag, "&" to match all selected tags, or "Not" to exclude resources
+              with any of the selected tags.
             </Text>
           </Box>
           <Flex direction={'column'} gap={'2'}>
@@ -97,6 +112,12 @@ export const TagFilterModal: React.FC<FilterModalProps> = ({
                   value="and"
                 >
                   <Text>&</Text>
+                </ToggleGroup.Item>
+                <ToggleGroup.Item
+                  className="group data-[state=on]:font-bold"
+                  value="not"
+                >
+                  <Text>Not</Text>
                 </ToggleGroup.Item>
               </ToggleGroup.Root>
             </Flex>

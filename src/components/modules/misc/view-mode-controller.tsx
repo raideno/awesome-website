@@ -1,19 +1,25 @@
 import { GroupIcon, ViewGridIcon } from '@radix-ui/react-icons'
 
 import type React from 'react'
+import type { ToggleGroupRootProps } from '@/components/ui/toggle-group'
 
 import { useViewMode } from '@/context/view-mode'
 
 import { ToggleGroup } from '@/components/ui/toggle-group'
 
-export interface ViewModeControllerProps {}
+export type ViewModeControllerProps = Omit<
+  ToggleGroupRootProps,
+  'type' | 'value' | 'onValueChange' | 'defaultValue'
+> & {}
 
-export const ViewModeController: React.FC<ViewModeControllerProps> = () => {
+export const ViewModeController: React.FC<ViewModeControllerProps> = ({
+  ...props
+}) => {
   const { mode, setMode } = useViewMode()
-
   return (
     <ToggleGroup.Root
-      type="single"
+      {...props}
+      type={'single'}
       value={mode}
       onValueChange={(value) => value && setMode(value as 'detailed' | 'group')}
     >

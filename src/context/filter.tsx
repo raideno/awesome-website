@@ -1,7 +1,7 @@
 import React, { createContext, useContext } from 'react'
 import { useLocalStorageState } from '@/hooks/local-storage-state'
 
-export type TagsFilterOperator = 'or' | 'and'
+export type TagsFilterOperator = 'or' | 'and' | 'not'
 
 export interface FilterContextType {
   search: string

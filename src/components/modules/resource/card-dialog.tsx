@@ -75,9 +75,12 @@ export const ResourceCardDialog: React.FC<ResourceCardDialogProps> = ({
       <Dialog.Content
         align="start"
         size="4"
-        className="!top-0 !left-0 !right-0 !m-0 !w-screen !h-screen !max-w-none !max-h-none"
+        className="!p-4 !top-0 !left-0 !right-0 !m-0 !w-screen !h-screen !max-w-none !max-h-none"
       >
-        <ScrollArea style={{ height: '100%' }}>
+        <ScrollArea
+          style={{ height: '100%' }}
+          className="max-w-5xl pt-8 mx-auto"
+        >
           {isEditMode ? (
             <AutoForm.Root
               schema={AwesomeListElementSchema}
@@ -89,7 +92,8 @@ export const ResourceCardDialog: React.FC<ResourceCardDialogProps> = ({
               onError={() => console.log('error!')}
               className="h-full"
             >
-              <Flex direction="column" p="6" gap="4">
+              {/* <Flex direction="column" p="6" gap="4"> */}
+              <Flex direction="column" p="0" gap="4">
                 <Flex
                   direction={'row'}
                   gap={'4'}
@@ -97,7 +101,7 @@ export const ResourceCardDialog: React.FC<ResourceCardDialogProps> = ({
                   align={'center'}
                 >
                   <Dialog.Title size="8" weight="bold" className="!m-0">
-                    Edit Resource
+                    Edit
                   </Dialog.Title>
                   <Flex direction={'row'} gap={'2'} align={'center'}>
                     <AutoForm.Action type="reset" variant="outline">
@@ -113,7 +117,8 @@ export const ResourceCardDialog: React.FC<ResourceCardDialogProps> = ({
               </Flex>
             </AutoForm.Root>
           ) : (
-            <Flex direction="column" p="6" gap="4">
+            // <Flex direction="column" p="6" gap="4">
+            <Flex direction="column" p="0" gap="4">
               <Box>
                 <Flex
                   direction={'row'}

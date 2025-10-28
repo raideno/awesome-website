@@ -86,18 +86,18 @@ export const Header: React.FC<HeaderProps> = () => {
         <Box className="w-full max-w-2xl">
           <AspectRatio
             ratio={16 / 9}
-            className="rounded-[var(--radius-4)] overflow-hidden ring-2 ring-[var(--accent-9)] border border-[var(--accent-9)] transition-all"
+            className="bg-[var(--gray-2)] rounded-[var(--radius-4)] overflow-hidden ring-2 ring-[var(--accent-9)] border border-[var(--accent-9)] transition-all"
           >
             <img
               src={list.content.new.thumbnail}
-              alt={`${list.content.new.title} thumbnail`}
+              alt={`${list.content.new.title} Thumbnail`}
               className="w-full h-full object-cover"
             />
           </AspectRatio>
         </Box>
       )}
 
-      <div className="flex flex-wrap justify-center gap-2 max-w-xl mx-auto">
+      <div className="w-full flex flex-wrap justify-center gap-2 max-w-xl mx-auto">
         <Link
           rel="noopener noreferrer"
           href={__REPOSITORY_URL__}
@@ -128,7 +128,7 @@ export const Header: React.FC<HeaderProps> = () => {
                   variant="surface"
                   size={'3'}
                 >
-                  <Text className="line-clamp-1">{label}</Text>
+                  <Text className="line-clamp-1">{label.slice(0, 32)}</Text>
                 </Button>
               </Link>
             )

@@ -3,16 +3,7 @@ import {
   ChevronUpIcon,
   FileTextIcon,
 } from '@radix-ui/react-icons'
-import {
-  Badge,
-  Box,
-  Button,
-  Card,
-  Flex,
-  Grid,
-  Heading,
-  Text,
-} from '@radix-ui/themes'
+import { Box, Button, Card, Flex, Grid, Heading, Text } from '@radix-ui/themes'
 
 import React from 'react'
 
@@ -58,9 +49,6 @@ const GroupContainer: React.FC<{
             <Heading size="5" weight="bold">
               {groupName}
             </Heading>
-            <Badge color="gray" size="1">
-              {elements.length} {elements.length === 1 ? 'item' : 'items'}
-            </Badge>
           </Flex>
           {hasMore && (
             <Button
@@ -127,7 +115,9 @@ export const GroupedResourceGrid: React.FC<GroupedResourceGridProps> = () => {
       elements = elements.filter((element) =>
         tagsFilterOperator === 'and'
           ? selectedTags.every((tag) => element.tags.includes(tag))
-          : selectedTags.some((tag) => element.tags.includes(tag)),
+          : tagsFilterOperator === 'or'
+            ? selectedTags.some((tag) => element.tags.includes(tag))
+            : !selectedTags.some((tag) => element.tags.includes(tag)),
       )
     }
 
