@@ -106,6 +106,8 @@ export const PushChangesDialog: React.FC<PushChangesDialogProps> = ({
         setError(null)
         setSuccess(null)
         onSuccess?.()
+        // NOTE: refresh the page to load the latest changes
+        window.location.reload()
       }, 2000)
     } catch (err) {
       setError(
