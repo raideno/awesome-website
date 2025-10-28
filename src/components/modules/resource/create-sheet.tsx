@@ -55,7 +55,7 @@ export const ResourceCreateSheet: React.FC<ResourceCreateSheetProps> = ({
             name: '',
             description: '',
             notes: '',
-            links: [],
+            link: '',
             tags: [],
           }}
           onSubmit={handleSubmit}

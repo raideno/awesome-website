@@ -65,26 +65,16 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
             </div>
           </Flex>
           <Box>
-            {element.links && (
-              <Flex direction={'row'} wrap={'wrap'} gap={'3'}>
-                {element.links.map((link, index) => {
-                  const url = link
-                  const label = link
-
-                  return (
-                    <Link
-                      key={index + url}
-                      href={url}
-                      className="!underline"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      {label}
-                    </Link>
-                  )
-                })}
-              </Flex>
+            {element.link && (
+              <Link
+                href={element.link}
+                className="!underline"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {element.link}
+              </Link>
             )}
           </Box>
         </Flex>

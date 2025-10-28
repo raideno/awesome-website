@@ -5,7 +5,7 @@ export const AwesomeListElementSchema = z.object({
   name: z.string().max(128),
   description: z.string().max(192),
   notes: z.string().optional().register(MetadataRegistry, { type: 'textarea' }),
-  links: z.array(z.url()).max(4).optional(),
+  link: z.url().optional(),
   tags: z.array(z.string()).max(16),
   group: z.string().max(64).optional(),
 })

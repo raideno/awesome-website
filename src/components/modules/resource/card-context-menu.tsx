@@ -53,16 +53,13 @@ export const ResourceCardContextMenu: React.FC<
   }
 
   const handleCopyButtonClick = async () => {
-    const firstLink =
-      element.links && element.links.length > 0 ? element.links[0] : null
-
-    if (!firstLink) {
+    if (!element.link) {
       alert('No link available to copy')
       return
     }
 
     try {
-      await navigator.clipboard.writeText(firstLink)
+      await navigator.clipboard.writeText(element.link)
 
       alert('Copied link to clipboard')
     } catch (error) {

@@ -195,6 +195,7 @@ export const PushChangesDialog: React.FC<PushChangesDialogProps> = ({
                   >
                     Create one here
                   </a>
+                  .
                 </Callout.Text>
               </Callout.Root>
 

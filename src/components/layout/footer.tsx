@@ -23,7 +23,7 @@ export const Footer: React.FC<FooterProps> = () => {
               weight={'bold'}
               size="2"
             >
-              Awesome Site
+              Awesome Website
             </Text>
           </Flex>
         </Link>
