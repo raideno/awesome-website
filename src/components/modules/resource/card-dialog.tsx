@@ -27,6 +27,7 @@ import type { AwesomeListElement } from '@/types/awesome-list'
 import { ToggleGroup } from '@/components/ui/toggle-group'
 import { useEditing } from '@/context/editing'
 import { useList } from '@/context/list'
+import { useTheme } from '@/context/theme'
 
 type ViewMode = 'edit' | 'live' | 'preview'
 
@@ -43,6 +44,7 @@ export const ResourceCardDialog: React.FC<ResourceCardDialogProps> = ({
 }) => {
   const list = useList()
   const { editingEnabled } = useEditing()
+  const { theme } = useTheme()
   const [internalOpen, setInternalOpen] = useState(false)
   const [editedNotes, setEditedNotes] = useState(element.notes || '')
   const [viewMode, setViewMode] = useState<ViewMode>('live')
@@ -186,7 +188,7 @@ export const ResourceCardDialog: React.FC<ResourceCardDialogProps> = ({
                   No notes available.
                 </Text>
               ) : (
-                <Box data-color-mode="light">
+                <Box data-color-mode={theme}>
                   <style>{`
                     .w-md-editor-text-input,
                     .w-md-editor-text-pre .code-line {
