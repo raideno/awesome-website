@@ -73,6 +73,7 @@ export const ListProvider: React.FC<{ children: React.ReactNode }> = ({
         return list_
       }
     },
+    enabled: Boolean(token),
     initialData: list_,
     // NOTE: 5 minutes
     // staleTime: 5 * 60 * 1000,
