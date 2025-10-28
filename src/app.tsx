@@ -6,7 +6,6 @@ import { Box, TextField } from '@radix-ui/themes'
 import { useFilter } from '@/context/filter'
 import { useEditing } from '@/context/editing'
 
-import { ChangesBanner } from '@/components/layout/changes-banner'
 import { FloatingActionBar } from '@/components/layout/floating-action-bar'
 import { Footer } from '@/components/layout/footer'
 import { Header } from '@/components/layout/header'
@@ -30,7 +29,6 @@ export const App: React.FC<AppProps> = () => {
           <>
             <WorkflowStatusBanner />
             <NewVersionBanner />
-            <ChangesBanner />
           </>
         )}
       </Box>
