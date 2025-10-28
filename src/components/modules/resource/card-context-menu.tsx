@@ -58,7 +58,6 @@ export const ResourceCardContextMenu: React.FC<
         <ContextMenu.Trigger>{children}</ContextMenu.Trigger>
         <ContextMenu.Content>
           <ContextMenu.Item>Copy</ContextMenu.Item>
-          <ContextMenu.Item>Share</ContextMenu.Item>
 
           {/* Admin-only menu items are also gated by the editing toggle via AdminOnly */}
           {editingEnabled && (
