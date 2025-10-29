@@ -10,8 +10,10 @@ import {
   Heading,
   Link,
   Text,
+  Tooltip,
 } from '@radix-ui/themes'
 import { useList } from '@/context/list'
+import { useWorkflowStatus } from '@/hooks/workflow-status'
 
 export interface HeaderProps {}
 
@@ -19,12 +21,16 @@ const MAX_HEADER_TAGS = 4
 
 export const Header: React.FC<HeaderProps> = () => {
   const list = useList()
+  const { isWorkflowRunning } = useWorkflowStatus()
 
   const [showAllHeaderTags, setShowAllHeaderTags] = React.useState(false)
 
   const tags = showAllHeaderTags
     ? list.allTags
     : list.allTags.slice(0, MAX_HEADER_TAGS)
+
+  const commitHash = __BUILD_COMMIT_HASH__
+  const shortHash = commitHash ? commitHash.slice(0, 7) : 'dev'
 
   return (
     <Flex
@@ -33,19 +39,43 @@ export const Header: React.FC<HeaderProps> = () => {
       align={'center'}
       className="w-full text-center mb-12"
     >
-      <Text size={'2'} color={'gray'}>
-        By {list.content.new.author} • Updated{' '}
-        {new Date(__BUILD_TIME__).toLocaleDateString(undefined, {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-        })}{' '}
-        at{' '}
-        {new Date(__BUILD_TIME__).toLocaleTimeString(undefined, {
-          hour: '2-digit',
-          minute: '2-digit',
-        })}
-      </Text>
+      <Flex align="center" gap="2" wrap="wrap" justify="center">
+        <Text size={'2'} color={'gray'}>
+          By {list.content.new.author} • Updated{' '}
+          {new Date(__BUILD_TIME__).toLocaleDateString(undefined, {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          })}{' '}
+          at{' '}
+          {new Date(__BUILD_TIME__).toLocaleTimeString(undefined, {
+            hour: '2-digit',
+            minute: '2-digit',
+          })}
+        </Text>
+        {commitHash && (
+          <Tooltip
+            content={
+              isWorkflowRunning
+                ? `Workflow running • Build: ${commitHash}`
+                : `Build: ${commitHash}`
+            }
+          >
+            <Badge
+              color={isWorkflowRunning ? 'orange' : 'gray'}
+              variant="soft"
+              size="1"
+              className={
+                isWorkflowRunning
+                  ? 'animate-pulse transition-colors'
+                  : 'transition-colors'
+              }
+            >
+              {shortHash}
+            </Badge>
+          </Tooltip>
+        )}
+      </Flex>
 
       <Flex
         className="w-full max-w-2xl"

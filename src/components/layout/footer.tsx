@@ -1,9 +1,7 @@
-import { GitHubLogoIcon, UpdateIcon } from '@radix-ui/react-icons'
+import { GitHubLogoIcon } from '@radix-ui/react-icons'
 import { Badge, Flex, Link, Text, Tooltip } from '@radix-ui/themes'
 
 import type React from 'react'
-
-import { useVersionCheck } from '@/hooks/version-check'
 
 const AWESOME_WEBSITE_REPOSITORY_URL =
   'https://github.com/raideno/awesome-website'
@@ -11,9 +9,7 @@ const AWESOME_WEBSITE_REPOSITORY_URL =
 export interface FooterProps {}
 
 export const Footer: React.FC<FooterProps> = () => {
-  const { hasNewVersion, buildCommitHash, latestCommit, dismissNewVersion } =
-    useVersionCheck()
-
+  const buildCommitHash = __AWESOME_WEBSITE_BUILD_COMMIT_HASH__
   const shortHash = buildCommitHash ? buildCommitHash.slice(0, 7) : 'dev'
 
   return (
@@ -34,27 +30,11 @@ export const Footer: React.FC<FooterProps> = () => {
             </Text>
           </Flex>
         </Link>
-      </Flex>
-      <Flex align="center" gap="1">
         <Tooltip content={`Build: ${buildCommitHash || 'development'}`}>
           <Badge color="gray" variant="soft" size="1">
             {shortHash}
           </Badge>
         </Tooltip>
-        {hasNewVersion && latestCommit && (
-          <Tooltip content="A new template version is available! Re-run the workflow to get the latest update.">
-            <Badge
-              color="orange"
-              variant="soft"
-              size="1"
-              className="cursor-pointer hover:opacity-75 transition-opacity"
-              onClick={dismissNewVersion}
-            >
-              <UpdateIcon className="w-3 h-3" />
-              Update Available
-            </Badge>
-          </Tooltip>
-        )}
       </Flex>
     </Flex>
   )

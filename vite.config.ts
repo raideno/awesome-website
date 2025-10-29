@@ -34,12 +34,19 @@ const BUILD_COMMIT_HASH = (() => {
   }
 })()
 
+const AWESOME_WEBSITE_BUILD_COMMIT_HASH =
+  process.env.AWESOME_WEBSITE_COMMIT_HASH || BUILD_COMMIT_HASH
+
 console.log('[BASE_PATH]:', BASE_PATH)
 console.log('[GITHUB_REPOSITORY_URL]:', GITHUB_REPOSITORY_URL)
 console.log('[GITHUB_REPOSITORY_OWNER]:', GITHUB_REPOSITORY_OWNER)
 console.log('[GITHUB_REPOSITORY_NAME]:', GITHUB_REPOSITORY_NAME)
 console.log('[YAML_FILE_PATH]:', YAML_FILE_PATH)
 console.log('[BUILD_COMMIT_HASH]:', BUILD_COMMIT_HASH)
+console.log(
+  '[AWESOME_WEBSITE_BUILD_COMMIT_HASH]:',
+  AWESOME_WEBSITE_BUILD_COMMIT_HASH,
+)
 
 // NOTE: https://vitejs.dev/config/
 export default vite.defineConfig({
@@ -64,6 +71,9 @@ export default vite.defineConfig({
     __REPOSITORY_NAME__: JSON.stringify(GITHUB_REPOSITORY_NAME),
     __YAML_FILE_PATH__: JSON.stringify(YAML_FILE_PATH),
     __BUILD_COMMIT_HASH__: JSON.stringify(BUILD_COMMIT_HASH),
+    __AWESOME_WEBSITE_BUILD_COMMIT_HASH__: JSON.stringify(
+      AWESOME_WEBSITE_BUILD_COMMIT_HASH,
+    ),
   },
   base: BASE_PATH,
   resolve: {

@@ -46,11 +46,19 @@ runs:
         fi
       shell: bash
 
+    - name: get awesome-website commit hash
+      id: awesome-commit
+      run: |
+        cd awesome-website-src
+        echo "hash=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+      shell: bash
+
     - name: build awesome website
       env:
         BASE_PATH: ${{ steps.base.outputs.value }}
         LIST_FILE_PATH: ${{ inputs.yaml-path }}
         GITHUB_REPOSITORY_URL: https://github.com/${{ github.repository }}
+        AWESOME_WEBSITE_COMMIT_HASH: ${{ steps.awesome-commit.outputs.hash }}
       run: |
         cd awesome-website-src
         npm run build

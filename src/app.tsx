@@ -4,12 +4,10 @@ import { MagnifyingGlassIcon } from '@radix-ui/react-icons'
 import { Box, TextField } from '@radix-ui/themes'
 
 import { useFilter } from '@/context/filter'
-import { useEditing } from '@/context/editing'
 
 import { FloatingActionBar } from '@/components/layout/floating-action-bar'
 import { Footer } from '@/components/layout/footer'
 import { Header } from '@/components/layout/header'
-import { WorkflowStatusBanner } from '@/components/layout/workflow-status-banner'
 import { TagFilterModal } from '@/components/modules/filter/modal'
 import { FilterModalTrigger } from '@/components/modules/filter/modal-trigger'
 import { ViewModeController } from '@/components/modules/misc/view-mode-controller'
@@ -19,18 +17,9 @@ export interface AppProps {}
 
 export const App: React.FC<AppProps> = () => {
   const { search, setSearch } = useFilter()
-  const { editingEnabled } = useEditing()
 
   return (
     <>
-      <Box className="top-0 sticky z-50">
-        {editingEnabled && (
-          <>
-            <WorkflowStatusBanner />
-          </>
-        )}
-      </Box>
-
       <div className="min-h-screen max-w-6xl mx-auto relative px-4 sm:px-6 lg:px-8">
         <div className="w-full py-6 min-h-screen grid grid-rows-[auto_1fr_auto]">
           <Header />
