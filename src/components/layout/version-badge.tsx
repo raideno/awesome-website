@@ -35,8 +35,8 @@ export const VersionBadge: React.FC<VersionBadgeProps> = () => {
     try {
       const github = new GitHubService({
         token,
-        owner: __REPOSITORY_OWNER__,
-        repo: __REPOSITORY_NAME__,
+        owner: 'raideno',
+        repo: 'awesome-website',
       })
 
       const latestCommit = await github.getLatestCommit('main')
