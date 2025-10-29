@@ -36,13 +36,20 @@ export function useWorkflowStatus(): UseWorkflowStatus {
     queryFn: async () => {
       if (!enabled) return { isWorkflowRunning: false, workflow: null }
 
+      if (!__GITHUB_WORKFLOW_FILE_NAME__) {
+        console.warn('Workflow filename not available')
+        return { isWorkflowRunning: false, workflow: null }
+      }
+
       const github = new GitHubService({
         token: githubAuth.token!,
         owner: __REPOSITORY_OWNER__,
         repo: __REPOSITORY_NAME__,
       })
 
-      const result = await github.getDeploymentWorkflowRuns()
+      const result = await github.getDeploymentWorkflowRuns(
+        __GITHUB_WORKFLOW_FILE_NAME__,
+      )
 
       return {
         isWorkflowRunning: result.isRunning,

@@ -90,7 +90,7 @@ export class GitHubService {
     }
   }
 
-  async getDeploymentWorkflowRuns(): Promise<{
+  async getDeploymentWorkflowRuns(workflowFileName: string): Promise<{
     isRunning: boolean
     latestRun?: {
       id: number
@@ -102,28 +102,19 @@ export class GitHubService {
     }
   }> {
     try {
-      const response = await this.octokit.rest.actions.listWorkflowRunsForRepo({
+      const response = await this.octokit.rest.actions.listWorkflowRuns({
         owner: this.config.owner,
         repo: this.config.repo,
-        per_page: 20,
+        workflow_id: workflowFileName,
+        branch: 'main',
+        per_page: 5,
       })
 
-      const deploymentRuns = response.data.workflow_runs.filter((run) => {
-        const workflowName = run.name?.toLowerCase() || ''
-        return (
-          workflowName.includes('pages') ||
-          workflowName.includes('deploy') ||
-          workflowName.includes('build') ||
-          workflowName.includes('awesome') ||
-          run.head_branch === this.config.branch
-        )
-      })
-
-      if (deploymentRuns.length === 0) {
+      if (response.data.workflow_runs.length === 0) {
         return { isRunning: false }
       }
 
-      const latestRun = deploymentRuns[0]
+      const latestRun = response.data.workflow_runs[0]
       const isRunning =
         latestRun.status === 'in_progress' || latestRun.status === 'queued'
 
