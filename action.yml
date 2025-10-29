@@ -59,6 +59,8 @@ runs:
         LIST_FILE_PATH: ${{ inputs.yaml-path }}
         GITHUB_REPOSITORY_URL: https://github.com/${{ github.repository }}
         AWESOME_WEBSITE_COMMIT_HASH: ${{ steps.awesome-commit.outputs.hash }}
+        GITHUB_WORKFLOW_NAME: ${{ github.workflow }}
+        GITHUB_WORKFLOW_REF: ${{ github.workflow_ref }}
       run: |
         cd awesome-website-src
         npm run build

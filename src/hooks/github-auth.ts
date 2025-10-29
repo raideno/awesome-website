@@ -1,42 +1,24 @@
-import { useCallback, useState } from 'react'
+import { useLocalStorageState } from './local-storage-state'
+
+const LOCAL_STORAGE_KEY = 'github-token'
 
 export interface UseGitHubAuth {
   token: string | null
-  setToken: (token: string) => void
+  setToken: (value: string) => void
   clearToken: () => void
   isAuthenticated: boolean
 }
 
 export function useGitHubAuth(): UseGitHubAuth {
-  const [token, setTokenState] = useState<string | null>(() => {
-    if (typeof window !== 'undefined') {
-      return (
-        sessionStorage.getItem('github-token') ||
-        localStorage.getItem('github-token-persistent')
-      )
-    }
-    return null
-  })
-
-  const setToken = useCallback((newToken: string) => {
-    setTokenState(newToken)
-    if (typeof window !== 'undefined') {
-      sessionStorage.setItem('github-token', newToken)
-    }
-  }, [])
-
-  const clearToken = useCallback(() => {
-    setTokenState(null)
-    if (typeof window !== 'undefined') {
-      sessionStorage.removeItem('github-token')
-    }
-  }, [])
+  const [token, setToken, clearToken] = useLocalStorageState<string>(
+    LOCAL_STORAGE_KEY,
+    '',
+  )
 
   return {
     token,
     setToken,
     clearToken,
-    // TODO: maybe validate the token rather than just checking its availability.
     isAuthenticated: Boolean(token),
   }
 }

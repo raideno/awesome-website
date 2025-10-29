@@ -37,6 +37,31 @@ const BUILD_COMMIT_HASH = (() => {
 const AWESOME_WEBSITE_BUILD_COMMIT_HASH =
   process.env.AWESOME_WEBSITE_COMMIT_HASH || BUILD_COMMIT_HASH
 
+const GITHUB_WORKFLOW_NAME = process.env.GITHUB_WORKFLOW_NAME || ''
+const GITHUB_WORKFLOW_REF = process.env.GITHUB_WORKFLOW_REF || ''
+
+// NOTE: try to extract workflow filename from github.workflow_ref or github.workflow
+// github.workflow_ref format: owner/repo/.github/workflows/filename.yml@refs/heads/branch
+// github.workflow can be either a name (e.g., "Build Awesome Website") or filename
+const GITHUB_WORKFLOW_FILE_NAME = (() => {
+  if (GITHUB_WORKFLOW_REF) {
+    const match = GITHUB_WORKFLOW_REF.match(/\.github\/workflows\/([^@]+)/)
+    if (match?.[1]) {
+      return match[1]
+    }
+  }
+
+  if (
+    GITHUB_WORKFLOW_NAME &&
+    (GITHUB_WORKFLOW_NAME.endsWith('.yml') ||
+      GITHUB_WORKFLOW_NAME.endsWith('.yaml'))
+  ) {
+    return GITHUB_WORKFLOW_NAME
+  }
+
+  return ''
+})()
+
 console.log('[BASE_PATH]:', BASE_PATH)
 console.log('[GITHUB_REPOSITORY_URL]:', GITHUB_REPOSITORY_URL)
 console.log('[GITHUB_REPOSITORY_OWNER]:', GITHUB_REPOSITORY_OWNER)
@@ -47,6 +72,9 @@ console.log(
   '[AWESOME_WEBSITE_BUILD_COMMIT_HASH]:',
   AWESOME_WEBSITE_BUILD_COMMIT_HASH,
 )
+console.log('[GITHUB_WORKFLOW_NAME]:', GITHUB_WORKFLOW_NAME)
+console.log('[GITHUB_WORKFLOW_REF]:', GITHUB_WORKFLOW_REF)
+console.log('[GITHUB_WORKFLOW_FILE_NAME]:', GITHUB_WORKFLOW_FILE_NAME)
 
 // NOTE: https://vitejs.dev/config/
 export default vite.defineConfig({
@@ -74,6 +102,7 @@ export default vite.defineConfig({
     __AWESOME_WEBSITE_BUILD_COMMIT_HASH__: JSON.stringify(
       AWESOME_WEBSITE_BUILD_COMMIT_HASH,
     ),
+    __GITHUB_WORKFLOW_FILE_NAME__: JSON.stringify(GITHUB_WORKFLOW_FILE_NAME),
   },
   base: BASE_PATH,
   resolve: {

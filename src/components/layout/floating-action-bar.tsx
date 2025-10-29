@@ -7,14 +7,17 @@ import {
   StarIcon,
   UploadIcon,
 } from '@radix-ui/react-icons'
-import { Box, Card, Flex, IconButton } from '@radix-ui/themes'
+import { Box, Card, Flex, IconButton, Tooltip } from '@radix-ui/themes'
 
 import { useEditing } from '@/context/editing'
 import { useList } from '@/context/list'
 
+import { useLongPress } from '@/hooks/long-press'
+
 import { ThemeSwitchButton } from '@/components/layout/theme-switch-button'
 import { ListMetadataEditSheet } from '@/components/modules/misc/list-metadata-edit-sheet'
 import { PushChangesDialog } from '@/components/modules/misc/push-changes-dialog'
+import { SettingsDialog } from '@/components/modules/misc/settings-dialog'
 import { ResourceCreateSheet } from '@/components/modules/resource/create-sheet'
 
 export interface FloatingActionBarProps {}
@@ -23,10 +26,28 @@ export const FloatingActionBar: React.FC<FloatingActionBarProps> = () => {
   const [editMetadataOpen, setEditMetadataOpen] = React.useState(false)
   const [createResourceOpen, setCreateResourceOpen] = React.useState(false)
   const [pushChangesOpen, setPushChangesOpen] = React.useState(false)
+  const [settingsOpen, setSettingsOpen] = React.useState(false)
 
   const list = useList()
   const { hasUnsavedChanges, content } = list
   const { editingEnabled, setEditingEnabled } = useEditing()
+
+  const handleToggleEditing = () => {
+    const next = !editingEnabled
+    setEditingEnabled(next)
+    if (!next) {
+      setCreateResourceOpen(false)
+      setEditMetadataOpen(false)
+    }
+  }
+
+  const longPressHandlers = useLongPress({
+    onLongPress: () => {
+      setSettingsOpen(true)
+    },
+    onClick: handleToggleEditing,
+    thresholdInMilliseconds: 500,
+  })
 
   return (
     <>
@@ -72,26 +93,23 @@ export const FloatingActionBar: React.FC<FloatingActionBarProps> = () => {
 
               <ThemeSwitchButton />
 
-              <IconButton
-                variant={'classic'}
-                onClick={() => {
-                  const next = !editingEnabled
-                  setEditingEnabled(next)
-                  if (!next) {
-                    setCreateResourceOpen(false)
-                    setEditMetadataOpen(false)
+              <Tooltip content="Click to toggle editing, Long-press for settings">
+                <IconButton
+                  variant={'classic'}
+                  {...longPressHandlers}
+                  aria-label={
+                    editingEnabled ? 'Disable editing' : 'Enable editing'
                   }
-                }}
-                aria-label={
-                  editingEnabled ? 'Disable editing' : 'Enable editing'
-                }
-              >
-                {editingEnabled ? <StarFilledIcon /> : <StarIcon />}
-              </IconButton>
+                >
+                  {editingEnabled ? <StarFilledIcon /> : <StarIcon />}
+                </IconButton>
+              </Tooltip>
             </Flex>
           </Card>
         </Flex>
       </Box>
+
+      <SettingsDialog open={settingsOpen} onOpenChange={setSettingsOpen} />
 
       {editingEnabled && (
         <>

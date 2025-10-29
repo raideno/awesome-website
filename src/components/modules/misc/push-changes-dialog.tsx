@@ -1,5 +1,5 @@
 import { Portal } from '@radix-ui/react-dialog'
-import { ExclamationTriangleIcon, InfoCircledIcon } from '@radix-ui/react-icons'
+import { ExclamationTriangleIcon } from '@radix-ui/react-icons'
 import {
   Box,
   Button,
@@ -13,6 +13,8 @@ import { MetadataRegistry } from '@raideno/auto-form/registry'
 import { AutoForm } from '@raideno/auto-form/ui'
 import React, { useState } from 'react'
 import { z } from 'zod/v4'
+
+import { toast } from 'sonner'
 
 import type { AwesomeList } from '@/types/awesome-list'
 
@@ -31,16 +33,6 @@ interface PushChangesDialogProps {
 }
 
 const PushChangesFormSchema = z.object({
-  token: z.string().register(MetadataRegistry, {
-    type: 'password',
-    placeholder: 'ghp_xxxxxxxxxxxx',
-    label: 'Github Token*',
-  }),
-  rememberToken: z.boolean().register(MetadataRegistry, {
-    type: 'checkbox',
-    label: 'Remember my token',
-    description: 'Save token for future sessions',
-  }),
   repository: z
     .string()
     .register(MetadataRegistry, { label: 'Repository*', disabled: true }),
@@ -67,77 +59,64 @@ export const PushChangesDialog: React.FC<PushChangesDialogProps> = ({
 
   const { isWorkflowRunning, checkWorkflowStatus } = useWorkflowStatus()
 
-  const [error, setError] = useState<string | null>(null)
-  const [success, setSuccess] = useState<string | null>(null)
-
   const dialogOpen = controlledOpen !== undefined ? controlledOpen : isOpen
   const setDialogOpen = controlledOnOpenChange || setIsOpen
 
   const handleSubmit = async (data: z.infer<typeof PushChangesFormSchema>) => {
-    setError(null)
-    setSuccess(null)
-
     try {
+      if (!githubAuth.isAuthenticated || !githubAuth.token) {
+        toast.error('Authentication required', {
+          description:
+            'Please set your GitHub token in Settings (long-press the star button)',
+        })
+        return
+      }
+
       await checkWorkflowStatus()
       if (isWorkflowRunning) {
-        throw new Error(
-          'Cannot push changes while website is being updated. Please wait for the build to complete.',
-        )
+        toast.error('Build in progress', {
+          description:
+            'Cannot push changes while website is being updated. Please wait for the build to complete.',
+        })
+        return
       }
 
       const github = new GitHubService({
-        token: data.token.trim(),
+        token: githubAuth.token,
         owner: __REPOSITORY_OWNER__,
         repo: __REPOSITORY_NAME__,
       })
 
       await github.updateYamlFile(data.path, yamlContent, data.message)
 
-      const trimmedToken = data.token.trim()
-
-      // Save to session storage (always)
-      githubAuth.setToken(trimmedToken)
-
-      // Save to local storage if remember token is checked
-      if (data.rememberToken) {
-        localStorage.setItem('github-token-persistent', trimmedToken)
-      } else {
-        localStorage.removeItem('github-token-persistent')
-      }
-
-      setSuccess(
-        'Changes pushed successfully! The repository has been updated.',
-      )
+      toast.success('Changes pushed successfully!', {
+        description: 'The repository has been updated',
+      })
 
       onWorkflowTriggered?.()
 
       setTimeout(() => {
         setDialogOpen(false)
-        setError(null)
-        setSuccess(null)
         onSuccess?.()
         // NOTE: refresh the page to load the latest changes
         window.location.reload()
       }, 2000)
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : 'An unexpected error occurred',
-      )
-    } finally {
+      const errorMessage =
+        err instanceof Error ? err.message : 'An unexpected error occurred'
+      toast.error('Failed to push changes', {
+        description: errorMessage,
+      })
     }
   }
 
   const handleCancellation = () => {
     setDialogOpen(false)
-    setError(null)
-    setSuccess(null)
   }
 
   const handleDiscardChanges = () => {
     clearChanges()
     setDialogOpen(false)
-    setError(null)
-    setSuccess(null)
   }
 
   return (
@@ -149,17 +128,12 @@ export const PushChangesDialog: React.FC<PushChangesDialogProps> = ({
             defaultValues={{
               path: __YAML_FILE_PATH__,
               repository: `${__REPOSITORY_OWNER__}/${__REPOSITORY_NAME__}`,
-              token:
-                githubAuth.token ||
-                localStorage.getItem('github-token-persistent') ||
-                '',
-              rememberToken: Boolean(
-                localStorage.getItem('github-token-persistent'),
-              ),
               message: 'chore: update',
             }}
             schema={PushChangesFormSchema}
             onSubmit={handleSubmit}
+            // TODO: add some handlers to show sonner toasts if any error.
+            onError={undefined}
             onCancel={handleCancellation}
           >
             <Flex direction="column" gap="4">
@@ -169,35 +143,26 @@ export const PushChangesDialog: React.FC<PushChangesDialogProps> = ({
                     Push Changes to Repository
                   </Dialog.Title>
                   <Dialog.Description className="sr-only">
-                    Enter your GitHub personal access token and repository
-                    details to push the changes.
+                    Review and confirm pushing your changes to the repository.
                   </Dialog.Description>
                 </>
                 <Heading>Push Changes to Repository</Heading>
                 <Text>
-                  Enter your GitHub personal access token and repository details
-                  to push the changes.
+                  Review and confirm pushing your changes to the repository.
                 </Text>
               </Box>
 
-              <Callout.Root>
-                <Callout.Icon>
-                  <InfoCircledIcon />
-                </Callout.Icon>
-                <Callout.Text>
-                  You'll need a GitHub personal access token with repository
-                  write permissions.{' '}
-                  <a
-                    href="https://github.com/settings/personal-access-tokens/new"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{ textDecoration: 'underline' }}
-                  >
-                    Create one here
-                  </a>
-                  .
-                </Callout.Text>
-              </Callout.Root>
+              {!githubAuth.isAuthenticated && (
+                <Callout.Root color="red">
+                  <Callout.Icon>
+                    <ExclamationTriangleIcon />
+                  </Callout.Icon>
+                  <Callout.Text>
+                    You are not authenticated. Please set your GitHub token in
+                    Settings (long-press the star button).
+                  </Callout.Text>
+                </Callout.Root>
+              )}
 
               <AutoForm.Content />
 
@@ -210,24 +175,6 @@ export const PushChangesDialog: React.FC<PushChangesDialogProps> = ({
                     Cannot push changes while website is being updated. Please
                     wait for the build to complete.
                   </Callout.Text>
-                </Callout.Root>
-              )}
-
-              {error && (
-                <Callout.Root color="red">
-                  <Callout.Icon>
-                    <ExclamationTriangleIcon />
-                  </Callout.Icon>
-                  <Callout.Text>{error}</Callout.Text>
-                </Callout.Root>
-              )}
-
-              {success && (
-                <Callout.Root color="green">
-                  <Callout.Icon>
-                    <InfoCircledIcon />
-                  </Callout.Icon>
-                  <Callout.Text>{success}</Callout.Text>
                 </Callout.Root>
               )}
 
