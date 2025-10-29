@@ -4,9 +4,7 @@ import type { AwesomeListElement } from '@/types/awesome-list'
 
 import { useFilter } from '@/context/filter'
 import { useList } from '@/context/list'
-import { useViewMode } from '@/context/view-mode'
 
-import { ClassicalResourceGrid } from '@/components/modules/resource/classical-grid'
 import { GroupedResourceGrid } from '@/components/modules/resource/grouped-grid'
 
 export interface FilterOptions {
@@ -58,7 +56,6 @@ export interface ResourceGridProps {}
 export const ResourceGrid: React.FC<ResourceGridProps> = () => {
   const { search, selectedTags, tagsFilterOperator } = useFilter()
   const list = useList()
-  const { mode } = useViewMode()
 
   const filteredElements = React.useMemo(
     () =>
@@ -70,9 +67,5 @@ export const ResourceGrid: React.FC<ResourceGridProps> = () => {
     [search, list.content.new.elements, selectedTags, tagsFilterOperator],
   )
 
-  if (mode === 'group') {
-    return <GroupedResourceGrid filteredElements={filteredElements} />
-  }
-
-  return <ClassicalResourceGrid filteredElements={filteredElements} />
+  return <GroupedResourceGrid filteredElements={filteredElements} />
 }

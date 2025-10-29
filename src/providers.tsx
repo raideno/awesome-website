@@ -8,7 +8,6 @@ import { EditingProvider } from '@/context/editing'
 import { FilterProvider } from '@/context/filter'
 import { ListProvider } from '@/context/list'
 import { useTheme } from '@/context/theme'
-import { ViewModeProvider } from '@/context/view-mode'
 
 import { Toaster } from '@/components/ui/sooner'
 import { AlertDialogProvider } from '@/components/utils/alert-dialog'
@@ -37,12 +36,10 @@ export const Providers: React.FC<ProvidersProps> = ({ children }) => {
           <AlertDialogProvider>
             <EditingProvider>
               <ListProvider>
-                <ViewModeProvider>
-                  <FilterProvider>
-                    <Toaster />
-                    <>{children}</>
-                  </FilterProvider>
-                </ViewModeProvider>
+                <FilterProvider>
+                  <Toaster />
+                  <>{children}</>
+                </FilterProvider>
               </ListProvider>
             </EditingProvider>
           </AlertDialogProvider>

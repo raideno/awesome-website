@@ -10,7 +10,6 @@ import { Footer } from '@/components/layout/footer'
 import { Header } from '@/components/layout/header'
 import { TagFilterModal } from '@/components/modules/filter/modal'
 import { FilterModalTrigger } from '@/components/modules/filter/modal-trigger'
-import { ViewModeController } from '@/components/modules/misc/view-mode-controller'
 import { ResourceGrid } from '@/components/modules/resource/grid'
 
 export interface AppProps {}
@@ -33,17 +32,13 @@ export const App: React.FC<AppProps> = () => {
                   .controls {
                     display: grid;
                     grid-template-columns: 1fr;
-                    grid-template-areas: "search 1fr filter viewmode";
+                    grid-template-areas: "search 1fr filter";
                     gap: 0.5rem;
                     align-items: center;
                   }
 
                   .controls__search {
                     grid-area: search;
-                  }
-
-                  .controls__viewmode {
-                    grid-area: viewmode;
                   }
 
                   .controls__filter {
@@ -55,7 +50,7 @@ export const App: React.FC<AppProps> = () => {
                       grid-template-columns: 1fr;
                       grid-template-areas:
                         "search search"
-                        "filter viewmode";
+                        "filter filter";
                       gap: 0.5rem;
                     }
                   }
@@ -77,9 +72,6 @@ export const App: React.FC<AppProps> = () => {
                   <TagFilterModal>
                     <FilterModalTrigger className="w-full" />
                   </TagFilterModal>
-                </Box>
-                <Box className="controls__viewmode">
-                  <ViewModeController />
                 </Box>
               </div>
 
