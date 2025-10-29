@@ -1,15 +1,15 @@
-import { useState } from 'react'
 import { Theme } from '@radix-ui/themes'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { useState } from 'react'
 
 import type React from 'react'
 
-import { useTheme } from '@/context/theme'
-import { ListProvider } from '@/context/list'
-import { FilterProvider } from '@/context/filter'
-import { ViewModeProvider } from '@/context/view-mode'
 import { EditingProvider } from '@/context/editing'
+import { FilterProvider } from '@/context/filter'
+import { ListProvider } from '@/context/list'
+import { useTheme } from '@/context/theme'
 
+import { Toaster } from '@/components/ui/sooner'
 import { AlertDialogProvider } from '@/components/utils/alert-dialog'
 
 export interface ProvidersProps {
@@ -36,11 +36,10 @@ export const Providers: React.FC<ProvidersProps> = ({ children }) => {
           <AlertDialogProvider>
             <EditingProvider>
               <ListProvider>
-                <ViewModeProvider>
-                  <FilterProvider>
-                    <>{children}</>
-                  </FilterProvider>
-                </ViewModeProvider>
+                <FilterProvider>
+                  <Toaster />
+                  <>{children}</>
+                </FilterProvider>
               </ListProvider>
             </EditingProvider>
           </AlertDialogProvider>

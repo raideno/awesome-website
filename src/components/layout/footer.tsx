@@ -3,6 +3,8 @@ import { Flex, Link, Text } from '@radix-ui/themes'
 
 import type React from 'react'
 
+import { VersionBadge } from '@/components/layout/version-badge'
+
 const AWESOME_WEBSITE_REPOSITORY_URL =
   'https://github.com/raideno/awesome-website'
 
@@ -11,7 +13,7 @@ export interface FooterProps {}
 export const Footer: React.FC<FooterProps> = () => {
   return (
     <Flex className="pb-32" direction="column" align="center" gap="2" pt="8">
-      <Flex align="center" gap="2">
+      <Flex align="center" gap="2" wrap="wrap" justify="center">
         <Text size="2" color="gray">
           Made with ❤️ by
         </Text>
@@ -27,6 +29,7 @@ export const Footer: React.FC<FooterProps> = () => {
             </Text>
           </Flex>
         </Link>
+        <VersionBadge />
       </Flex>
     </Flex>
   )

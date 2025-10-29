@@ -90,101 +90,7 @@ export class GitHubService {
     }
   }
 
-  async createPullRequest(
-    title: string,
-    body: string,
-    headBranch: string,
-    baseBranch: string = 'main',
-  ): Promise<{ number: number; url: string }> {
-    try {
-      const response = await this.octokit.rest.pulls.create({
-        owner: this.config.owner,
-        repo: this.config.repo,
-        title,
-        body,
-        head: headBranch,
-        base: baseBranch,
-      })
-
-      return {
-        number: response.data.number,
-        url: response.data.html_url,
-      }
-    } catch (error) {
-      throw new Error(
-        `Failed to create pull request: ${error instanceof Error ? error.message : 'Unknown error'}`,
-      )
-    }
-  }
-
-  async createBranch(
-    branchName: string,
-    fromBranch: string = 'main',
-  ): Promise<void> {
-    try {
-      const refResponse = await this.octokit.rest.git.getRef({
-        owner: this.config.owner,
-        repo: this.config.repo,
-        ref: `heads/${fromBranch}`,
-      })
-
-      await this.octokit.rest.git.createRef({
-        owner: this.config.owner,
-        repo: this.config.repo,
-        ref: `refs/heads/${branchName}`,
-        sha: refResponse.data.object.sha,
-      })
-    } catch (error) {
-      throw new Error(
-        `Failed to create branch: ${error instanceof Error ? error.message : 'Unknown error'}`,
-      )
-    }
-  }
-
-  async getWorkflowRuns(): Promise<{
-    isRunning: boolean
-    latestRun?: {
-      id: number
-      status: string
-      conclusion: string | null
-      html_url: string
-      created_at: string
-    }
-  }> {
-    try {
-      const response = await this.octokit.rest.actions.listWorkflowRunsForRepo({
-        owner: this.config.owner,
-        repo: this.config.repo,
-        per_page: 10,
-      })
-
-      const runs = response.data.workflow_runs
-
-      if (runs.length === 0) {
-        return { isRunning: false }
-      }
-
-      const latestRun = runs[0]
-      const isRunning =
-        latestRun.status === 'in_progress' || latestRun.status === 'queued'
-
-      return {
-        isRunning,
-        latestRun: {
-          id: latestRun.id,
-          status: latestRun.status || 'unknown',
-          conclusion: latestRun.conclusion,
-          html_url: latestRun.html_url,
-          created_at: latestRun.created_at,
-        },
-      }
-    } catch (error) {
-      console.warn('Failed to get workflow runs:', error)
-      return { isRunning: false }
-    }
-  }
-
-  async getDeploymentWorkflowRuns(): Promise<{
+  async getDeploymentWorkflowRuns(workflowFileName: string): Promise<{
     isRunning: boolean
     latestRun?: {
       id: number
@@ -196,28 +102,19 @@ export class GitHubService {
     }
   }> {
     try {
-      const response = await this.octokit.rest.actions.listWorkflowRunsForRepo({
+      const response = await this.octokit.rest.actions.listWorkflowRuns({
         owner: this.config.owner,
         repo: this.config.repo,
-        per_page: 20,
+        workflow_id: workflowFileName,
+        branch: 'main',
+        per_page: 1,
       })
 
-      const deploymentRuns = response.data.workflow_runs.filter((run) => {
-        const workflowName = run.name?.toLowerCase() || ''
-        return (
-          workflowName.includes('pages') ||
-          workflowName.includes('deploy') ||
-          workflowName.includes('build') ||
-          workflowName.includes('awesome') ||
-          run.head_branch === this.config.branch
-        )
-      })
-
-      if (deploymentRuns.length === 0) {
+      if (response.data.workflow_runs.length === 0) {
         return { isRunning: false }
       }
 
-      const latestRun = deploymentRuns[0]
+      const latestRun = response.data.workflow_runs[0]
       const isRunning =
         latestRun.status === 'in_progress' || latestRun.status === 'queued'
 
@@ -233,7 +130,7 @@ export class GitHubService {
         },
       }
     } catch (error) {
-      console.warn('Failed to get deployment workflow runs:', error)
+      console.warn('[error]: failed to get deployment workflow runs:', error)
       return { isRunning: false }
     }
   }
@@ -270,6 +167,28 @@ export class GitHubService {
     } catch (error) {
       throw new Error(
         `Failed to get latest commit: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      )
+    }
+  }
+
+  async triggerWorkflow(
+    workflowId: string | number,
+    ref: string = 'main',
+    inputs?: Record<string, any>,
+  ): Promise<void> {
+    try {
+      await this.octokit.rest.actions.createWorkflowDispatch({
+        owner: this.config.owner,
+        repo: this.config.repo,
+        // NOTE: can be actual workflow_id retrieved from the rest api or just the filename
+        // https://octokit.github.io/rest.js/v22/
+        workflow_id: workflowId,
+        ref,
+        inputs,
+      })
+    } catch (error) {
+      throw new Error(
+        `Failed to trigger workflow: ${error instanceof Error ? error.message : 'Unknown error'}`,
       )
     }
   }

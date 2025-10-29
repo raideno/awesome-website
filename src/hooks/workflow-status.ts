@@ -36,28 +36,30 @@ export function useWorkflowStatus(): UseWorkflowStatus {
     queryFn: async () => {
       if (!enabled) return { isWorkflowRunning: false, workflow: null }
 
+      if (!__GITHUB_WORKFLOW_FILE_NAME__) {
+        console.warn('Workflow filename not available')
+        return { isWorkflowRunning: false, workflow: null }
+      }
+
       const github = new GitHubService({
         token: githubAuth.token!,
         owner: __REPOSITORY_OWNER__,
         repo: __REPOSITORY_NAME__,
       })
 
-      const result = await github.getDeploymentWorkflowRuns()
+      const result = await github.getDeploymentWorkflowRuns(
+        __GITHUB_WORKFLOW_FILE_NAME__,
+      )
 
       return {
         isWorkflowRunning: result.isRunning,
         workflow: result.latestRun ?? null,
       }
     },
-    enabled,
-    refetchInterval: enabled ? 30_000 : false,
-    refetchOnWindowFocus: false,
+    // NOTE: disabled as too much unnecessary re-fetching
+    enabled: false,
     retry: false,
-    staleTime: 15_000,
-    gcTime: 5 * 60 * 1000,
-    // onError: (error) => {
-    //   console.warn('Failed to check workflow status:', error)
-    // },
+    refetchInterval: 30 * 1000,
   })
 
   return {
