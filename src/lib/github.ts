@@ -107,7 +107,7 @@ export class GitHubService {
         repo: this.config.repo,
         workflow_id: workflowFileName,
         branch: 'main',
-        per_page: 5,
+        per_page: 1,
       })
 
       if (response.data.workflow_runs.length === 0) {
@@ -130,7 +130,7 @@ export class GitHubService {
         },
       }
     } catch (error) {
-      console.warn('Failed to get deployment workflow runs:', error)
+      console.warn('[error]: failed to get deployment workflow runs:', error)
       return { isRunning: false }
     }
   }
