@@ -29,7 +29,7 @@ export const Header: React.FC<HeaderProps> = () => {
     ? list.allTags
     : list.allTags.slice(0, MAX_HEADER_TAGS)
 
-  const commitHash = __BUILD_COMMIT_HASH__
+  const commitHash = __USER_REPOSITORY_COMMIT_HASH__
   const shortHash = commitHash ? commitHash.slice(0, 7) : 'dev'
 
   return (

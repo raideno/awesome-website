@@ -46,6 +46,12 @@ runs:
         fi
       shell: bash
 
+    - name: get user repository commit hash
+      id: user-commit
+      run: |
+        echo "hash=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+      shell: bash
+
     - name: get awesome-website commit hash
       id: awesome-commit
       run: |
@@ -58,6 +64,7 @@ runs:
         BASE_PATH: ${{ steps.base.outputs.value }}
         LIST_FILE_PATH: ${{ inputs.yaml-path }}
         GITHUB_REPOSITORY_URL: https://github.com/${{ github.repository }}
+        USER_REPOSITORY_COMMIT_HASH: ${{ steps.user-commit.outputs.hash }}
         AWESOME_WEBSITE_COMMIT_HASH: ${{ steps.awesome-commit.outputs.hash }}
         GITHUB_WORKFLOW_NAME: ${{ github.workflow }}
         GITHUB_WORKFLOW_REF: ${{ github.workflow_ref }}

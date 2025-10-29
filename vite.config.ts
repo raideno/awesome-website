@@ -25,17 +25,20 @@ const BASE_PATH = process.env.BASE_PATH
 
 const YAML_FILE_PATH = process.env.LIST_FILE_PATH || ''
 
-const BUILD_COMMIT_HASH = (() => {
+const USER_REPOSITORY_COMMIT_HASH = (() => {
+  if (process.env.USER_REPOSITORY_COMMIT_HASH) {
+    return process.env.USER_REPOSITORY_COMMIT_HASH
+  }
   try {
     return child.execSync('git rev-parse HEAD', { encoding: 'utf8' }).trim()
   } catch (error) {
-    console.warn('[error]: could not get commit hash:', error)
+    console.warn('[error]: could not get user repository commit hash:', error)
     return ''
   }
 })()
 
 const AWESOME_WEBSITE_BUILD_COMMIT_HASH =
-  process.env.AWESOME_WEBSITE_COMMIT_HASH
+  process.env.AWESOME_WEBSITE_COMMIT_HASH || ''
 
 const GITHUB_WORKFLOW_NAME = process.env.GITHUB_WORKFLOW_NAME || ''
 const GITHUB_WORKFLOW_REF = process.env.GITHUB_WORKFLOW_REF || ''
@@ -67,7 +70,7 @@ console.log('[GITHUB_REPOSITORY_URL]:', GITHUB_REPOSITORY_URL)
 console.log('[GITHUB_REPOSITORY_OWNER]:', GITHUB_REPOSITORY_OWNER)
 console.log('[GITHUB_REPOSITORY_NAME]:', GITHUB_REPOSITORY_NAME)
 console.log('[YAML_FILE_PATH]:', YAML_FILE_PATH)
-console.log('[BUILD_COMMIT_HASH]:', BUILD_COMMIT_HASH)
+console.log('[USER_REPOSITORY_COMMIT_HASH]:', USER_REPOSITORY_COMMIT_HASH)
 console.log(
   '[AWESOME_WEBSITE_BUILD_COMMIT_HASH]:',
   AWESOME_WEBSITE_BUILD_COMMIT_HASH,
@@ -98,7 +101,9 @@ export default vite.defineConfig({
     __REPOSITORY_OWNER__: JSON.stringify(GITHUB_REPOSITORY_OWNER),
     __REPOSITORY_NAME__: JSON.stringify(GITHUB_REPOSITORY_NAME),
     __YAML_FILE_PATH__: JSON.stringify(YAML_FILE_PATH),
-    __BUILD_COMMIT_HASH__: JSON.stringify(BUILD_COMMIT_HASH),
+    __USER_REPOSITORY_COMMIT_HASH__: JSON.stringify(
+      USER_REPOSITORY_COMMIT_HASH,
+    ),
     __AWESOME_WEBSITE_BUILD_COMMIT_HASH__: JSON.stringify(
       AWESOME_WEBSITE_BUILD_COMMIT_HASH,
     ),
