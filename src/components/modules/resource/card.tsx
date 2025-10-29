@@ -68,7 +68,7 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
             {element.link && (
               <Link
                 href={element.link}
-                className="!underline"
+                className="!underline truncate block"
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={(e) => e.stopPropagation()}
