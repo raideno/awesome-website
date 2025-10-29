@@ -9,7 +9,6 @@ import { useEditing } from '@/context/editing'
 import { FloatingActionBar } from '@/components/layout/floating-action-bar'
 import { Footer } from '@/components/layout/footer'
 import { Header } from '@/components/layout/header'
-import { NewVersionBanner } from '@/components/layout/new-version-banner'
 import { WorkflowStatusBanner } from '@/components/layout/workflow-status-banner'
 import { TagFilterModal } from '@/components/modules/filter/modal'
 import { FilterModalTrigger } from '@/components/modules/filter/modal-trigger'
@@ -28,7 +27,6 @@ export const App: React.FC<AppProps> = () => {
         {editingEnabled && (
           <>
             <WorkflowStatusBanner />
-            <NewVersionBanner />
           </>
         )}
       </Box>

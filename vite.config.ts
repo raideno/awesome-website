@@ -29,7 +29,7 @@ const BUILD_COMMIT_HASH = (() => {
   try {
     return child.execSync('git rev-parse HEAD', { encoding: 'utf8' }).trim()
   } catch (error) {
-    console.warn('Could not get commit hash:', error)
+    console.warn('[error]: could not get commit hash:', error)
     return ''
   }
 })()
