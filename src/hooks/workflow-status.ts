@@ -56,15 +56,10 @@ export function useWorkflowStatus(): UseWorkflowStatus {
         workflow: result.latestRun ?? null,
       }
     },
-    enabled,
-    refetchInterval: enabled ? 30_000 : false,
-    refetchOnWindowFocus: false,
+    // NOTE: disabled as too much unnecessary re-fetching
+    enabled: false,
     retry: false,
-    staleTime: 15_000,
-    gcTime: 5 * 60 * 1000,
-    // onError: (error) => {
-    //   console.warn('Failed to check workflow status:', error)
-    // },
+    refetchInterval: 30 * 1000,
   })
 
   return {

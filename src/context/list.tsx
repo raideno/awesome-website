@@ -45,8 +45,10 @@ export const ListProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [changes, setChanges] = useState<Partial<AwesomeList>>({})
 
-  const { token } = useGitHubAuth()
+  const githubAuth = useGitHubAuth()
   const { isWorkflowRunning, checkWorkflowStatus } = useWorkflowStatus()
+
+  const enabled = Boolean(githubAuth.isAuthenticated && githubAuth.token)
 
   const {
     data: remoteList,
@@ -57,7 +59,7 @@ export const ListProvider: React.FC<{ children: React.ReactNode }> = ({
     queryFn: async () => {
       try {
         const github = new GitHubService({
-          token: token || undefined,
+          token: githubAuth.token || undefined,
           owner: __REPOSITORY_OWNER__,
           repo: __REPOSITORY_NAME__,
         })
@@ -73,10 +75,8 @@ export const ListProvider: React.FC<{ children: React.ReactNode }> = ({
         return list_
       }
     },
-    enabled: Boolean(token),
+    enabled,
     initialData: list_,
-    // NOTE: 5 minutes
-    // staleTime: 5 * 60 * 1000,
     retry: (failureCount, _error) => failureCount < 3,
   })
 
