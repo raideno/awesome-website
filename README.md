@@ -78,12 +78,14 @@ The `example.list.yaml` file has a clear structure that's easy to understand and
 
 ### Element Object Structure
 
-| Field         | Type                 | Description                                                                      |
-| :------------ | :------------------- | :------------------------------------------------------------------------------- |
-| `name`        | String               | The name of the resource.                                                        |
-| `description` | String               | A short description of the resource.                                             |
-| `links`       | Array of Url Strings | A list of relevant URLs for the resource (e.g., website, GitHub, documentation). |
-| `tags`        | Array of Strings     | A list of tags specific to this resource for filtering.                          |
+| Field         | Type             | Description                                                             |
+| :------------ | :--------------- | :---------------------------------------------------------------------- |
+| `name`        | String           | The name of the resource.                                               |
+| `description` | String           | A short description of the resource.                                    |
+| `link`        | Url              | A relevant URL for the resource (e.g., website, GitHub, documentation). |
+| `tags`        | Array of Strings | A list of tags specific to this resource for filtering.                 |
+| `notes`       | String           | A long detailed notes that support markdown and latex.                  |
+| `group`       | String           | The group to which belongs this element.                                |
 
 ## Deployment
 
@@ -101,12 +103,3 @@ Copy the [`.env.example`](./.env.example) file to `.env` and fill in the require
 
 Do your changes in a separate branch and create a pull request to merge them into the `main` branch or `develop` branch if you are working on a feature.
 
-# TODOs
-
-- [ ] When clicking on a card or on multiple ones it should get selected, shift clicking when some card is already selected should select the in between; ctrl+click should also be possible.
-- [ ] Have a README version of the list automatically generated as well.
-- [ ] Auto generate contributors list.
-- [ ] Add an LLM version where it is possible to provide a github url and the LLM scrape it to generate a .yaml file from it.
-
-- [ ] Externalize the pushing library to a separate package.
-- [ ] Use the package to build a more general storage website, capable of storing files, images, videos, etc for personal use. A sort of cloud.
