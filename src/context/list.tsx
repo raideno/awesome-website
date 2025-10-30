@@ -48,7 +48,9 @@ export const ListProvider: React.FC<{ children: React.ReactNode }> = ({
   const githubAuth = useGitHubAuth()
   const { isWorkflowRunning, checkWorkflowStatus } = useWorkflowStatus()
 
-  const enabled = Boolean(githubAuth.isAuthenticated && githubAuth.token)
+  const enabled = Boolean(
+    githubAuth.isAuthenticated && githubAuth.token && !import.meta.env.DEV,
+  )
 
   const {
     data: remoteList,

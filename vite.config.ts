@@ -5,7 +5,10 @@ import * as vite from 'vite'
 
 import { VitePWA } from 'vite-plugin-pwa'
 import viteReact from '@vitejs/plugin-react'
-import yamlAwesomeListPlugin from './plugins/yaml-awesome-list'
+import yamlAwesomeListPlugin, {
+  loadAwesomeList,
+} from './plugins/yaml-awesome-list'
+import metadataAwesomeList from './plugins/metadata-awesome-list'
 
 console.log('[process.env.BASE_PATH]:', process.env.BASE_PATH)
 console.log('[process.env.LIST_FILE_PATH]:', process.env.LIST_FILE_PATH)
@@ -24,6 +27,8 @@ const BASE_PATH = process.env.BASE_PATH
   : `/${GITHUB_REPOSITORY_NAME}`
 
 const YAML_FILE_PATH = process.env.LIST_FILE_PATH || ''
+
+const AWESOME_LIST = loadAwesomeList(YAML_FILE_PATH)
 
 const USER_REPOSITORY_COMMIT_HASH = (() => {
   if (process.env.USER_REPOSITORY_COMMIT_HASH) {
@@ -84,6 +89,7 @@ export default vite.defineConfig({
   plugins: [
     viteReact(),
     yamlAwesomeListPlugin(YAML_FILE_PATH),
+    metadataAwesomeList(AWESOME_LIST, GITHUB_REPOSITORY_URL),
     VitePWA({
       registerType: 'autoUpdate',
       workbox: {
