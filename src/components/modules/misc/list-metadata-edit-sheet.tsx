@@ -67,9 +67,9 @@ export const ListMetadataEditSheet: React.FC<ListMetadataEditSheetProps> = ({
               apply, or "Cancel" to discard.
             </Text>
           </Sheet.Header>
-          <ScrollArea scrollbars="horizontal">
-            <Sheet.Body className="h-full">
-              <AutoForm.Content />
+          <ScrollArea scrollbars="vertical">
+            <Sheet.Body className="w-full h-full">
+              <AutoForm.Content className="w-full" />
             </Sheet.Body>
           </ScrollArea>
           <Sheet.Footer>

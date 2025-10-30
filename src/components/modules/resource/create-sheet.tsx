@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { Heading, Text } from '@radix-ui/themes'
+import { Heading, ScrollArea, Text } from '@radix-ui/themes'
 import { AutoForm } from '@raideno/auto-form/ui'
 
 import type React from 'react'
@@ -76,9 +76,11 @@ export const ResourceCreateSheet: React.FC<ResourceCreateSheetProps> = ({
               "Create" to add it to your awesome list, or "Cancel" to discard.
             </Text>
           </Sheet.Header>
-          <Sheet.Body>
-            <AutoForm.Content />
-          </Sheet.Body>
+          <ScrollArea scrollbars="vertical">
+            <Sheet.Body>
+              <AutoForm.Content />
+            </Sheet.Body>
+          </ScrollArea>
           <Sheet.Footer>
             <AutoForm.Actions className="flex flex-col gap-4 w-full items-center">
               <Sheet.Close asChild className="!w-full">
