@@ -60,3 +60,7 @@ code {
     margin-bottom: calc(0.5rem * var(--tw-space-y-reverse));
   }
 }
+
+.w-full {
+  width: 100%;
+}

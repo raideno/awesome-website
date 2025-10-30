@@ -120,7 +120,7 @@ export const Header: React.FC<HeaderProps> = () => {
           >
             <img
               src={list.content.new.thumbnail}
-              alt={`${list.content.new.title} Thumbnail`}
+              alt={'Thumbnail'}
               className="w-full h-full object-cover"
             />
           </AspectRatio>

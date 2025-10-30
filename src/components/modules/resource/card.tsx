@@ -1,10 +1,5 @@
 import React from 'react'
 
-import 'katex/dist/katex.min.css'
-import ReactMarkdown from 'react-markdown'
-import rehypeKatex from 'rehype-katex'
-import remarkMath from 'remark-math'
-
 import { Badge, Box, Card, Flex, Heading, Link, Text } from '@radix-ui/themes'
 import { ResourceCardDialog } from './card-dialog'
 
@@ -46,12 +41,7 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
               {element.name}
             </Heading>
             <Text className="leading-relaxed flex-grow markdown-content">
-              <ReactMarkdown
-                remarkPlugins={[remarkMath]}
-                rehypePlugins={[rehypeKatex]}
-              >
-                {element.description}
-              </ReactMarkdown>
+              {element.description}
             </Text>
             <div className="flex flex-wrap gap-2">
               {element.tags.slice(0, 4).map((tag) => (

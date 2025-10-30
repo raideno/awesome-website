@@ -7,7 +7,7 @@ import { AwesomeListSchema } from '../src/types/awesome-list'
 import type { Plugin } from 'vite'
 import type { AwesomeList } from '../src/types/awesome-list'
 
-const validateListFile = (listPath: string | undefined): AwesomeList => {
+export const loadAwesomeList = (listPath: string | undefined): AwesomeList => {
   if (!listPath) {
     throw new Error('LIST_FILE_PATH environment variable is not set')
   }
@@ -25,6 +25,10 @@ const validateListFile = (listPath: string | undefined): AwesomeList => {
   }
 
   return parsing.data
+}
+
+const validateListFile = (listPath: string | undefined): AwesomeList => {
+  return loadAwesomeList(listPath)
 }
 
 export default (listPath: string): Plugin => {
@@ -60,7 +64,6 @@ export default (listPath: string): Plugin => {
         return resolvedVirtualModuleId
       }
     },
-
     load(id) {
       if (id === resolvedVirtualModuleId) {
         const awesomeList = validateListFile(listPath)
