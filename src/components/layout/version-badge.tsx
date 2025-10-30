@@ -25,7 +25,8 @@ export const VersionBadge: React.FC<VersionBadgeProps> = () => {
   const [updateDialogOpen, setUpdateDialogOpen] = useState(false)
   const [latestCommitHash, setLatestCommitHash] = useState<string | null>(null)
 
-  const isClickable = editingEnabled && isAuthenticated && buildCommitHash
+  const isClickable =
+    editingEnabled && isAuthenticated && buildCommitHash && !import.meta.env.DEV
 
   const handleBadgeClick = async () => {
     if (!isClickable || !token) return
