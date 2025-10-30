@@ -49,6 +49,33 @@ export const UpdateCheckDialog: React.FC<UpdateCheckDialogProps> = ({
         )
       }
 
+      const workflowStatus = await github.getDeploymentWorkflowRuns(
+        __GITHUB_WORKFLOW_FILE_NAME__,
+      )
+
+      if (workflowStatus.isRunning) {
+        const workflowUrl = workflowStatus.latestRun?.html_url
+        toast.info('Update in progress', {
+          description: workflowUrl ? (
+            <span>
+              A deployment workflow is already running.{' '}
+              <a
+                href={workflowUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ textDecoration: 'underline', fontWeight: 'bold' }}
+              >
+                View workflow
+              </a>
+            </span>
+          ) : (
+            'A deployment workflow is already running. Please wait for it to complete.'
+          ),
+        })
+        onOpenChange(false)
+        return
+      }
+
       await github.triggerWorkflow(__GITHUB_WORKFLOW_FILE_NAME__, 'main')
 
       onUpdateTriggered?.()

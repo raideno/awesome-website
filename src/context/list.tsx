@@ -2,7 +2,7 @@
 import list_ from 'virtual:awesome-list'
 
 import { useQuery } from '@tanstack/react-query'
-import React, { createContext, useContext, useMemo, useState } from 'react'
+import React, { createContext, useContext, useMemo } from 'react'
 
 import type { AwesomeList } from '@/types/awesome-list'
 
@@ -10,9 +10,10 @@ import { AwesomeListSchema } from '@/types/awesome-list'
 
 import { GitHubService } from '@/lib/github'
 
-import { useGitHubAuth } from '@/hooks/github-auth'
 import { useBeforeUnload } from '@/hooks/before-unload'
+import { useCommitAwareStorage } from '@/hooks/commit-aware-storage'
 import { useDocumentTitle } from '@/hooks/document-title'
+import { useGitHubAuth } from '@/hooks/github-auth'
 import { useWorkflowStatus } from '@/hooks/workflow-status'
 
 interface ListContextType {
@@ -43,10 +44,18 @@ export const useList = () => {
 export const ListProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [changes, setChanges] = useState<Partial<AwesomeList>>({})
-
   const githubAuth = useGitHubAuth()
   const { isWorkflowRunning, checkWorkflowStatus } = useWorkflowStatus()
+
+  const {
+    data: changes,
+    setData: setChanges,
+    clearData: clearPersistedChanges,
+  } = useCommitAwareStorage<Partial<AwesomeList>>(
+    'awesome-list-changes',
+    __USER_REPOSITORY_COMMIT_HASH__,
+    {},
+  )
 
   const enabled = Boolean(
     githubAuth.isAuthenticated && githubAuth.token && !import.meta.env.DEV,
@@ -102,7 +111,7 @@ export const ListProvider: React.FC<{ children: React.ReactNode }> = ({
   }
 
   const clearChanges = () => {
-    setChanges({})
+    clearPersistedChanges()
   }
 
   const hasUnsavedChanges = Object.keys(changes).length > 0
