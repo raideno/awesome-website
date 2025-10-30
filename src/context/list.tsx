@@ -2,7 +2,7 @@
 import list_ from 'virtual:awesome-list'
 
 import { useQuery } from '@tanstack/react-query'
-import React, { createContext, useContext, useMemo, useState } from 'react'
+import React, { createContext, useContext, useMemo } from 'react'
 
 import type { AwesomeList } from '@/types/awesome-list'
 
@@ -10,11 +10,11 @@ import { AwesomeListSchema } from '@/types/awesome-list'
 
 import { GitHubService } from '@/lib/github'
 
-import { useGitHubAuth } from '@/hooks/github-auth'
 import { useBeforeUnload } from '@/hooks/before-unload'
-import { useDocumentTitle } from '@/hooks/document-title'
-import { useWorkflowStatus } from '@/hooks/workflow-status'
 import { useCommitAwareStorage } from '@/hooks/commit-aware-storage'
+import { useDocumentTitle } from '@/hooks/document-title'
+import { useGitHubAuth } from '@/hooks/github-auth'
+import { useWorkflowStatus } from '@/hooks/workflow-status'
 
 interface ListContextType {
   content: {
