@@ -1,7 +1,8 @@
 import { useState } from 'react'
 
-import { AutoForm } from '@raideno/auto-form/ui'
 import { Heading, Text } from '@radix-ui/themes'
+import { AutoForm } from '@raideno/auto-form/ui'
+import { toast } from 'sonner'
 
 import type React from 'react'
 import type { z } from 'zod/v4'
@@ -46,6 +47,14 @@ export const ResourceEditSheet: React.FC<ResourceEditSheetProps> = ({
     }
   }
 
+  const handleCancel = () => {
+    setOpen(false)
+  }
+
+  const handleError = () => {
+    toast.error('Please fix the errors in the form before submitting.')
+  }
+
   return (
     <Sheet.Root open={isOpen && list.canEdit} onOpenChange={setOpen}>
       {children && (
@@ -57,9 +66,9 @@ export const ResourceEditSheet: React.FC<ResourceEditSheetProps> = ({
           defaultValues={{
             ...element,
           }}
-          onCancel={() => setOpen(false)}
+          onCancel={handleCancel}
           onSubmit={handleSubmit}
-          onError={() => console.log('errror!')}
+          onError={handleError}
           className="w-full h-full grid grid-rows-[auto_1fr_auto] gap-4"
         >
           <Sheet.Header>

@@ -1,5 +1,18 @@
 import { useCallback, useEffect, useState } from 'react'
 
+/**
+ * Generates a prefixed localStorage key to avoid conflicts between different
+ * awesome lists hosted on the same domain (e.g., GitHub Pages).
+ *
+ * @param key - The original key
+ * @returns The prefixed key in the format: `awesome-website:${repositoryName}:${key}`
+ */
+function getPrefixedKey(key: string): string {
+  const repositoryName = __REPOSITORY_NAME__ || 'default-repository'
+  const ownerName = __REPOSITORY_OWNER__ || 'default-owner'
+  return `awesome-website=${ownerName}:${repositoryName}:${key}`
+}
+
 export function useLocalStorageState<T>(
   key: string,
   initialValue: T,
@@ -10,15 +23,17 @@ export function useLocalStorageState<T>(
 ) {
   const { serialize = JSON.stringify, deserialize = JSON.parse } = options
 
+  const prefixedKey = getPrefixedKey(key)
+
   const getStoredValue = useCallback((): T => {
     try {
-      const item = window.localStorage.getItem(key)
+      const item = window.localStorage.getItem(prefixedKey)
       return item ? deserialize(item) : initialValue
     } catch (error) {
-      console.warn(`Error reading localStorage key "${key}":`, error)
+      console.warn(`Error reading localStorage key "${prefixedKey}":`, error)
       return initialValue
     }
-  }, [key, initialValue, deserialize])
+  }, [prefixedKey, initialValue, deserialize])
 
   const [state, setState] = useState<T>(getStoredValue)
 
@@ -29,35 +44,35 @@ export function useLocalStorageState<T>(
 
         setState(valueToStore)
 
-        window.localStorage.setItem(key, serialize(valueToStore))
+        window.localStorage.setItem(prefixedKey, serialize(valueToStore))
 
         window.dispatchEvent(
           new CustomEvent('localStorage-update', {
-            detail: { key, value: valueToStore },
+            detail: { key: prefixedKey, value: valueToStore },
           }),
         )
       } catch (error) {
-        console.warn(`Error setting localStorage key "${key}":`, error)
+        console.warn(`Error setting localStorage key "${prefixedKey}":`, error)
       }
     },
-    [key, serialize, state],
+    [prefixedKey, serialize, state],
   )
 
   useEffect(() => {
     const handleStorageChange = (e: StorageEvent | CustomEvent) => {
-      if ('key' in e && e.key === key) {
+      if ('key' in e && e.key === prefixedKey) {
         if (e.newValue !== null) {
           try {
             const newValue = deserialize(e.newValue)
             setState(newValue)
           } catch (error) {
             console.warn(
-              `Error deserializing localStorage key "${key}":`,
+              `Error deserializing localStorage key "${prefixedKey}":`,
               error,
             )
           }
         }
-      } else if ('detail' in e && e.detail?.key === key) {
+      } else if ('detail' in e && e.detail?.key === prefixedKey) {
         setState(e.detail.value)
       }
     }
@@ -76,22 +91,22 @@ export function useLocalStorageState<T>(
         handleStorageChange as EventListener,
       )
     }
-  }, [key, deserialize])
+  }, [prefixedKey, deserialize])
 
   const clearValue = useCallback(() => {
     try {
-      window.localStorage.removeItem(key)
+      window.localStorage.removeItem(prefixedKey)
       setState(initialValue)
 
       window.dispatchEvent(
         new CustomEvent('localStorage-update', {
-          detail: { key, value: initialValue },
+          detail: { key: prefixedKey, value: initialValue },
         }),
       )
     } catch (error) {
-      console.warn(`Error removing localStorage key "${key}":`, error)
+      console.warn(`Error removing localStorage key "${prefixedKey}":`, error)
     }
-  }, [key, initialValue])
+  }, [prefixedKey, initialValue])
 
   return [state, setValue, clearValue] as const
 }

@@ -2,14 +2,15 @@ import { useState } from 'react'
 
 import { Heading, ScrollArea, Text } from '@radix-ui/themes'
 import { AutoForm } from '@raideno/auto-form/ui'
+import { toast } from 'sonner'
 
 import type React from 'react'
 import type { z } from 'zod/v4'
 
 import { AwesomeListMetadata } from '@/types/awesome-list'
 
-import { useList } from '@/context/list'
 import { Sheet } from '@/components/ui/sheet'
+import { useList } from '@/context/list'
 
 export interface ListMetadataEditSheetProps {
   children?: React.ReactNode
@@ -38,6 +39,14 @@ export const ListMetadataEditSheet: React.FC<ListMetadataEditSheetProps> = ({
     }
   }
 
+  const handleCancel = () => {
+    setOpen(false)
+  }
+
+  const handleError = () => {
+    toast.error('Please fix the errors in the form before submitting.')
+  }
+
   return (
     <Sheet.Root open={isOpen && list.canEdit} onOpenChange={setOpen}>
       {children && (
@@ -49,8 +58,9 @@ export const ListMetadataEditSheet: React.FC<ListMetadataEditSheetProps> = ({
           defaultValues={{
             ...list.content.new,
           }}
+          onCancel={handleCancel}
           onSubmit={handleSubmit}
-          onError={() => console.log('error!')}
+          onError={handleError}
           className="h-full grid grid-rows-[auto_1fr_auto] gap-4"
         >
           <Sheet.Header>
