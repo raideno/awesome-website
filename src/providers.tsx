@@ -7,6 +7,7 @@ import type React from 'react'
 import { EditingProvider } from '@/context/editing'
 import { FilterProvider } from '@/context/filter'
 import { ListProvider } from '@/context/list'
+import { MarkersProvider } from '@/context/markers'
 import { useTheme } from '@/context/theme'
 
 import { Toaster } from '@/components/ui/sooner'
@@ -37,8 +38,10 @@ export const Providers: React.FC<ProvidersProps> = ({ children }) => {
             <EditingProvider>
               <ListProvider>
                 <FilterProvider>
-                  <Toaster />
-                  <>{children}</>
+                  <MarkersProvider>
+                    <Toaster />
+                    <>{children}</>
+                  </MarkersProvider>
                 </FilterProvider>
               </ListProvider>
             </EditingProvider>

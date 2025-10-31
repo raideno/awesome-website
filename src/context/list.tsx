@@ -1,7 +1,7 @@
-// @ts-ignore: allow custom accentColor value
+// @ts-ignore: idk
 import list_ from 'virtual:awesome-list'
 
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import React, { createContext, useContext, useMemo } from 'react'
 
 import type { AwesomeList } from '@/types/awesome-list'
@@ -10,9 +10,9 @@ import { AwesomeListSchema } from '@/types/awesome-list'
 
 import { GitHubService } from '@/lib/github'
 
-import { useBeforeUnload } from '@/hooks/before-unload'
 import { useCommitAwareStorage } from '@/hooks/commit-aware-storage'
 import { useDocumentTitle } from '@/hooks/document-title'
+import { useDynamicMetadata } from '@/hooks/dynamic-metadata'
 import { useGitHubAuth } from '@/hooks/github-auth'
 import { useWorkflowStatus } from '@/hooks/workflow-status'
 
@@ -24,6 +24,7 @@ interface ListContextType {
   allTags: Array<string>
   updateList: (updates: Partial<AwesomeList>) => void
   clearChanges: () => void
+  syncRemoteList: (newList: AwesomeList) => void
   hasUnsavedChanges: boolean
   isWorkflowRunning: boolean
   canEdit: boolean
@@ -46,6 +47,7 @@ export const ListProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const githubAuth = useGitHubAuth()
   const { isWorkflowRunning, checkWorkflowStatus } = useWorkflowStatus()
+  const queryClient = useQueryClient()
 
   const {
     data: changes,
@@ -114,16 +116,17 @@ export const ListProvider: React.FC<{ children: React.ReactNode }> = ({
     clearPersistedChanges()
   }
 
+  const syncRemoteList = (newList: AwesomeList) => {
+    queryClient.setQueryData(['awesome-list'], newList)
+    clearPersistedChanges()
+  }
+
   const hasUnsavedChanges = Object.keys(changes).length > 0
   const canEdit = !isWorkflowRunning
   const error = queryError?.message || null
 
-  useBeforeUnload(
-    hasUnsavedChanges,
-    'You have unsaved changes to your awesome list. Are you sure you want to leave?',
-  )
-
   useDocumentTitle(hasUnsavedChanges)
+  useDynamicMetadata(list)
 
   return (
     <ListContext.Provider
@@ -135,6 +138,7 @@ export const ListProvider: React.FC<{ children: React.ReactNode }> = ({
         allTags,
         updateList,
         clearChanges,
+        syncRemoteList,
         hasUnsavedChanges,
         isWorkflowRunning,
         canEdit,
