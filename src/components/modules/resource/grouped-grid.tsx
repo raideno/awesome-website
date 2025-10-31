@@ -23,11 +23,6 @@ const GroupContainer: React.FC<{
   elements: Array<AwesomeListElement>
   color: string
 }> = ({ groupName, elements, color }) => {
-  const [isExpanded, setIsExpanded] = React.useState(false)
-
-  const displayedElements = isExpanded ? elements : elements.slice(0, 2)
-  const hasMore = elements.length > 2
-
   return (
     <Card
       className="transition-all contain-none"
@@ -51,25 +46,6 @@ const GroupContainer: React.FC<{
               {groupName}
             </Heading>
           </Flex>
-          {hasMore && (
-            <Button
-              variant="ghost"
-              size="2"
-              onClick={() => setIsExpanded(!isExpanded)}
-            >
-              {isExpanded ? (
-                <>
-                  <ChevronUpIcon width="16" height="16" />
-                  Show less
-                </>
-              ) : (
-                <>
-                  <ChevronDownIcon width="16" height="16" />
-                  Show {elements.length - 2} more
-                </>
-              )}
-            </Button>
-          )}
         </Flex>
 
         <Grid
@@ -80,7 +56,7 @@ const GroupContainer: React.FC<{
           }}
           gap="4"
         >
-          {displayedElements.map((element) => (
+          {elements.map((element) => (
             <ResourceCardContextMenu key={element.name} element={element}>
               <ResourceCard element={element} />
             </ResourceCardContextMenu>
