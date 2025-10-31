@@ -78,7 +78,9 @@ export const ResourceCreateSheet: React.FC<ResourceCreateSheetProps> = ({
           </Sheet.Header>
           <ScrollArea scrollbars="vertical">
             <Sheet.Body>
-              <AutoForm.Content />
+              <AutoForm.Content
+                fields={['name', 'description', 'link', 'tags', 'group']}
+              />
             </Sheet.Body>
           </ScrollArea>
           <Sheet.Footer>
