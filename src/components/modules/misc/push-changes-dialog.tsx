@@ -20,16 +20,14 @@ import type { AwesomeList } from '@/types/awesome-list'
 
 import { useList } from '@/context/list'
 import { useGitHubAuth } from '@/hooks/github-auth'
-import { useWorkflowStatus } from '@/hooks/workflow-status'
+import { getWorkflowStatus } from '@/hooks/workflow-status'
 import { GitHubService } from '@/lib/github'
 
 interface PushChangesDialogProps {
   children?: React.ReactNode
   yamlContent: AwesomeList
-  onSuccess?: () => void
   open?: boolean
   onOpenChange?: (open: boolean) => void
-  onWorkflowTriggered?: () => void
 }
 
 const PushChangesFormSchema = z.object({
@@ -39,28 +37,29 @@ const PushChangesFormSchema = z.object({
   path: z
     .string()
     .register(MetadataRegistry, { label: 'YAML File Path*', disabled: true }),
-  // TODO: encode something into the message title & description to know the commit origin
   message: z
     .string()
-    .register(MetadataRegistry, { label: 'Commit Message*', disabled: true }),
+    .min(1)
+    .max(48)
+    .register(MetadataRegistry, { label: 'Commit Message*', disabled: false }),
 })
 
 export const PushChangesDialog: React.FC<PushChangesDialogProps> = ({
   children,
   yamlContent,
-  onSuccess,
   open: controlledOpen,
   onOpenChange: controlledOnOpenChange,
-  onWorkflowTriggered,
 }) => {
   const [isOpen, setIsOpen] = useState(false)
   const githubAuth = useGitHubAuth()
-  const { clearChanges } = useList()
-
-  const { isWorkflowRunning, checkWorkflowStatus } = useWorkflowStatus()
+  const { clearChanges, syncRemoteList } = useList()
 
   const dialogOpen = controlledOpen !== undefined ? controlledOpen : isOpen
   const setDialogOpen = controlledOnOpenChange || setIsOpen
+
+  const handleError = () => {
+    toast.error('Something is wrong with your inputs.')
+  }
 
   const handleSubmit = async (data: z.infer<typeof PushChangesFormSchema>) => {
     try {
@@ -72,8 +71,9 @@ export const PushChangesDialog: React.FC<PushChangesDialogProps> = ({
         return
       }
 
-      await checkWorkflowStatus()
-      if (isWorkflowRunning) {
+      const status = await getWorkflowStatus({ token: githubAuth.token })
+
+      if (status.isWorkflowRunning) {
         toast.error('Build in progress', {
           description:
             'Cannot push changes while website is being updated. Please wait for the build to complete.',
@@ -93,14 +93,10 @@ export const PushChangesDialog: React.FC<PushChangesDialogProps> = ({
         description: 'The repository has been updated',
       })
 
-      onWorkflowTriggered?.()
+      setDialogOpen(false)
 
-      setTimeout(() => {
-        setDialogOpen(false)
-        onSuccess?.()
-        // NOTE: refresh the page to load the latest changes
-        window.location.reload()
-      }, 2000)
+      // NOTE: optimistic update, set the new list as the base list and clear changes to disable update button until new changes are made
+      syncRemoteList(yamlContent)
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : 'An unexpected error occurred'
@@ -108,10 +104,6 @@ export const PushChangesDialog: React.FC<PushChangesDialogProps> = ({
         description: errorMessage,
       })
     }
-  }
-
-  const handleCancellation = () => {
-    setDialogOpen(false)
   }
 
   const handleDiscardChanges = () => {
@@ -123,7 +115,7 @@ export const PushChangesDialog: React.FC<PushChangesDialogProps> = ({
     <Dialog.Root open={dialogOpen} onOpenChange={setDialogOpen}>
       {children && <Dialog.Trigger>{children}</Dialog.Trigger>}
       <Portal container={document.body}>
-        <Dialog.Content style={{ maxWidth: '500px' }}>
+        <Dialog.Content>
           <AutoForm.Root
             defaultValues={{
               path: __YAML_FILE_PATH__,
@@ -131,10 +123,9 @@ export const PushChangesDialog: React.FC<PushChangesDialogProps> = ({
               message: 'chore: update',
             }}
             schema={PushChangesFormSchema}
+            onError={handleError}
             onSubmit={handleSubmit}
-            // TODO: add some handlers to show sonner toasts if any error.
-            onError={undefined}
-            onCancel={handleCancellation}
+            onCancel={handleDiscardChanges}
           >
             <Flex direction="column" gap="4">
               <Box>
@@ -146,7 +137,16 @@ export const PushChangesDialog: React.FC<PushChangesDialogProps> = ({
                     Review and confirm pushing your changes to the repository.
                   </Dialog.Description>
                 </>
-                <Heading>Push Changes to Repository</Heading>
+                <Flex direction={'row'} align={'center'} justify={'between'}>
+                  <Heading>Push Changes to Repository</Heading>
+                  <Button
+                    type="button"
+                    onClick={() => setDialogOpen(false)}
+                    variant="outline"
+                  >
+                    Close
+                  </Button>
+                </Flex>
                 <Text>
                   Review and confirm pushing your changes to the repository.
                 </Text>
@@ -165,35 +165,13 @@ export const PushChangesDialog: React.FC<PushChangesDialogProps> = ({
               )}
 
               <AutoForm.Content />
-
-              {isWorkflowRunning && (
-                <Callout.Root color="amber">
-                  <Callout.Icon>
-                    <ExclamationTriangleIcon />
-                  </Callout.Icon>
-                  <Callout.Text>
-                    Cannot push changes while website is being updated. Please
-                    wait for the build to complete.
-                  </Callout.Text>
-                </Callout.Root>
-              )}
-
               <AutoForm.Actions>
                 <Flex direction={'column'} gap="3" justify="end">
-                  <Button
-                    variant="soft"
-                    color="red"
-                    onClick={handleDiscardChanges}
-                  >
+                  <AutoForm.Action variant="soft" color="red" type="reset">
                     Discard Changes
-                  </Button>
-                  <AutoForm.Action variant="soft" color="gray" type="reset">
-                    Cancel
                   </AutoForm.Action>
                   <AutoForm.Action variant="classic" type="submit">
-                    {isWorkflowRunning
-                      ? 'Build in Progress...'
-                      : 'Push Changes'}
+                    Push Changes
                   </AutoForm.Action>
                 </Flex>
               </AutoForm.Actions>

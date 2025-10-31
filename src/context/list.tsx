@@ -1,7 +1,7 @@
 // @ts-ignore: idk
 import list_ from 'virtual:awesome-list'
 
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import React, { createContext, useContext, useMemo } from 'react'
 
 import type { AwesomeList } from '@/types/awesome-list'
@@ -24,6 +24,7 @@ interface ListContextType {
   allTags: Array<string>
   updateList: (updates: Partial<AwesomeList>) => void
   clearChanges: () => void
+  syncRemoteList: (newList: AwesomeList) => void
   hasUnsavedChanges: boolean
   isWorkflowRunning: boolean
   canEdit: boolean
@@ -46,6 +47,7 @@ export const ListProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const githubAuth = useGitHubAuth()
   const { isWorkflowRunning, checkWorkflowStatus } = useWorkflowStatus()
+  const queryClient = useQueryClient()
 
   const {
     data: changes,
@@ -114,6 +116,11 @@ export const ListProvider: React.FC<{ children: React.ReactNode }> = ({
     clearPersistedChanges()
   }
 
+  const syncRemoteList = (newList: AwesomeList) => {
+    queryClient.setQueryData(['awesome-list'], newList)
+    clearPersistedChanges()
+  }
+
   const hasUnsavedChanges = Object.keys(changes).length > 0
   const canEdit = !isWorkflowRunning
   const error = queryError?.message || null
@@ -131,6 +138,7 @@ export const ListProvider: React.FC<{ children: React.ReactNode }> = ({
         allTags,
         updateList,
         clearChanges,
+        syncRemoteList,
         hasUnsavedChanges,
         isWorkflowRunning,
         canEdit,
