@@ -54,7 +54,7 @@ const GroupContainer: React.FC<{
         >
           {elements.map((element) => (
             <ResourceCardContextMenu key={element.name} element={element}>
-              <ResourceCard element={element} />
+              <ResourceCard element={element} groupColor={color} />
             </ResourceCardContextMenu>
           ))}
         </Grid>

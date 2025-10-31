@@ -4,6 +4,7 @@ import type { AwesomeListElement } from '@/types/awesome-list'
 
 import { useFilter } from '@/context/filter'
 import { useList } from '@/context/list'
+import { useMarkers } from '@/context/markers'
 
 import { GroupedResourceGrid } from '@/components/modules/resource/grouped-grid'
 
@@ -56,16 +57,21 @@ export interface ResourceGridProps {}
 export const ResourceGrid: React.FC<ResourceGridProps> = () => {
   const { search, selectedTags, tagsFilterOperator } = useFilter()
   const list = useList()
+  const { getElementBehavior } = useMarkers()
 
-  const filteredElements = React.useMemo(
-    () =>
-      filterElements(list.content.new.elements, {
-        search,
-        selectedTags,
-        tagsFilterOperator,
-      }),
-    [search, list.content.new.elements, selectedTags, tagsFilterOperator],
-  )
+  const filteredElements = React.useMemo(() => {
+    return filterElements(list.content.new.elements, {
+      search,
+      selectedTags,
+      tagsFilterOperator,
+    })
+  }, [
+    search,
+    list.content.new.elements,
+    selectedTags,
+    tagsFilterOperator,
+    getElementBehavior,
+  ])
 
   return <GroupedResourceGrid filteredElements={filteredElements} />
 }

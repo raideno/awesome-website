@@ -64,6 +64,14 @@ export const TagFilterModal: React.FC<FilterModalProps> = ({
         </style>
         <Flex className="w-full" direction={'column'} gap={'4'}>
           <Box>
+            <>
+              <Dialog.Title className="sr-only">Select Tags</Dialog.Title>
+              <Dialog.Description className="sr-only">
+                Select tags to filter the resources. You can use "Or" to match
+                any tag, "&" to match all selected tags, or "Not" to exclude
+                resources with any of the selected tags.
+              </Dialog.Description>
+            </>
             <Heading size={'4'} slot="title" className="text-lg font-bold">
               Select Tags
             </Heading>

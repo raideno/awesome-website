@@ -10,6 +10,8 @@ import { Footer } from '@/components/layout/footer'
 import { Header } from '@/components/layout/header'
 import { TagFilterModal } from '@/components/modules/filter/modal'
 import { FilterModalTrigger } from '@/components/modules/filter/modal-trigger'
+import { MarkersModal } from '@/components/modules/markers/modal'
+import { MarkersModalTrigger } from '@/components/modules/markers/modal-trigger'
 import { ResourceGrid } from '@/components/modules/resource/grid'
 
 export interface AppProps {}
@@ -31,8 +33,8 @@ export const App: React.FC<AppProps> = () => {
                 {`
                   .controls {
                     display: grid;
-                    grid-template-columns: 1fr;
-                    grid-template-areas: "search 1fr filter";
+                    grid-template-columns: 1fr auto auto;
+                    grid-template-areas: "search filter markers";
                     gap: 0.5rem;
                     align-items: center;
                   }
@@ -45,12 +47,17 @@ export const App: React.FC<AppProps> = () => {
                     grid-area: filter;
                   }
 
+                  .controls__markers {
+                    grid-area: markers;
+                  }
+
                   @media (max-width: 600px) {
                     .controls {
                       grid-template-columns: 1fr;
                       grid-template-areas:
-                        "search search"
-                        "filter filter";
+                        "search"
+                        "filter"
+                        "markers";
                       gap: 0.5rem;
                     }
                   }
@@ -72,6 +79,11 @@ export const App: React.FC<AppProps> = () => {
                   <TagFilterModal>
                     <FilterModalTrigger className="w-full" />
                   </TagFilterModal>
+                </Box>
+                <Box className="controls__markers">
+                  <MarkersModal>
+                    <MarkersModalTrigger className="w-full" />
+                  </MarkersModal>
                 </Box>
               </div>
 
