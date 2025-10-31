@@ -1,8 +1,4 @@
-import {
-  ChevronDownIcon,
-  ChevronUpIcon,
-  FileTextIcon,
-} from '@radix-ui/react-icons'
+import { FileTextIcon } from '@radix-ui/react-icons'
 import { Box, Button, Card, Flex, Grid, Heading, Text } from '@radix-ui/themes'
 
 import React from 'react'
