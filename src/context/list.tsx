@@ -1,4 +1,4 @@
-// @ts-ignore: allow custom accentColor value
+// @ts-ignore: idk
 import list_ from 'virtual:awesome-list'
 
 import { useQuery } from '@tanstack/react-query'
@@ -10,7 +10,6 @@ import { AwesomeListSchema } from '@/types/awesome-list'
 
 import { GitHubService } from '@/lib/github'
 
-import { useBeforeUnload } from '@/hooks/before-unload'
 import { useCommitAwareStorage } from '@/hooks/commit-aware-storage'
 import { useDocumentTitle } from '@/hooks/document-title'
 import { useGitHubAuth } from '@/hooks/github-auth'
@@ -117,11 +116,6 @@ export const ListProvider: React.FC<{ children: React.ReactNode }> = ({
   const hasUnsavedChanges = Object.keys(changes).length > 0
   const canEdit = !isWorkflowRunning
   const error = queryError?.message || null
-
-  useBeforeUnload(
-    hasUnsavedChanges,
-    'You have unsaved changes to your awesome list. Are you sure you want to leave?',
-  )
 
   useDocumentTitle(hasUnsavedChanges)
 
