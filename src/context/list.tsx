@@ -12,6 +12,7 @@ import { GitHubService } from '@/lib/github'
 
 import { useCommitAwareStorage } from '@/hooks/commit-aware-storage'
 import { useDocumentTitle } from '@/hooks/document-title'
+import { useDynamicMetadata } from '@/hooks/dynamic-metadata'
 import { useGitHubAuth } from '@/hooks/github-auth'
 import { useWorkflowStatus } from '@/hooks/workflow-status'
 
@@ -118,6 +119,7 @@ export const ListProvider: React.FC<{ children: React.ReactNode }> = ({
   const error = queryError?.message || null
 
   useDocumentTitle(hasUnsavedChanges)
+  useDynamicMetadata(list)
 
   return (
     <ListContext.Provider
