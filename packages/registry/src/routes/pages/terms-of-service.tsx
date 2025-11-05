@@ -1,10 +1,10 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/auth/')({
+export const Route = createFileRoute('/pages/terms-of-service')({
   component: () => {
     return (
       <div>
-        <div>Auth with GitHub.</div>
+        <div>Hello "/pages/terms-of-service"!</div>
       </div>
     )
   },

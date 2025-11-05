@@ -9,8 +9,9 @@
  */
 
 import type * as auth from "../auth.js";
+import type * as github from "../github.js";
 import type * as http from "../http.js";
-import type * as myFunctions from "../myFunctions.js";
+import type * as lists from "../lists.js";
 import type * as stripe from "../stripe.js";
 
 import type {
@@ -29,8 +30,9 @@ import type {
  */
 declare const fullApi: ApiFromModules<{
   auth: typeof auth;
+  github: typeof github;
   http: typeof http;
-  myFunctions: typeof myFunctions;
+  lists: typeof lists;
   stripe: typeof stripe;
 }>;
 declare const fullApiWithMounts: typeof fullApi;

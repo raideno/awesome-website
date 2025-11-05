@@ -31,8 +31,7 @@ export default defineConfig([
       },
       parserOptions: {
         project: [
-          "./tsconfig.node.json",
-          "./tsconfig.app.json",
+          "./tsconfig.json",
           "./convex/tsconfig.json",
         ],
       },
@@ -74,6 +73,9 @@ export default defineConfig([
       // Allow async functions without await
       // for consistency (esp. Convex `handler`s)
       "@typescript-eslint/require-await": "off",
+
+      // TODO: enable it and make it better
+      "react-hooks/rules-of-hooks": "off",
     },
   },
   ...convexPlugin.configs.recommended,

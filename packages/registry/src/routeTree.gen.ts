@@ -9,13 +9,18 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ExploreIndexRouteImport } from './routes/explore/index'
-import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
-import { Route as AuthIndexRouteImport } from './routes/auth/index'
-import { Route as DashboardPaymentIndexRouteImport } from './routes/dashboard/payment/index'
-import { Route as DashboardNewIndexRouteImport } from './routes/dashboard/new/index'
+import { Route as PagesTermsOfServiceRouteImport } from './routes/pages/terms-of-service'
+import { Route as PagesPrivacyPolicyRouteImport } from './routes/pages/privacy-policy'
+import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard/index'
+import { Route as AuthenticatedDashboardPaymentIndexRouteImport } from './routes/_authenticated/dashboard/payment/index'
 
+const AuthenticatedRoute = AuthenticatedRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -26,90 +31,100 @@ const ExploreIndexRoute = ExploreIndexRouteImport.update({
   path: '/explore/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DashboardIndexRoute = DashboardIndexRouteImport.update({
-  id: '/dashboard/',
-  path: '/dashboard/',
+const PagesTermsOfServiceRoute = PagesTermsOfServiceRouteImport.update({
+  id: '/pages/terms-of-service',
+  path: '/pages/terms-of-service',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthIndexRoute = AuthIndexRouteImport.update({
-  id: '/auth/',
-  path: '/auth/',
+const PagesPrivacyPolicyRoute = PagesPrivacyPolicyRouteImport.update({
+  id: '/pages/privacy-policy',
+  path: '/pages/privacy-policy',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DashboardPaymentIndexRoute = DashboardPaymentIndexRouteImport.update({
-  id: '/dashboard/payment/',
-  path: '/dashboard/payment/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DashboardNewIndexRoute = DashboardNewIndexRouteImport.update({
-  id: '/dashboard/new/',
-  path: '/dashboard/new/',
-  getParentRoute: () => rootRouteImport,
-} as any)
+const AuthenticatedDashboardIndexRoute =
+  AuthenticatedDashboardIndexRouteImport.update({
+    id: '/dashboard/',
+    path: '/dashboard/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedDashboardPaymentIndexRoute =
+  AuthenticatedDashboardPaymentIndexRouteImport.update({
+    id: '/dashboard/payment/',
+    path: '/dashboard/payment/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/auth': typeof AuthIndexRoute
-  '/dashboard': typeof DashboardIndexRoute
+  '/pages/privacy-policy': typeof PagesPrivacyPolicyRoute
+  '/pages/terms-of-service': typeof PagesTermsOfServiceRoute
   '/explore': typeof ExploreIndexRoute
-  '/dashboard/new': typeof DashboardNewIndexRoute
-  '/dashboard/payment': typeof DashboardPaymentIndexRoute
+  '/dashboard': typeof AuthenticatedDashboardIndexRoute
+  '/dashboard/payment': typeof AuthenticatedDashboardPaymentIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/auth': typeof AuthIndexRoute
-  '/dashboard': typeof DashboardIndexRoute
+  '/pages/privacy-policy': typeof PagesPrivacyPolicyRoute
+  '/pages/terms-of-service': typeof PagesTermsOfServiceRoute
   '/explore': typeof ExploreIndexRoute
-  '/dashboard/new': typeof DashboardNewIndexRoute
-  '/dashboard/payment': typeof DashboardPaymentIndexRoute
+  '/dashboard': typeof AuthenticatedDashboardIndexRoute
+  '/dashboard/payment': typeof AuthenticatedDashboardPaymentIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/auth/': typeof AuthIndexRoute
-  '/dashboard/': typeof DashboardIndexRoute
+  '/_authenticated': typeof AuthenticatedRouteWithChildren
+  '/pages/privacy-policy': typeof PagesPrivacyPolicyRoute
+  '/pages/terms-of-service': typeof PagesTermsOfServiceRoute
   '/explore/': typeof ExploreIndexRoute
-  '/dashboard/new/': typeof DashboardNewIndexRoute
-  '/dashboard/payment/': typeof DashboardPaymentIndexRoute
+  '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
+  '/_authenticated/dashboard/payment/': typeof AuthenticatedDashboardPaymentIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/auth'
-    | '/dashboard'
+    | '/pages/privacy-policy'
+    | '/pages/terms-of-service'
     | '/explore'
-    | '/dashboard/new'
+    | '/dashboard'
     | '/dashboard/payment'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/auth'
-    | '/dashboard'
+    | '/pages/privacy-policy'
+    | '/pages/terms-of-service'
     | '/explore'
-    | '/dashboard/new'
+    | '/dashboard'
     | '/dashboard/payment'
   id:
     | '__root__'
     | '/'
-    | '/auth/'
-    | '/dashboard/'
+    | '/_authenticated'
+    | '/pages/privacy-policy'
+    | '/pages/terms-of-service'
     | '/explore/'
-    | '/dashboard/new/'
-    | '/dashboard/payment/'
+    | '/_authenticated/dashboard/'
+    | '/_authenticated/dashboard/payment/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AuthIndexRoute: typeof AuthIndexRoute
-  DashboardIndexRoute: typeof DashboardIndexRoute
+  AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
+  PagesPrivacyPolicyRoute: typeof PagesPrivacyPolicyRoute
+  PagesTermsOfServiceRoute: typeof PagesTermsOfServiceRoute
   ExploreIndexRoute: typeof ExploreIndexRoute
-  DashboardNewIndexRoute: typeof DashboardNewIndexRoute
-  DashboardPaymentIndexRoute: typeof DashboardPaymentIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AuthenticatedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -124,44 +139,58 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExploreIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/dashboard/': {
-      id: '/dashboard/'
+    '/pages/terms-of-service': {
+      id: '/pages/terms-of-service'
+      path: '/pages/terms-of-service'
+      fullPath: '/pages/terms-of-service'
+      preLoaderRoute: typeof PagesTermsOfServiceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pages/privacy-policy': {
+      id: '/pages/privacy-policy'
+      path: '/pages/privacy-policy'
+      fullPath: '/pages/privacy-policy'
+      preLoaderRoute: typeof PagesPrivacyPolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/dashboard/': {
+      id: '/_authenticated/dashboard/'
       path: '/dashboard'
       fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedDashboardIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
     }
-    '/auth/': {
-      id: '/auth/'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/dashboard/payment/': {
-      id: '/dashboard/payment/'
+    '/_authenticated/dashboard/payment/': {
+      id: '/_authenticated/dashboard/payment/'
       path: '/dashboard/payment'
       fullPath: '/dashboard/payment'
-      preLoaderRoute: typeof DashboardPaymentIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/dashboard/new/': {
-      id: '/dashboard/new/'
-      path: '/dashboard/new'
-      fullPath: '/dashboard/new'
-      preLoaderRoute: typeof DashboardNewIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedDashboardPaymentIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
     }
   }
 }
 
+interface AuthenticatedRouteChildren {
+  AuthenticatedDashboardIndexRoute: typeof AuthenticatedDashboardIndexRoute
+  AuthenticatedDashboardPaymentIndexRoute: typeof AuthenticatedDashboardPaymentIndexRoute
+}
+
+const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedDashboardIndexRoute: AuthenticatedDashboardIndexRoute,
+  AuthenticatedDashboardPaymentIndexRoute:
+    AuthenticatedDashboardPaymentIndexRoute,
+}
+
+const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
+  AuthenticatedRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AuthIndexRoute: AuthIndexRoute,
-  DashboardIndexRoute: DashboardIndexRoute,
+  AuthenticatedRoute: AuthenticatedRouteWithChildren,
+  PagesPrivacyPolicyRoute: PagesPrivacyPolicyRoute,
+  PagesTermsOfServiceRoute: PagesTermsOfServiceRoute,
   ExploreIndexRoute: ExploreIndexRoute,
-  DashboardNewIndexRoute: DashboardNewIndexRoute,
-  DashboardPaymentIndexRoute: DashboardPaymentIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

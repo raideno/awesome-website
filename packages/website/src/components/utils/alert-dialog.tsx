@@ -129,9 +129,7 @@ export function AlertDialogProvider({
               <AlertDialog.Title className="sr-only">
                 {state.title}
               </AlertDialog.Title>
-              <Heading size={'5'} weight={'bold'}>
-                {state.title}
-              </Heading>
+              <Heading weight={'bold'}>{state.title}</Heading>
             </Box>
 
             <Separator

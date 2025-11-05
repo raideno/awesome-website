@@ -6,13 +6,15 @@ type Theme = 'dark' | 'light'
 
 const DEFAULT_THEME: Theme = 'light'
 
-interface ThemeContextType {
+export interface ThemeContextType {
   theme: Theme
   toggleTheme: () => void
   setTheme: (theme: Theme) => void
 }
 
-const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
+export const ThemeContext = createContext<ThemeContextType | undefined>(
+  undefined,
+)
 
 export const useTheme = () => {
   const context = useContext(ThemeContext)

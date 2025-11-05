@@ -1,5 +1,6 @@
 import { Theme } from '@radix-ui/themes'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ConvexHttpClient } from 'convex/browser'
 import { useState } from 'react'
 
 import type React from 'react'
