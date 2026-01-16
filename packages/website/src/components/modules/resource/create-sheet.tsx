@@ -16,11 +16,13 @@ import { useList } from '@/contexts/list'
 export interface ResourceCreateSheetProps {
   children?: React.ReactNode
   state?: { open: boolean; onOpenChange: (open: boolean) => void }
+  defaults?: Partial<z.infer<typeof AwesomeListElementSchema>>
 }
 
 export const ResourceCreateSheet: React.FC<ResourceCreateSheetProps> = ({
   children,
   state,
+  defaults = {},
 }) => {
   const list = useList()
 
@@ -66,6 +68,8 @@ export const ResourceCreateSheet: React.FC<ResourceCreateSheetProps> = ({
             notes: '',
             link: '',
             tags: [],
+            group: '',
+            ...defaults,
           }}
           onCancel={handleCancel}
           onSubmit={handleSubmit}

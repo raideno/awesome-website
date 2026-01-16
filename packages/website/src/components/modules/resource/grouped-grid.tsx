@@ -1,14 +1,26 @@
-import { FileTextIcon } from '@radix-ui/react-icons'
-import { Box, Button, Card, Flex, Grid, Heading, Text } from '@radix-ui/themes'
+import { FileTextIcon, PlusIcon } from '@radix-ui/react-icons'
+import {
+  Box,
+  Button,
+  Card,
+  ContextMenu,
+  Flex,
+  Grid,
+  Heading,
+  Text,
+} from '@radix-ui/themes'
 
 import React from 'react'
 
 import type { AwesomeListElement } from '@/types/awesome-list'
 
 import { useFilter } from '@/contexts/filter'
+import { useEditing } from '@/contexts/editing'
 
 import { ResourceCard } from '@/components/modules/resource/card'
 import { ResourceCardContextMenu } from '@/components/modules/resource/card-context-menu'
+import { ResourceCreateSheet } from '@/components/modules/resource/create-sheet'
+import { AdminOnly } from '@/components/utils/admin-only'
 
 export interface GroupedResourceGridProps {
   filteredElements: Array<AwesomeListElement>
@@ -19,47 +31,77 @@ const GroupContainer: React.FC<{
   elements: Array<AwesomeListElement>
   color: string
 }> = ({ groupName, elements, color }) => {
-  return (
-    <Card
-      className="transition-all contain-none"
-      style={{
-        borderLeft: `4px solid ${color}`,
-        backgroundColor: `${color}08`,
-      }}
-    >
-      <Flex direction="column" gap="4">
-        <Flex justify="between" align="center">
-          <Flex align="center" gap="2">
-            <Box
-              style={{
-                width: '12px',
-                height: '12px',
-                borderRadius: '50%',
-                backgroundColor: color,
-              }}
-            />
-            <Heading size="5" weight="bold">
-              {groupName}
-            </Heading>
-          </Flex>
-        </Flex>
+  const [createSheetOpen, setCreateSheetOpen] = React.useState(false)
+  const { editingEnabled } = useEditing()
 
-        <Grid
-          columns={{
-            initial: '1',
-            md: '2',
-            lg: '3',
-          }}
-          gap="4"
-        >
-          {elements.map((element) => (
-            <ResourceCardContextMenu key={element.name} element={element}>
-              <ResourceCard element={element} groupColor={color} />
-            </ResourceCardContextMenu>
-          ))}
-        </Grid>
-      </Flex>
-    </Card>
+  return (
+    <>
+      <ContextMenu.Root>
+        <ContextMenu.Trigger disabled={!editingEnabled}>
+          <Card
+            className="transition-all contain-none"
+            style={{
+              borderLeft: `4px solid ${color}`,
+              backgroundColor: `${color}08`,
+            }}
+          >
+            <Flex direction="column" gap="4">
+              <Flex justify="between" align="center">
+                <Flex align="center" gap="2">
+                  <Box
+                    style={{
+                      width: '12px',
+                      height: '12px',
+                      borderRadius: '50%',
+                      backgroundColor: color,
+                    }}
+                  />
+                  <Heading size="5" weight="bold">
+                    {groupName}
+                  </Heading>
+                </Flex>
+              </Flex>
+
+              <Grid
+                columns={{
+                  initial: '1',
+                  md: '2',
+                  lg: '3',
+                }}
+                gap="4"
+              >
+                {elements.map((element) => (
+                  <ResourceCardContextMenu key={element.name} element={element}>
+                    <ResourceCard element={element} groupColor={color} />
+                  </ResourceCardContextMenu>
+                ))}
+              </Grid>
+            </Flex>
+          </Card>
+        </ContextMenu.Trigger>
+        <ContextMenu.Content>
+          {editingEnabled && (
+            <AdminOnly>
+              <ContextMenu.Item onClick={() => setCreateSheetOpen(true)}>
+                <Flex align="center" gap="2">
+                  <PlusIcon />
+                  Create Item
+                </Flex>
+              </ContextMenu.Item>
+            </AdminOnly>
+          )}
+        </ContextMenu.Content>
+      </ContextMenu.Root>
+
+      {editingEnabled && (
+        <ResourceCreateSheet
+          state={{ open: createSheetOpen, onOpenChange: setCreateSheetOpen }}
+          defaults={
+            groupName !== 'Ungrouped' ? { group: groupName } : undefined
+          }
+        />
+      )}
+    </>
   )
 }
 
