@@ -2,7 +2,7 @@ import { useConfirm } from '@/components/confirmation-dialog'
 import { useMutation } from 'convex/react'
 import * as React from 'react'
 
-import { api } from '../../../../../convex/_generated/api'
+import { api } from '@/convex.generated/api'
 
 export const useListDelete = (existingLists: any[]) => {
   const confirm = useConfirm()

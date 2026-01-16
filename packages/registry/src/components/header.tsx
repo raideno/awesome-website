@@ -28,13 +28,10 @@ export const Header = () => {
     <header>
       <nav
         data-state={menuState && 'active'}
-        className={cn(
-          'fixed z-50 w-full',
-          'border-b border-[var(--gray-7)] bg-white',
-        )}
+        className={cn('w-full', 'border-b border-[var(--gray-7)]')}
       >
         <div className="mx-auto max-w-3xl">
-          <div className="relative flex flex-wrap items-center justify-between gap-6 py-3 lg:gap-0">
+          <div className="flex flex-wrap items-center justify-between gap-6 py-3 lg:gap-0">
             <div className="flex w-full justify-between gap-6 lg:w-auto">
               <Link
                 to="/"

@@ -1,34 +1,72 @@
-'use node'
-
+import { ActionCache } from '@convex-dev/action-cache'
 import { getAuthUserId } from '@convex-dev/auth/server'
 import { v } from 'convex/values'
 import { Octokit } from 'octokit'
 
-import { action } from '@/convex/server'
+import { components, internal } from '@/convex.generated/api'
+import { action, internalAction } from '@/convex.generated/server'
+import { getValidGithubAccessToken } from '@/convex/auth'
 
-import { getValidGithubAccessToken } from './auth'
+export const MAX_REPOSITORIES = 100
 
-// TODO: make this faster by adding some caching and stuff
+/**
+ * 1 hour.
+ */
+export const CACHE_TIME_TO_LIVE = 1000 * 60 * 60 * 1
 
-const MAX_REPOSITORIES = 100
+export const cachedIsAwesomeRepository = new ActionCache(
+  components.actionCache,
+  {
+    action: internal.github.isAwesomeRepository,
+    name: 'github.workflows',
+    ttl: CACHE_TIME_TO_LIVE,
+    log: false,
+  },
+)
 
-export const listRepositories = action({
+export const isAwesomeRepository = internalAction({
   args: {
+    token: v.string(),
+    login: v.string(),
+    name: v.string(),
+  },
+  handler: async (context, args) => {
+    const application = new Octokit({
+      auth: args.token,
+    })
+
+    try {
+      const response = await application.rest.repos.getContent({
+        owner: args.login,
+        repo: args.name,
+        path: '.github/workflows/deploy-awesome-website.yml',
+      })
+      return response.status === 200
+    } catch (error) {
+      return false
+    }
+  },
+})
+
+export const cachedListRepositories = new ActionCache(components.actionCache, {
+  action: internal.github.listRepositories,
+  name: 'github.repositories',
+  ttl: CACHE_TIME_TO_LIVE,
+  log: false,
+})
+
+export const listRepositories = internalAction({
+  args: {
+    token: v.string(),
     visibility: v.union(
       v.literal('all'),
       v.literal('public'),
       v.literal('private'),
     ),
   },
-  handler: async (ctx, args) => {
-    const userId = await getAuthUserId(ctx)
-
-    if (!userId) throw new Error('User ID not found')
-
-    const token = await getValidGithubAccessToken(ctx, userId)
-
+  handler: async (_, args) => {
     const application = new Octokit({
-      auth: token,
+      auth: args.token,
     })
 
     const response = await application.rest.repos.listForAuthenticatedUser({
@@ -42,69 +80,50 @@ export const listRepositories = action({
 
     const repositories = response.data
 
-    // Check each repository for awesome-website action usage in workflows
+    return repositories
+  },
+})
+
+export const repositories = action({
+  args: {
+    visibility: v.union(
+      v.literal('all'),
+      v.literal('public'),
+      v.literal('private'),
+    ),
+    force: v.optional(v.boolean()),
+  },
+  handler: async (context, args) => {
+    const userId = await getAuthUserId(context)
+
+    if (!userId) throw new Error('User ID not found')
+
+    const token = await getValidGithubAccessToken(context, userId)
+
+    const repositories = await cachedListRepositories.fetch(
+      context,
+      {
+        token: token,
+        visibility: args.visibility,
+      },
+      {
+        force: args.force,
+      },
+    )
+
     const repositoriesWithAwesomeCheck = await Promise.all(
       repositories.map(async (repository) => {
-        let isAwesomeRepository = false
-
-        try {
-          // Get the workflows directory contents
-          const workflowsResponse = await application.rest.repos.getContent({
-            owner: repository.owner.login,
-            repo: repository.name,
-            path: '.github/workflows',
-          })
-
-          // If workflows directory exists and contains files
-          if (
-            workflowsResponse.status === 200 &&
-            Array.isArray(workflowsResponse.data)
-          ) {
-            // Check each workflow file
-            for (const file of workflowsResponse.data) {
-              if (
-                file.type === 'file' &&
-                (file.name.endsWith('.yml') || file.name.endsWith('.yaml'))
-              ) {
-                try {
-                  // Get the workflow file content
-                  const fileResponse = await application.rest.repos.getContent({
-                    owner: repository.owner.login,
-                    repo: repository.name,
-                    path: file.path,
-                  })
-
-                  if (
-                    fileResponse.status === 200 &&
-                    'content' in fileResponse.data
-                  ) {
-                    // Decode the base64 content
-                    const content = Buffer.from(
-                      fileResponse.data.content,
-                      'base64',
-                    ).toString('utf-8')
-
-                    // Check if the workflow uses the awesome-website action
-                    // Pattern: raideno/awesome-website@<version>
-                    if (/raideno\/awesome-website@/i.test(content)) {
-                      isAwesomeRepository = true
-                      break
-                    }
-                  }
-                } catch (fileError) {
-                  // Skip files that can't be read
-                  console.warn(
-                    `Could not read workflow file ${file.path}:`,
-                    fileError,
-                  )
-                }
-              }
-            }
-          }
-        } catch {
-          // Repository might not have .github/workflows directory or we don't have access
-          // This is expected for many repositories, so we just mark as not awesome
-        }
+        const isAwesomeRepository = await cachedIsAwesomeRepository.fetch(
+          context,
+          {
+            token: token,
+            login: repository.owner.login,
+            name: repository.name,
+          },
+          {
+            force: args.force,
+          },
+        )
 
         return {
           id: repository.id,

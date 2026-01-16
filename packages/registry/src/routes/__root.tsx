@@ -4,6 +4,7 @@ import * as React from 'react'
 import { Footer } from '@/components/footer'
 import { Header } from '@/components/header'
 import { ProtectedAuthDialog } from '@/components/protected-auth-dialog'
+import { SubscriptionBanner } from '@/components/subscription-banner'
 import { AuthenticationContextType } from '@/contexts/authentication'
 import { SubscriptionContextType } from '@/contexts/subscription'
 
@@ -19,6 +20,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
   component: () => {
     return (
       <React.Fragment>
+        <SubscriptionBanner />
         <Header />
         <div className="mx-auto max-w-3xl py-20 pt-24">
           <Outlet />

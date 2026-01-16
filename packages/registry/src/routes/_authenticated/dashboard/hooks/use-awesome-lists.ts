@@ -3,7 +3,7 @@ import * as React from 'react'
 
 import { AwesomeListRepository } from '@/types/awesome-list-repository'
 
-import { api } from '../../../../../convex/_generated/api'
+import { api } from '@/convex.generated/api'
 
 export const useAwesomeLists = () => {
   const convexListsQuery = useQuery(api.lists.get)

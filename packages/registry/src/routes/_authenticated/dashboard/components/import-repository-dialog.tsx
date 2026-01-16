@@ -19,7 +19,7 @@ import {
 import { useAction, useMutation } from 'convex/react'
 import * as React from 'react'
 
-import { api } from '../../../../../convex/_generated/api'
+import { api } from '@/convex.generated/api'
 
 import type { AwesomeListRepository } from '@/types/awesome-list-repository'
 
@@ -51,7 +51,7 @@ export const ImportRepositoryDialog: React.FC<ImportRepositoryDialogProps> = ({
   const [searchQuery, setSearchQuery] = React.useState('')
   const [visibility] = React.useState<'all' | 'public' | 'private'>('all')
 
-  const listRepositories = useAction(api.github.listRepositories)
+  const listRepositories = useAction(api.github.repositories)
   const registerList = useMutation(api.lists.register)
 
   // Fetch repositories using TanStack Query

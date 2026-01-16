@@ -1,15 +1,11 @@
-import { convexAuth, getAuthUserId } from '@convex-dev/auth/server'
+import { getAuthUserId } from '@convex-dev/auth/server'
 import { internalConvexStripe } from '@raideno/convex-stripe/server'
-
-import { action, query } from './_generated/server'
 import { v } from 'convex/values'
 
-export const { stripe, store, sync, setup } = internalConvexStripe({
-  stripe: {
-    secret_key: process.env.STRIPE_SECRET_KEY!,
-    webhook_secret: process.env.STRIPE_WEBHOOK_SECRET!,
-  },
-})
+import { action, query } from '@/convex.generated/server'
+import stripeConfig from '@/convex/stripe.config'
+
+export const { stripe, store, sync, setup } = internalConvexStripe(stripeConfig)
 
 export const products = query({
   args: {},
@@ -28,7 +24,7 @@ export const products = query({
 
 export const subscription = query({
   args: {},
-  handler: async (context, args) => {
+  handler: async (context) => {
     const userId = await getAuthUserId(context)
 
     if (!userId) return null
@@ -87,8 +83,9 @@ export const subscribe = action({
     const checkout = await stripe.subscribe(context as any, {
       entityId: userId,
       priceId: args.priceId,
-      success: { url: args.successRedirectUrl },
-      cancel: { url: args.cancelRedirectUrl },
+      mode: 'subscription',
+      success_url: args.successRedirectUrl,
+      cancel_url: args.cancelRedirectUrl,
     })
 
     return checkout
@@ -106,7 +103,7 @@ export const portal = action({
 
     const portal = await stripe.portal(context as any, {
       entityId: userId,
-      return: { url: args.returnRedirectUrl },
+      return_url: args.returnRedirectUrl,
     })
 
     return portal

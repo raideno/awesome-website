@@ -1,11 +1,10 @@
 import { useAuthActions } from '@convex-dev/auth/react'
 import { GitHubLogoIcon } from '@radix-ui/react-icons'
 import { Box, Button, Code, Dialog, Heading, Text } from '@radix-ui/themes'
-import { Link, useNavigate, useSearch } from '@tanstack/react-router'
+import { Link, useSearch } from '@tanstack/react-router'
 import React from 'react'
 
 export const ProtectedAuthDialog: React.FC = () => {
-  const navigate = useNavigate()
   const search = useSearch({ strict: false })
   const { signIn } = useAuthActions()
 

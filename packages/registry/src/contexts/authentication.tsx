@@ -3,12 +3,13 @@ import { useQuery } from 'convex/react'
 import { FunctionReturnType } from 'convex/server'
 import React from 'react'
 
-import { api } from '../../convex/_generated/api'
+import { api } from '@/convex.generated/api'
 
 /**
  * undefined is set as a loading state meaning we do not know yet.
  */
 export interface AuthenticationContextType {
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   user: FunctionReturnType<typeof api.auth.self> | null | undefined
 
   isAuthenticated: boolean
@@ -61,12 +62,7 @@ export const AuthenticationContextProvider: React.FC<{
     await signOut_()
   }
 
-  if (blocking && isLoading)
-    return (
-      <div>
-        <div>Loading...</div>
-      </div>
-    )
+  if (blocking && isLoading) return <div>{/* <div>Loading...</div> */}</div>
 
   return (
     <AuthenticationContext.Provider

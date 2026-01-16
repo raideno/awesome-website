@@ -20,7 +20,8 @@
     "isolatedModules": true,
     "noEmit": true,
     "paths": {
-      "@/convex/*": ["./_generated/*"]
+      "@/convex.generated/*": ["./_generated/*"],
+      "@/convex/*": ["./*"]
     }
   },
   "include": ["./**/*"],

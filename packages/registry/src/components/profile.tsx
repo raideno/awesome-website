@@ -17,8 +17,9 @@ import { useAction, useQuery } from 'convex/react'
 import React from 'react'
 
 import { useAuthentication } from '@/contexts/authentication'
-import { api } from '../../convex/_generated/api'
 import { useSubscription } from '@/contexts/subscription'
+
+import { api } from '@/convex.generated/api'
 
 const ProfileLoadingState: React.FC = () => (
   <Flex align="center" justify="center" p="6">

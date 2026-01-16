@@ -18,7 +18,7 @@ import { PageHeader } from '@/components/page-header'
 import { ALREADY_SUBSCRIBED_URL_SEARCH_KEY } from '@/constants'
 
 import { useSubscription } from '@/contexts/subscription'
-import { api } from '../../../../../convex/_generated/api'
+import { api } from '@/convex.generated/api'
 
 const CURRENCY_CODE_TO_SYMBOL: Record<string, string> = {
   eur: '€',

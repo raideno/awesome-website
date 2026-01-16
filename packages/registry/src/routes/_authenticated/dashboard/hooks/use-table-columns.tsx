@@ -1,5 +1,5 @@
 import { ExternalLinkIcon, TrashIcon } from '@radix-ui/react-icons'
-import { Badge, Flex, IconButton, Text } from '@radix-ui/themes'
+import { Badge, Flex, IconButton, Link, Text } from '@radix-ui/themes'
 import { type ColumnDef } from '@tanstack/react-table'
 import * as React from 'react'
 
@@ -35,14 +35,19 @@ export const useTableColumns = ({ onDelete }: UseTableColumnsProps) => {
         cell: (info) => {
           return (
             <Flex gap="2">
-              <IconButton
-                size="1"
-                variant="ghost"
-                disabled={info.row.original.status !== 'active'}
-                title="Open website"
+              <Link
+                href={`https://${info.row.original.repositoryOwner}.github.io/${info.row.original.repositoryName}`}
+                target="_blank"
               >
-                <ExternalLinkIcon />
-              </IconButton>
+                <IconButton
+                  size="1"
+                  variant="ghost"
+                  disabled={info.row.original.status !== 'active'}
+                  title="Open website"
+                >
+                  <ExternalLinkIcon />
+                </IconButton>
+              </Link>
               <IconButton
                 size="1"
                 variant="ghost"

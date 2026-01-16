@@ -4,7 +4,7 @@ import { useLocalStorageState } from '@/hooks/local-storage-state'
 
 type Theme = 'dark' | 'light'
 
-const DEFAULT_THEME: Theme = 'light'
+const DEFAULT_THEME: Theme = 'dark'
 
 export interface ThemeContextType {
   theme: Theme

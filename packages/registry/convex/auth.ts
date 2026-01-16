@@ -3,15 +3,15 @@ import { convexAuth, getAuthUserId } from '@convex-dev/auth/server'
 import { OAuthApp } from '@octokit/oauth-app'
 import { v } from 'convex/values'
 
-import { Id } from '@/convex//dataModel'
-import { internal } from './_generated/api'
+import { Id } from '@/convex.generated/dataModel'
+import { internal } from '@/convex.generated/api'
 import {
   ActionCtx,
   internalMutation,
   internalQuery,
   MutationCtx,
   query,
-} from '@/convex/server'
+} from '@/convex.generated/server'
 
 import { DataModel } from './schema'
 

@@ -23,8 +23,9 @@
 
     /* Import paths */
     "paths": {
-      "@/*": ["./src/*"],
-      "@/convex/*": ["./convex/_generated/*"]
+      "@/convex/*": ["./convex/*"],
+      "@/convex.generated/*": ["./convex/_generated/*"],
+      "@/*": ["./src/*"]
     }
   },
   "include": [
