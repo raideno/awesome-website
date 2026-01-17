@@ -1,12 +1,14 @@
 import { MetadataRegistry } from '@raideno/auto-form/registry'
 import { z } from 'zod/v4'
 
+export const MAX_TAGS = 16
+
 export const AwesomeListElementSchema = z.object({
   name: z.string().max(128),
   description: z.string().max(192),
   notes: z.string().optional().register(MetadataRegistry, { type: 'textarea' }),
   link: z.url().optional(),
-  tags: z.array(z.string()).max(16),
+  tags: z.array(z.string()).max(MAX_TAGS),
   group: z.string().max(64).optional(),
 })
 export type AwesomeListElement = z.infer<typeof AwesomeListElementSchema>
