@@ -136,20 +136,22 @@ export async function getValidGithubAccessToken(
     },
   )
 
-  if (!credentials) {
+  if (!credentials || credentials === undefined) {
     throw new Error('GitHub credentials not linked')
   }
 
   const now = Date.now()
   const expiryBuffer = 5 * 60 * 1000
-  const isAccessTokenExpired = credentials.access.expiresAt - now < expiryBuffer
+  const isAccessTokenExpired =
+    credentials.access.expiresAt &&
+    credentials.access.expiresAt - now < expiryBuffer
 
   if (!isAccessTokenExpired) {
     return credentials.access.token
   }
 
   // Token expired - refresh it
-  if (!credentials.refresh.token) {
+  if (!credentials.refresh || !credentials.refresh.token) {
     throw new Error(
       'Access token expired and no refresh token available. Please re-authenticate with GitHub.',
     )

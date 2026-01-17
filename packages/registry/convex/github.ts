@@ -14,7 +14,7 @@ export const MAX_REPOSITORIES = 100
  */
 export const CACHE_TIME_TO_LIVE = 1000 * 60 * 60 * 1
 
-export const cachedIsAwesomeRepository = new ActionCache(
+export const cachedIsAwesomeRepository: any = new ActionCache(
   components.actionCache,
   {
     action: internal.github.isAwesomeRepository,
@@ -30,7 +30,7 @@ export const isAwesomeRepository = internalAction({
     login: v.string(),
     name: v.string(),
   },
-  handler: async (context, args) => {
+  handler: async (_, args) => {
     const application = new Octokit({
       auth: args.token,
     })
@@ -42,18 +42,21 @@ export const isAwesomeRepository = internalAction({
         path: '.github/workflows/deploy-awesome-website.yml',
       })
       return response.status === 200
-    } catch (error) {
+    } catch {
       return false
     }
   },
 })
 
-export const cachedListRepositories = new ActionCache(components.actionCache, {
-  action: internal.github.listRepositories,
-  name: 'github.repositories',
-  ttl: CACHE_TIME_TO_LIVE,
-  log: false,
-})
+export type Repository = {
+  id: number
+  owner: string
+  name: string
+  fullName: string
+  private: boolean
+  url: string
+  canPush: boolean
+}
 
 export const listRepositories = internalAction({
   args: {
@@ -64,7 +67,7 @@ export const listRepositories = internalAction({
       v.literal('private'),
     ),
   },
-  handler: async (_, args) => {
+  handler: async (_, args): Promise<Array<Repository>> => {
     const application = new Octokit({
       auth: args.token,
     })
@@ -78,11 +81,29 @@ export const listRepositories = internalAction({
     if (response.status !== 200)
       throw new Error(`GitHub API error: ${Number(response.status)}`)
 
-    const repositories = response.data
+    const repositories: Array<Repository> = response.data.map((repository) => ({
+      id: repository.id,
+      owner: repository.owner.login,
+      name: repository.name,
+      fullName: repository.full_name,
+      private: repository.private,
+      url: repository.html_url,
+      canPush: repository.permissions?.push ?? false,
+    }))
 
     return repositories
   },
 })
+
+export const cachedListRepositories: any = new ActionCache(
+  components.actionCache,
+  {
+    action: internal.github.listRepositories,
+    name: 'github.listRepositories',
+    ttl: CACHE_TIME_TO_LIVE,
+    log: false,
+  },
+)
 
 export const repositories = action({
   args: {
@@ -112,12 +133,12 @@ export const repositories = action({
     )
 
     const repositoriesWithAwesomeCheck = await Promise.all(
-      repositories.map(async (repository) => {
+      repositories.map(async (repository: Repository) => {
         const isAwesomeRepository = await cachedIsAwesomeRepository.fetch(
           context,
           {
             token: token,
-            login: repository.owner.login,
+            login: repository.owner,
             name: repository.name,
           },
           {
@@ -127,12 +148,12 @@ export const repositories = action({
 
         return {
           id: repository.id,
-          owner: repository.owner.login,
+          owner: repository.owner,
           name: repository.name,
-          fullName: repository.full_name,
+          fullName: repository.fullName,
           private: repository.private,
-          url: repository.html_url,
-          canPush: repository.permissions?.push ?? false,
+          url: repository.url,
+          canPush: repository.canPush,
           isAwesomeRepository,
         }
       }),
