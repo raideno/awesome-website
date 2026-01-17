@@ -12,7 +12,6 @@ describe('App', () => {
         <Providers>
           <App />
         </Providers>
-        ,
       </ThemeProvider>,
     )
     expect(screen.getByPlaceholderText('Search resources...')).toBeDefined()
