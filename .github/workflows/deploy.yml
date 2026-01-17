@@ -32,6 +32,8 @@ jobs:
         run: npm run build --workspace website
 
       - name: build registry
+        env:
+          CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY }}
         run: npm run convex:deploy --workspace registry
 
       - name: build landing
