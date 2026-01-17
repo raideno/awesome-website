@@ -4,11 +4,11 @@ import { PageHeader } from '@/components/page-header'
 import { Box, Flex } from '@radix-ui/themes'
 import * as React from 'react'
 
-import { ImportRepositoryButton } from './components/import-repository-button'
-import { ImportRepositoryDialog } from './components/import-repository-dialog'
-import { ListsTable } from './components/lists-table'
-import { SearchBar } from './components/search-bar'
-import { useAwesomeLists, useListDelete, useTableColumns } from './hooks'
+import { ImportRepositoryButton } from './-components/import-repository-button'
+import { ImportRepositoryDialog } from './-components/import-repository-dialog'
+import { ListsTable } from './-components/lists-table'
+import { SearchBar } from './-components/search-bar'
+import { useAwesomeLists, useListDelete, useTableColumns } from './-hooks'
 
 import {
   REDIRECT_URL_SEARCH_KEY,
