@@ -109,7 +109,7 @@ export const UpdateCheckDialog: React.FC<UpdateCheckDialogProps> = ({
           <Text size="2">
             Current version:{' '}
             <Link
-              href={`https://github.com/raideno/awesome-website/commit/${currentCommitHash}`}
+              href={`https://github.com/raideno/awesome/commit/${currentCommitHash}`}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex gap-1 items-center"
@@ -121,7 +121,7 @@ export const UpdateCheckDialog: React.FC<UpdateCheckDialogProps> = ({
           <Text size="2">
             New version:{' '}
             <Link
-              href={`https://github.com/raideno/awesome-website/commit/${latestCommitHash}`}
+              href={`https://github.com/raideno/awesome/commit/${latestCommitHash}`}
               target="_blank"
               className="inline-flex gap-1 items-center"
               rel="noopener noreferrer"

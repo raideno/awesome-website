@@ -5,7 +5,7 @@ thumbnail: https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_creat
 elements:
   - name: Awesome Website
     description: A tool to generate an awesome website for your awesome lists.
-    link: https://github.com/raideno/awesome-website
+    link: https://github.com/raideno/awesome
     tags:
       - awesome list
       - awesome website
@@ -16,4 +16,4 @@ elements:
       - awesome list
       - easy awesome website
 links:
-  - https://github.com/raideno/awesome-website
+  - https://github.com/raideno/awesome

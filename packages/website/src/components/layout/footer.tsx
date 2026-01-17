@@ -5,8 +5,7 @@ import type React from 'react'
 
 import { VersionBadge } from '@/components/layout/version-badge'
 
-const AWESOME_WEBSITE_REPOSITORY_URL =
-  'https://github.com/raideno/awesome-website'
+const AWESOME_WEBSITE_REPOSITORY_URL = 'https://github.com/raideno/awesome'
 
 export interface FooterProps {}
 

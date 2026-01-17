@@ -16,9 +16,9 @@ runs:
     - name: checkout awesome website source
       uses: actions/checkout@v4
       with:
-        repository: raideno/awesome-website
+        repository: raideno/awesome
         ref: main
-        path: awesome-website-src
+        path: awesome-src
 
     - name: setup node.js
       uses: actions/setup-node@v4
@@ -27,13 +27,13 @@ runs:
 
     - name: install dependencies
       run: |
-        cd awesome-website-src
+        cd awesome-src
         npm ci
       shell: bash
 
     - name: copy user YAML file
       run: |
-        cp ${{ github.workspace }}/${{ inputs.yaml-path }} awesome-website-src/packages/website${{ inputs.yaml-path }}
+        cp ${{ github.workspace }}/${{ inputs.yaml-path }} awesome-src/packages/website${{ inputs.yaml-path }}
       shell: bash
 
     - name: determine BASE_PATH
@@ -52,10 +52,10 @@ runs:
         echo "hash=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
       shell: bash
 
-    - name: get awesome-website commit hash
+    - name: get awesome commit hash
       id: awesome-commit
       run: |
-        cd awesome-website-src
+        cd awesome-src
         echo "hash=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
       shell: bash
 
@@ -69,6 +69,6 @@ runs:
         GITHUB_WORKFLOW_NAME: ${{ github.workflow }}
         GITHUB_WORKFLOW_REF: ${{ github.workflow_ref }}
       run: |
-        cd awesome-website-src
+        cd awesome-src
         npm run build --workspace website
       shell: bash

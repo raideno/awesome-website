@@ -9,6 +9,7 @@
     "test": "dotenv -e .env -- vitest run",
     "dev:backend": "convex dev",
     "build": "tsc -b && vite build",
+    "convex:deploy": "convex deploy --cmd 'npm run build'",
     "lint": "tsc && eslint .  --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },

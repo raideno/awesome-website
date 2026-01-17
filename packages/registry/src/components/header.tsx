@@ -16,7 +16,7 @@ const menuItems = [
   { name: 'Explore', href: '/explore' },
   {
     name: 'GitHub',
-    href: 'https://github.com/raideno/awesome-website',
+    href: 'https://github.com/raideno/awesome',
     external: true,
   },
 ]

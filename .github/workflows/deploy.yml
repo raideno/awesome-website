@@ -1,0 +1,117 @@
+name: deploy to github pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v4
+
+      - name: setup node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: install dependencies
+        run: npm ci
+
+      - name: build website
+        env:
+          BASE_PATH: /${{ github.event.repository.name }}/website
+          LIST_FILE_PATH: example.list.yaml
+          GITHUB_REPOSITORY_URL: https://github.com/${{ github.repository }}
+        run: npm run build --workspace website
+
+      - name: build registry
+        run: npm run convex:deploy --workspace registry
+
+      - name: create deployment structure
+        run: |
+          mkdir -p deploy-artifact/website
+          mkdir -p deploy-artifact/registry
+
+          cp -r packages/website/dist/* deploy-artifact/website/
+          cp -r packages/registry/dist/* deploy-artifact/registry/
+
+          cat > deploy-artifact/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Awesome Website</title>
+            <style>
+              body {
+                font-family: system-ui, -apple-system, sans-serif;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-height: 100vh;
+                margin: 0;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+              }
+              .container {
+                text-align: center;
+                padding: 2rem;
+              }
+              h1 {
+                font-size: 3rem;
+                margin-bottom: 1rem;
+              }
+              .links {
+                display: flex;
+                gap: 2rem;
+                justify-content: center;
+                margin-top: 2rem;
+              }
+              a {
+                display: inline-block;
+                padding: 1rem 2rem;
+                background: white;
+                color: #667eea;
+                text-decoration: none;
+                border-radius: 8px;
+                font-weight: 600;
+                font-size: 1.2rem;
+                transition: transform 0.2s, box-shadow 0.2s;
+              }
+              a:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+              }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <h1>🚀 Awesome Website</h1>
+              <p>Choose your destination:</p>
+              <div class="links">
+                <a href="./website/">Website</a>
+                <a href="./registry/">Registry</a>
+              </div>
+            </div>
+          </body>
+          </html>
+          EOF
+
+      - name: upload build artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: deploy-artifact
+          name: github-pages
+
+      - name: deploy to github pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+        with:
+          artifact_name: github-pages
