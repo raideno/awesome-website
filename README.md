@@ -4,7 +4,7 @@
 
 This repository contains the source code for "Awesome Website", a project that transforms a simple YAML file into a beautiful, interactive, and easily deployable website. It's the perfect solution for creating and maintaining "awesome lists" with a polished and professional look.
 
-**Demo:** [https://raideno.github.io/awesome-website](https://raideno.github.io/awesome-website/)
+**Demo:** [https://raideno.github.io/awesome](https://raideno.github.io/awesome/)
 
 ![website-preview](./assets/preview.png)
 
@@ -34,7 +34,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: build awesome website
-        uses: raideno/awesome-website@main
+        uses: raideno/awesome@main
         with:
           # Formatted according to the structure specified below
           yaml-path: 'example.list.yaml'
@@ -42,7 +42,7 @@ jobs:
       - name: upload build artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: awesome-website-src/dist
+          path: awesome-src/dist
           name: github-pages
 
       - name: deploy to github pages

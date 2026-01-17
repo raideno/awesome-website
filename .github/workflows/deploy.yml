@@ -1,0 +1,59 @@
+name: deploy to github pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v4
+
+      - name: setup node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: install dependencies
+        run: npm ci
+
+      - name: build website
+        env:
+          BASE_PATH: /${{ github.event.repository.name }}/website
+          LIST_FILE_PATH: example.list.yaml
+          GITHUB_REPOSITORY_URL: https://github.com/${{ github.repository }}
+        run: npm run build --workspace website
+
+      - name: build registry
+        run: npm run convex:deploy --workspace registry
+
+      - name: build landing
+        run: npm run build --workspace landing
+
+      - name: create deployment structure
+        run: |
+          mkdir -p deploy-artifact/website
+          mkdir -p deploy-artifact/registry
+
+          cp -r packages/landing/dist/* deploy-artifact/
+          cp -r packages/website/dist/* deploy-artifact/website/
+          cp -r packages/registry/dist/* deploy-artifact/registry/
+
+      - name: upload build artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: deploy-artifact
+          name: github-pages
+
+      - name: deploy to github pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+        with:
+          artifact_name: github-pages
