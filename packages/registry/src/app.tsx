@@ -5,6 +5,7 @@ import { useAuthentication } from './contexts/authentication'
 import { useSubscription } from './contexts/subscription'
 
 const router = createRouter({
+  basepath: '/awesome/registry',
   routeTree,
   context: {
     authentication: undefined!,

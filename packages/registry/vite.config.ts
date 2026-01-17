@@ -13,6 +13,7 @@ export default defineConfig({
     }),
     react(),
   ],
+  base: '/awesome/registry',
   resolve: {
     alias: {
       '@/convex.generated': path.resolve(__dirname, './convex/_generated'),
