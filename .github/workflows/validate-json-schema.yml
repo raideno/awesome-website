@@ -21,7 +21,7 @@ jobs:
         run: npm ci
 
       - name: generate schema
-        run: npm run generate-schema --workspace awesome-website
+        run: npm run generate-schema --workspace website
 
       - name: check for schema changes
         run: |
