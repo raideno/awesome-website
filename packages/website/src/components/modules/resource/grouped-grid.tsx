@@ -1,5 +1,6 @@
-import { FileTextIcon, PlusIcon } from '@radix-ui/react-icons'
+import { FileTextIcon, Pencil1Icon, PlusIcon } from '@radix-ui/react-icons'
 import {
+  AlertDialog,
   Box,
   Button,
   Card,
@@ -9,13 +10,17 @@ import {
   Heading,
   Text,
 } from '@radix-ui/themes'
+import { AutoForm } from '@raideno/auto-form/ui'
 
 import React from 'react'
+import { toast } from 'sonner'
+import { z } from 'zod/v4'
 
 import type { AwesomeListElement } from '@/types/awesome-list'
 
 import { useFilter } from '@/contexts/filter'
 import { useEditing } from '@/contexts/editing'
+import { useList } from '@/contexts/list'
 
 import { ResourceCard } from '@/components/modules/resource/card'
 import { ResourceCardContextMenu } from '@/components/modules/resource/card-context-menu'
@@ -26,13 +31,46 @@ export interface GroupedResourceGridProps {
   filteredElements: Array<AwesomeListElement>
 }
 
+const RenameSchema = z.object({
+  name: z.string().min(1, 'Group name is required').max(64),
+})
+
 const GroupContainer: React.FC<{
   groupName: string
   elements: Array<AwesomeListElement>
   color: string
 }> = ({ groupName, elements, color }) => {
   const [createSheetOpen, setCreateSheetOpen] = React.useState(false)
+  const [renameDialogOpen, setRenameDialogOpen] = React.useState(false)
   const { editingEnabled } = useEditing()
+  const list = useList()
+
+  const handleRenameGroup = async (data: z.infer<typeof RenameSchema>) => {
+    if (data.name === groupName) {
+      setRenameDialogOpen(false)
+      return
+    }
+
+    try {
+      await list.updateList({
+        elements: list.content.new.elements.map((el) => {
+          const elementGroup = el.group || 'Ungrouped'
+          const belongsToGroup = elementGroup === groupName
+
+          return belongsToGroup ? { ...el, group: data.name } : el
+        }),
+      })
+      setRenameDialogOpen(false)
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : 'Failed to rename group',
+      )
+    }
+  }
+
+  const handleRenameError = () => {
+    toast.error('Please fix the errors in the form before submitting.')
+  }
 
   return (
     <>
@@ -88,18 +126,72 @@ const GroupContainer: React.FC<{
                   Create Item
                 </Flex>
               </ContextMenu.Item>
+              <ContextMenu.Item onClick={() => setRenameDialogOpen(true)}>
+                <Flex align="center" gap="2">
+                  <Pencil1Icon />
+                  Rename Group
+                </Flex>
+              </ContextMenu.Item>
             </AdminOnly>
           )}
         </ContextMenu.Content>
       </ContextMenu.Root>
 
       {editingEnabled && (
-        <ResourceCreateSheet
-          state={{ open: createSheetOpen, onOpenChange: setCreateSheetOpen }}
-          defaults={
-            groupName !== 'Ungrouped' ? { group: groupName } : undefined
-          }
-        />
+        <>
+          <ResourceCreateSheet
+            state={{ open: createSheetOpen, onOpenChange: setCreateSheetOpen }}
+            defaults={
+              groupName !== 'Ungrouped' ? { group: groupName } : undefined
+            }
+          />
+
+          <AlertDialog.Root
+            open={renameDialogOpen}
+            onOpenChange={setRenameDialogOpen}
+          >
+            <AlertDialog.Content>
+              <AutoForm.Root
+                schema={RenameSchema}
+                defaultValues={{ name: groupName }}
+                onSubmit={handleRenameGroup}
+                onError={handleRenameError}
+              >
+                <>
+                  <AlertDialog.Title className="sr-only">
+                    Rename Group
+                  </AlertDialog.Title>
+                  <AlertDialog.Description className="sr-only">
+                    Enter a new name for the group "{groupName}". All{' '}
+                    {elements.length} item{elements.length !== 1 ? 's' : ''} in
+                    this group will be updated.
+                  </AlertDialog.Description>
+                </>
+                <Heading>Rename Group</Heading>
+                <Text>
+                  Enter a new name for the group "{groupName}". All{' '}
+                  {elements.length} item{elements.length !== 1 ? 's' : ''} in
+                  this group will be updated.
+                </Text>
+
+                <Flex direction="column" gap="3" mt="4">
+                  <AutoForm.Content fields={['name']} />
+                </Flex>
+
+                <Flex gap="3" mt="4" justify="end">
+                  <AlertDialog.Cancel>
+                    <Button variant="soft" color="gray" type="button">
+                      Cancel
+                    </Button>
+                  </AlertDialog.Cancel>
+                  <AutoForm.Action type="submit" variant="classic">
+                    Rename
+                  </AutoForm.Action>
+                </Flex>
+              </AutoForm.Root>
+            </AlertDialog.Content>
+          </AlertDialog.Root>
+        </>
       )}
     </>
   )
@@ -136,9 +228,9 @@ export const GroupedResourceGrid: React.FC<GroupedResourceGridProps> = ({
     })
 
     return Array.from(groups.entries()).sort((a, b) => {
-      // Sort "Ungrouped" to the end
-      if (a[0] === 'Ungrouped') return 1
-      if (b[0] === 'Ungrouped') return -1
+      // Sort "Ungrouped" to the start
+      if (a[0] === 'Ungrouped') return -1
+      if (b[0] === 'Ungrouped') return 1
       return a[0].localeCompare(b[0])
     })
   }, [filteredElements])
