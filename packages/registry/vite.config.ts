@@ -16,8 +16,6 @@ export default defineConfig({
   base: '/awesome/registry',
   resolve: {
     alias: {
-      '@/convex.generated': path.resolve(__dirname, './convex/_generated'),
-      '@/convex': path.resolve(__dirname, './convex'),
       '@': path.resolve(__dirname, './src'),
     },
   },

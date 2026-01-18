@@ -58,9 +58,9 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/pages/privacy-policy': typeof PagesPrivacyPolicyRoute
   '/pages/terms-of-service': typeof PagesTermsOfServiceRoute
-  '/explore': typeof ExploreIndexRoute
-  '/dashboard': typeof AuthenticatedDashboardIndexRoute
-  '/dashboard/payment': typeof AuthenticatedDashboardPaymentIndexRoute
+  '/explore/': typeof ExploreIndexRoute
+  '/dashboard/': typeof AuthenticatedDashboardIndexRoute
+  '/dashboard/payment/': typeof AuthenticatedDashboardPaymentIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -86,9 +86,9 @@ export interface FileRouteTypes {
     | '/'
     | '/pages/privacy-policy'
     | '/pages/terms-of-service'
-    | '/explore'
-    | '/dashboard'
-    | '/dashboard/payment'
+    | '/explore/'
+    | '/dashboard/'
+    | '/dashboard/payment/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -121,7 +121,7 @@ declare module '@tanstack/react-router' {
     '/_authenticated': {
       id: '/_authenticated'
       path: ''
-      fullPath: ''
+      fullPath: '/'
       preLoaderRoute: typeof AuthenticatedRouteImport
       parentRoute: typeof rootRouteImport
     }
@@ -135,7 +135,7 @@ declare module '@tanstack/react-router' {
     '/explore/': {
       id: '/explore/'
       path: '/explore'
-      fullPath: '/explore'
+      fullPath: '/explore/'
       preLoaderRoute: typeof ExploreIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
@@ -156,14 +156,14 @@ declare module '@tanstack/react-router' {
     '/_authenticated/dashboard/': {
       id: '/_authenticated/dashboard/'
       path: '/dashboard'
-      fullPath: '/dashboard'
+      fullPath: '/dashboard/'
       preLoaderRoute: typeof AuthenticatedDashboardIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/dashboard/payment/': {
       id: '/_authenticated/dashboard/payment/'
       path: '/dashboard/payment'
-      fullPath: '/dashboard/payment'
+      fullPath: '/dashboard/payment/'
       preLoaderRoute: typeof AuthenticatedDashboardPaymentIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }

@@ -41,7 +41,7 @@ export const isAwesomeRepository = internalAction({
         repo: args.name,
         path: '.github/workflows/deploy-awesome-website.yml',
       })
-      return response.status === 200
+      return true
     } catch {
       return false
     }
@@ -78,6 +78,7 @@ export const listRepositories = internalAction({
       affiliation: 'owner,collaborator,organization_member',
     })
 
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (response.status !== 200)
       throw new Error(`GitHub API error: ${Number(response.status)}`)
 
@@ -121,7 +122,7 @@ export const repositories = action({
 
     const token = await getValidGithubAccessToken(context, userId)
 
-    const repositories = await cachedListRepositories.fetch(
+    const repos = await cachedListRepositories.fetch(
       context,
       {
         token: token,
@@ -133,8 +134,8 @@ export const repositories = action({
     )
 
     const repositoriesWithAwesomeCheck = await Promise.all(
-      repositories.map(async (repository: Repository) => {
-        const isAwesomeRepository = await cachedIsAwesomeRepository.fetch(
+      repos.map(async (repository: Repository) => {
+        const iAR = await cachedIsAwesomeRepository.fetch(
           context,
           {
             token: token,
@@ -154,7 +155,7 @@ export const repositories = action({
           private: repository.private,
           url: repository.url,
           canPush: repository.canPush,
-          isAwesomeRepository,
+          isAwesomeRepository: iAR,
         }
       }),
     )

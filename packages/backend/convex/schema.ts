@@ -1,11 +1,10 @@
 import { authTables } from '@convex-dev/auth/server'
 import { stripeTables } from '@raideno/convex-stripe/server'
-import {
-  DataModelFromSchemaDefinition,
-  defineSchema,
-  defineTable,
-} from 'convex/server'
+import { defineSchema, defineTable } from 'convex/server'
+
 import { v } from 'convex/values'
+
+import type { DataModelFromSchemaDefinition } from 'convex/server'
 
 export const usersTable = {
   id: v.optional(v.string()),

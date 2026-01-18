@@ -19,7 +19,7 @@ import React from 'react'
 import { useAuthentication } from '@/contexts/authentication'
 import { useSubscription } from '@/contexts/subscription'
 
-import { api } from '@/convex.generated/api'
+import { api } from 'backend/api'
 
 const ProfileLoadingState: React.FC = () => (
   <Flex align="center" justify="center" p="6">

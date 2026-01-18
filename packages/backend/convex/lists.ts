@@ -12,7 +12,7 @@ export const get = query({
 
     return await context.db
       .query('lists')
-      .withIndex('by_ownerId', (query) => query.eq('ownerId', userId))
+      .withIndex('by_ownerId', (q) => q.eq('ownerId', userId))
       .collect()
   },
 })
