@@ -1,4 +1,4 @@
-import { InputConfiguration as StripeConfiguration } from '@raideno/convex-stripe/server'
+import type { InputConfiguration as StripeConfiguration } from '@raideno/convex-stripe/server'
 
 export default {
   stripe: {

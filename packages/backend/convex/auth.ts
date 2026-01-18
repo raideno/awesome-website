@@ -3,17 +3,17 @@ import { convexAuth, getAuthUserId } from '@convex-dev/auth/server'
 import { OAuthApp } from '@octokit/oauth-app'
 import { v } from 'convex/values'
 
-import { Id } from '@/convex.generated/dataModel'
+import type { DataModel } from '@/convex/schema'
+
+import type { Id } from '@/convex.generated/dataModel'
+import type { ActionCtx, MutationCtx } from '@/convex.generated/server'
+
 import { internal } from '@/convex.generated/api'
 import {
-  ActionCtx,
   internalMutation,
   internalQuery,
-  MutationCtx,
   query,
 } from '@/convex.generated/server'
-
-import { DataModel } from './schema'
 
 type Profile = Omit<DataModel['users']['document'], '_id' | '_creationTime'>
 
@@ -36,8 +36,8 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
           scope: 'read:user repo user:email',
         },
       },
+      // eslint-disable-next-line @typescript-eslint/require-await
       profile: async (githubProfile, tokens) => {
-        console.log(String(githubProfile.id))
         const user: Profile = {
           id: String(githubProfile.id),
           name: githubProfile.name!,

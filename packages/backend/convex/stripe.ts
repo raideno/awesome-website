@@ -11,9 +11,9 @@ export const products = query({
   args: {},
   handler: async (context) => {
     const prices = await context.db.query('stripePrices').collect()
-    const products = await context.db.query('stripeProducts').collect()
+    const prods = await context.db.query('stripeProducts').collect()
 
-    return products.map((product) => ({
+    return prods.map((product) => ({
       ...product,
       prices: prices.filter(
         (price) => price.stripe.productId === product.productId,
@@ -44,12 +44,12 @@ export const subscription = query({
       return null
     }
 
-    const subscription = await context.db
+    const sub = await context.db
       .query('stripeSubscriptions')
       .withIndex('byCustomerId', (q) => q.eq('customerId', customer.customerId))
       .unique()
 
-    if (!subscription) {
+    if (!sub) {
       console.warn(
         '[error]:',
         'user',
@@ -60,7 +60,7 @@ export const subscription = query({
     }
 
     // TODO: do not send everything, filter to send only strictly necessary things.
-    return subscription
+    return sub
   },
 })
 
@@ -80,7 +80,7 @@ export const subscribe = action({
 
     if (!userId) throw new Error('Unauthorized')
 
-    const checkout = await stripe.subscribe(context as any, {
+    const checkout = await stripe.subscribe(context, {
       entityId: userId,
       priceId: args.priceId,
       mode: 'subscription',
@@ -101,11 +101,9 @@ export const portal = action({
 
     if (!userId) throw new Error('Unauthorized')
 
-    const portal = await stripe.portal(context as any, {
+    return await stripe.portal(context, {
       entityId: userId,
       return_url: args.returnRedirectUrl,
     })
-
-    return portal
   },
 })

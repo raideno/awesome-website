@@ -19,7 +19,7 @@ import {
 import { useAction, useMutation } from 'convex/react'
 import * as React from 'react'
 
-import { api } from '@/convex.generated/api'
+import { api } from 'backend/api'
 
 import type { AwesomeListRepository } from '@/types/awesome-list-repository'
 

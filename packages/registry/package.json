@@ -4,12 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "npm-run-all --parallel dev:frontend dev:backend",
-    "dev:frontend": "vite --open",
+    "dev": "vite --open",
     "test": "dotenv -e .env -- vitest run",
-    "dev:backend": "convex dev",
     "build": "tsc -b && vite build",
-    "convex:deploy": "convex deploy --cmd 'npm run build'",
     "lint": "tsc && eslint .  --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
@@ -25,6 +22,7 @@
     "@tanstack/react-router": "^1.134.4",
     "@tanstack/react-table": "^8.21.3",
     "@tanstack/router-devtools": "^1.134.4",
+    "backend": "file:../backend",
     "convex": "^1.28.0",
     "lucide-react": "^0.552.0",
     "react": "^19.0.0",

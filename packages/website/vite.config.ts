@@ -140,6 +140,7 @@ export default vite.defineConfig({
     __AWESOME_WEBSITE_BUILD_COMMIT_HASH__: JSON.stringify(
       AWESOME_WEBSITE_BUILD_COMMIT_HASH,
     ),
+    __AWESOME_WEBSITE__: true,
     __GITHUB_WORKFLOW_FILE_NAME__: JSON.stringify(GITHUB_WORKFLOW_FILE_NAME),
   },
   base: BASE_PATH,
