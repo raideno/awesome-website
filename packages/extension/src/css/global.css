@@ -11,16 +11,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-.pattern {
-  height: 100vh;
-  width: 100vw;
-  opacity: 0.05;
-  background-image:
-    linear-gradient(#000000 1px, transparent 1px),
-    linear-gradient(to right, #000000 1px, #e5e5f7 1px);
-  background-size: 20px 20px;
-}
-
 .radix-themes {
   --cursor-button: pointer !important;
   --cursor-checkbox: pointer;

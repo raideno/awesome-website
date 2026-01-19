@@ -21,7 +21,7 @@ import * as React from 'react'
 
 import { api } from 'backend/api'
 
-import type { AwesomeListRepository } from '@/types/awesome-list-repository'
+import type { AwesomeListRepository } from 'shared/types/awesome-list-repository'
 
 interface Repository {
   id: number

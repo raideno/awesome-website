@@ -13,7 +13,7 @@ import * as React from 'react'
 
 import { TablePagination } from './table-pagination'
 
-import type { AwesomeListRepository } from '@/types/awesome-list-repository'
+import type { AwesomeListRepository } from 'shared/types/awesome-list-repository'
 
 interface ListsTableProps {
   data: AwesomeListRepository[]

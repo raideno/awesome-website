@@ -1,7 +1,7 @@
 import { httpRouter } from 'convex/server'
 
-import { auth } from '@/convex/auth'
-import { stripe } from '@/convex/stripe'
+import { auth } from './auth'
+import { stripe } from './stripe'
 
 const http = httpRouter()
 

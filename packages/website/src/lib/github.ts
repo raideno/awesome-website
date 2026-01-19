@@ -2,7 +2,7 @@ import { Octokit } from '@octokit/rest'
 
 import * as yaml from 'js-yaml'
 
-import type { AwesomeList } from '@/types/awesome-list'
+import type { AwesomeList } from 'shared/types/awesome-list'
 
 export interface GitHubConfig {
   token?: string

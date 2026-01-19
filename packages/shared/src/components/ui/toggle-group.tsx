@@ -1,10 +1,9 @@
-import '@/components/ui/toggle-group.css'
+import './toggle-group.css'
 
 import * as RadixToggleGroup from '@radix-ui/react-toggle-group'
+import { cn } from 'shared/lib/utils'
 
 import type React from 'react'
-
-import { cn } from '@/lib/utils'
 
 const ToggleGroupRoot: React.FC<
   React.ComponentProps<typeof RadixToggleGroup.Root>

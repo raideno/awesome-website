@@ -1,7 +1,7 @@
 import { useQuery } from 'convex/react'
 import * as React from 'react'
 
-import { AwesomeListRepository } from '@/types/awesome-list-repository'
+import { AwesomeListRepository } from 'shared/types/awesome-list-repository'
 
 import { api } from 'backend/api'
 

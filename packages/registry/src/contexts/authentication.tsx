@@ -3,7 +3,6 @@ import { useQuery } from 'convex/react'
 import { FunctionReturnType } from 'convex/server'
 import React from 'react'
 
-// import { api } from '@/convex.generated/api'
 import { api } from 'backend/api'
 
 /**

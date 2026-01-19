@@ -7,8 +7,9 @@ import '@radix-ui/themes/styles.css'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 
+import { ThemeProvider } from 'shared/contexts/theme'
+
 import { App } from '@/app'
-import { ThemeProvider } from '@/contexts/theme'
 import { Providers } from '@/providers'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(

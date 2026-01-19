@@ -4,15 +4,15 @@ import list_ from 'virtual:awesome-list'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import React, { createContext, useContext, useMemo } from 'react'
 
-import type { AwesomeList } from '@/types/awesome-list'
+import { useDocumentTitle } from 'shared/hooks/document-title'
+import { useDynamicMetadata } from 'shared/hooks/dynamic-metadata'
+import { AwesomeListSchema } from 'shared/types/awesome-list'
 
-import { AwesomeListSchema } from '@/types/awesome-list'
+import type { AwesomeList } from 'shared/types/awesome-list'
 
 import { GitHubService } from '@/lib/github'
 
 import { useCommitAwareStorage } from '@/hooks/commit-aware-storage'
-import { useDocumentTitle } from '@/hooks/document-title'
-import { useDynamicMetadata } from '@/hooks/dynamic-metadata'
 import { useGitHubAuth } from '@/hooks/github-auth'
 import { useWorkflowStatus } from '@/hooks/workflow-status'
 

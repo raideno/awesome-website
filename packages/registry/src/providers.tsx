@@ -1,8 +1,7 @@
 import { Theme } from '@radix-ui/themes'
+import { useTheme } from 'shared/contexts/theme'
 
 import type React from 'react'
-
-import { useTheme } from '@/contexts/theme'
 
 import { ConvexAuthProvider } from '@convex-dev/auth/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'

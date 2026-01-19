@@ -2,8 +2,9 @@ import { getAuthUserId } from '@convex-dev/auth/server'
 import { internalConvexStripe } from '@raideno/convex-stripe/server'
 import { v } from 'convex/values'
 
-import { action, query } from '@/convex.generated/server'
-import stripeConfig from '@/convex/stripe.config'
+import { action, query } from './_generated/server'
+
+import stripeConfig from './stripe.config'
 
 export const { stripe, store, sync, setup } = internalConvexStripe(stripeConfig)
 

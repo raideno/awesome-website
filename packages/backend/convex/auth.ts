@@ -3,17 +3,13 @@ import { convexAuth, getAuthUserId } from '@convex-dev/auth/server'
 import { OAuthApp } from '@octokit/oauth-app'
 import { v } from 'convex/values'
 
-import type { DataModel } from '@/convex/schema'
+import { internalMutation, internalQuery, query } from './_generated/server'
+import { internal } from './_generated/api'
 
-import type { Id } from '@/convex.generated/dataModel'
-import type { ActionCtx, MutationCtx } from '@/convex.generated/server'
+import type { Id } from './_generated/dataModel'
+import type { ActionCtx, MutationCtx } from './_generated/server'
 
-import { internal } from '@/convex.generated/api'
-import {
-  internalMutation,
-  internalQuery,
-  query,
-} from '@/convex.generated/server'
+import type { DataModel } from './schema'
 
 type Profile = Omit<DataModel['users']['document'], '_id' | '_creationTime'>
 
@@ -136,7 +132,7 @@ export async function getValidGithubAccessToken(
     },
   )
 
-  if (!credentials || credentials === undefined) {
+  if (!credentials) {
     throw new Error('GitHub credentials not linked')
   }
 

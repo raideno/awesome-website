@@ -24,10 +24,13 @@
     "@tanstack/router-devtools": "^1.134.4",
     "backend": "file:../backend",
     "convex": "^1.28.0",
+    "extension": "^0.0.0",
     "lucide-react": "^0.552.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "stripe": "^18.5.0"
+    "shared": "file:../shared",
+    "stripe": "^18.5.0",
+    "website": "*"
   },
   "devDependencies": {
     "@convex-dev/eslint-plugin": "^1.0.0",

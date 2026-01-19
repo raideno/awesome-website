@@ -2,12 +2,11 @@ import { useState } from 'react'
 
 import { Heading, ScrollArea, Text } from '@radix-ui/themes'
 import { AutoForm } from '@raideno/auto-form/ui'
+import { AwesomeListElementSchema } from 'shared/types/awesome-list'
 import { toast } from 'sonner'
 
 import type React from 'react'
 import type { z } from 'zod/v4'
-
-import { AwesomeListElementSchema } from '@/types/awesome-list'
 
 import { Sheet } from '@/components/ui/sheet'
 

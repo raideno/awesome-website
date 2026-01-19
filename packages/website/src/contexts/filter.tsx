@@ -1,5 +1,5 @@
 import React, { createContext, useContext } from 'react'
-import { useLocalStorageState } from '@/hooks/local-storage-state'
+import { useLocalStorageStateFactory } from 'shared/hooks/local-storage-state'
 
 export type TagsFilterOperator = 'or' | 'and' | 'not'
 
@@ -31,16 +31,18 @@ export const useFilter = () => {
 export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [search, setSearch] = useLocalStorageState<FilterContextType['search']>(
-    'filtering.search',
-    '',
-  )
-  const [selectedTags, setSelectedTags] = useLocalStorageState<
-    FilterContextType['selectedTags']
-  >('filtering.tags', DEFAULT_SELECTED_TAGS)
-  const [tagsFilterOperator, setTagsFilterOperator] = useLocalStorageState<
-    FilterContextType['tagsFilterOperator']
-  >('filtering.operator', DEFAULT_TAGS_FILTER_OPERATOR)
+  const [search, setSearch] = useLocalStorageStateFactory(
+    __REPOSITORY_OWNER__,
+    __REPOSITORY_NAME__,
+  )<FilterContextType['search']>('filtering.search', '')
+  const [selectedTags, setSelectedTags] = useLocalStorageStateFactory(
+    __REPOSITORY_OWNER__,
+    __REPOSITORY_NAME__,
+  )<FilterContextType['selectedTags']>('filtering.tags', DEFAULT_SELECTED_TAGS)
+  const [tagsFilterOperator, setTagsFilterOperator] =
+    useLocalStorageStateFactory(__REPOSITORY_OWNER__, __REPOSITORY_NAME__)<
+      FilterContextType['tagsFilterOperator']
+    >('filtering.operator', DEFAULT_TAGS_FILTER_OPERATOR)
 
   const addTag = (tag: string) => {
     if (!selectedTags.includes(tag)) {

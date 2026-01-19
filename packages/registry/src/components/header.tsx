@@ -1,5 +1,5 @@
 import { Logo } from '@/components/logo'
-import { cn } from '@/lib/utils'
+import { cn } from 'shared/lib/utils'
 import { ExternalLinkIcon } from '@radix-ui/react-icons'
 import { Button } from '@radix-ui/themes'
 import { Link } from '@tanstack/react-router'

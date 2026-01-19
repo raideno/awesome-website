@@ -1,20 +1,18 @@
 import React, { createContext, useContext } from 'react'
 
-import { useLocalStorageState } from '@/hooks/local-storage-state'
+import { useLocalStorageStateFactory } from 'shared/hooks/local-storage-state'
 
 type Theme = 'dark' | 'light'
 
-const DEFAULT_THEME: Theme = 'dark'
+const DEFAULT_THEME: Theme = 'light'
 
-export interface ThemeContextType {
+interface ThemeContextType {
   theme: Theme
   toggleTheme: () => void
   setTheme: (theme: Theme) => void
 }
 
-export const ThemeContext = createContext<ThemeContextType | undefined>(
-  undefined,
-)
+const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 
 export const useTheme = () => {
   const context = useContext(ThemeContext)
@@ -27,7 +25,10 @@ export const useTheme = () => {
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [theme, setTheme] = useLocalStorageState<Theme>('theme', DEFAULT_THEME)
+  const [theme, setTheme] = useLocalStorageStateFactory()<Theme>(
+    'theme',
+    DEFAULT_THEME,
+  )
 
   const toggleTheme = () => {
     setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))

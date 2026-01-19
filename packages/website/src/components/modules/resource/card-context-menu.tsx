@@ -9,18 +9,18 @@ import {
   Text,
 } from '@radix-ui/themes'
 import { AutoForm } from '@raideno/auto-form/ui'
+import { MAX_TAGS } from 'shared/types/awesome-list'
 import { toast } from 'sonner'
 import { z } from 'zod/v4'
 
-import type { AwesomeListElement } from '@/types/awesome-list'
-import { MAX_TAGS } from '@/types/awesome-list'
+import type { AwesomeListElement } from 'shared/types/awesome-list'
 
-import { useList } from '@/contexts/list'
 import { useEditing } from '@/contexts/editing'
+import { useList } from '@/contexts/list'
 
+import { ResourceEditSheet } from '@/components/modules/resource/edit-sheet'
 import { AdminOnly } from '@/components/utils/admin-only'
 import { useConfirm } from '@/components/utils/alert-dialog'
-import { ResourceEditSheet } from '@/components/modules/resource/edit-sheet'
 
 const AddTagSchema = z.object({
   tag: z.string().min(1, 'Tag is required').max(32),

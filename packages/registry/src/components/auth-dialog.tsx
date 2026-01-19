@@ -12,12 +12,16 @@ export const AuthDialog: React.FC<AuthDialogProps> = ({
 }) => {
   const { signIn } = useAuthActions()
 
-  const handleGithubSignIn = async () => {
-    try {
-      await signIn('github')
-    } catch (error) {
-      console.error('[error]: github sign-in failed', error)
-    }
+  const handleGithubSignIn = () => {
+    signIn('github')
+      .then(() => {
+        // TODO: add sooner toast
+        console.log('github sign-in successful')
+      })
+      .catch((error) => {
+        // TODO: add sooner toast
+        console.error('[error]: github sign-in failed', error)
+      })
   }
 
   return (

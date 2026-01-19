@@ -3,9 +3,10 @@ import { getAuthUserId } from '@convex-dev/auth/server'
 import { v } from 'convex/values'
 import { Octokit } from 'octokit'
 
-import { components, internal } from '@/convex.generated/api'
-import { action, internalAction } from '@/convex.generated/server'
-import { getValidGithubAccessToken } from '@/convex/auth'
+import { components, internal } from './_generated/api'
+import { action, internalAction } from './_generated/server'
+
+import { getValidGithubAccessToken } from './auth'
 
 export const MAX_REPOSITORIES = 100
 
@@ -36,7 +37,8 @@ export const isAwesomeRepository = internalAction({
     })
 
     try {
-      const response = await application.rest.repos.getContent({
+      // TODO: check its content & make sure it is a valid one
+      await application.rest.repos.getContent({
         owner: args.login,
         repo: args.name,
         path: '.github/workflows/deploy-awesome-website.yml',

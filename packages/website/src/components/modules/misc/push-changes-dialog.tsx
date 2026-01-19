@@ -16,7 +16,7 @@ import { z } from 'zod/v4'
 
 import { toast } from 'sonner'
 
-import type { AwesomeList } from '@/types/awesome-list'
+import type { AwesomeList } from 'shared/types/awesome-list'
 
 import { useList } from '@/contexts/list'
 import { useGitHubAuth } from '@/hooks/github-auth'

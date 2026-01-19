@@ -2,10 +2,10 @@ import fs from 'node:fs'
 import path from 'node:path'
 import yaml from 'js-yaml'
 
-import { AwesomeListSchema } from '../src/types/awesome-list'
+import { AwesomeListSchema } from 'shared/types/awesome-list'
 
 import type { Plugin } from 'vite'
-import type { AwesomeList } from '../src/types/awesome-list'
+import type { AwesomeList } from 'shared/types/awesome-list'
 
 export const loadAwesomeList = (listPath: string | undefined): AwesomeList => {
   if (!listPath) {

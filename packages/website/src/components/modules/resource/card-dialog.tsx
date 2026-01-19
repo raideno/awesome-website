@@ -22,12 +22,13 @@ import MDEditor from '@uiw/react-md-editor'
 import rehypeKatex from 'rehype-katex'
 import remarkMath from 'remark-math'
 
-import type { AwesomeListElement } from '@/types/awesome-list'
+import { ToggleGroup } from 'shared/components/ui/toggle-group'
+import { useTheme } from 'shared/contexts/theme'
 
-import { ToggleGroup } from '@/components/ui/toggle-group'
+import type { AwesomeListElement } from 'shared/types/awesome-list'
+
 import { useEditing } from '@/contexts/editing'
 import { useList } from '@/contexts/list'
-import { useTheme } from '@/contexts/theme'
 
 type ViewMode = 'edit' | 'live' | 'preview'
 

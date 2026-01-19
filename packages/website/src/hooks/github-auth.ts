@@ -1,4 +1,4 @@
-import { useLocalStorageState } from './local-storage-state'
+import { useLocalStorageStateFactory } from 'shared/hooks/local-storage-state'
 
 const LOCAL_STORAGE_KEY = 'github-token'
 
@@ -10,10 +10,10 @@ export interface UseGitHubAuth {
 }
 
 export function useGitHubAuth(): UseGitHubAuth {
-  const [token, setToken, clearToken] = useLocalStorageState<string>(
-    LOCAL_STORAGE_KEY,
-    '',
-  )
+  const [token, setToken, clearToken] = useLocalStorageStateFactory(
+    __REPOSITORY_OWNER__,
+    __REPOSITORY_NAME__,
+  )<string>(LOCAL_STORAGE_KEY, '')
 
   return {
     token,
