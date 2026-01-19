@@ -1,11 +1,13 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
+import type { AwesomeList } from 'shared/types/awesome-list'
 
 export const Route = createFileRoute('/')({
   component: Index,
 })
 
 function Index() {
+  const [awesomeList, setAwesomeList] = useState<AwesomeList | null>(null)
   const [isAwesomeWebsite, setIsAwesomeWebsite] = useState(false)
   const [websiteInfo, setWebsiteInfo] = useState<{
     title?: string
@@ -26,25 +28,21 @@ function Index() {
         // Execute script in the page context to check for markers
         const results = await chrome.scripting.executeScript({
           target: { tabId: tab.id },
+          world: 'MAIN',
           func: () => {
-            // Check for various markers
-            const hasMetaTag =
-              document.querySelector('meta[name="awesome-website"]') !== null
-            const hasDataAttr =
-              document.documentElement.dataset.awesomeWebsite === 'true'
+            console.log('ext:', '__AWESOME_LIST__' in window, window)
+            const list = (
+              '__AWESOME_LIST__' in window ? window['__AWESOME_LIST__'] : null
+            ) as AwesomeList | null
             const hasGlobalVar =
               '__AWESOME_WEBSITE__' in window &&
               window['__AWESOME_WEBSITE__'] === true
-            const hasGeneratorMeta =
-              document.querySelector(
-                'meta[name="generator"][content="awesome-website"]',
-              ) !== null
 
             return {
-              isAwesome:
-                hasMetaTag || hasDataAttr || hasGlobalVar || hasGeneratorMeta,
+              isAwesome: hasGlobalVar,
               title: document.title,
               url: window.location.href,
+              list: list,
             }
           },
         })
@@ -53,6 +51,7 @@ function Index() {
           const { isAwesome, title, url } = results[0].result
           setIsAwesomeWebsite(isAwesome)
           setWebsiteInfo({ title, url })
+          setAwesomeList(results[0].result.list)
         }
       } catch (error) {
         console.error('Error checking awesome website:', error)
@@ -75,6 +74,7 @@ function Index() {
   return (
     <>
       <div className="p-4 space-y-4">
+        List: {JSON.stringify(awesomeList)}
         {isAwesomeWebsite && (
           <div className="bg-gradient-to-r from-purple-500 to-pink-500 text-white p-4 rounded-lg shadow-lg">
             <div className="flex items-center gap-2">
@@ -103,7 +103,6 @@ function Index() {
             )}
           </div>
         )}
-
         <div className="text-gray-700 dark:text-gray-300">
           <h3 className="font-semibold mb-2">Extension Panel</h3>
           <p className="text-sm">

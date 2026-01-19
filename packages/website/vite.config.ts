@@ -142,6 +142,7 @@ export default vite.defineConfig({
     ),
     __AWESOME_WEBSITE__: true,
     __GITHUB_WORKFLOW_FILE_NAME__: JSON.stringify(GITHUB_WORKFLOW_FILE_NAME),
+    __AWESOME_LIST__: JSON.stringify(AWESOME_LIST),
   },
   base: BASE_PATH,
   resolve: {
