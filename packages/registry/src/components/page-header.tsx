@@ -9,10 +9,18 @@ export interface PageHeaderProps {
 export const PageHeader: React.FC<PageHeaderProps> = ({ title, body }) => {
   return (
     <div className="space-y-2">
-      <Heading size="6" weight="bold">
+      <Heading
+        size={{ initial: '7', sm: '8', md: '9' }}
+        weight="bold"
+        className="break-words"
+      >
         {title}
       </Heading>
-      <Text size="3" color="gray">
+      <Text
+        size={{ initial: '2', sm: '3' }}
+        color="gray"
+        className="block max-w-prose"
+      >
         {body}
       </Text>
     </div>

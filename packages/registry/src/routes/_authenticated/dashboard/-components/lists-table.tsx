@@ -52,8 +52,8 @@ export const ListsTable: React.FC<ListsTableProps> = ({
   })
 
   return (
-    <Box>
-      <Table.Root variant="surface">
+    <Box className="w-full overflow-x-auto">
+      <Table.Root variant="surface" className="min-w-full">
         <Table.Header>
           {table.getHeaderGroups().map((headerGroup) => (
             <Table.Row key={headerGroup.id}>

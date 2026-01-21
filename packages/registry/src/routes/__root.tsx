@@ -21,11 +21,13 @@ export const Route = createRootRouteWithContext<RouterContext>()({
     return (
       <React.Fragment>
         <SubscriptionBanner />
-        <Header />
-        <div className="mx-auto max-w-3xl py-20 pt-24">
-          <Outlet />
+        <div className="grid grid-rows-[auto_1fr_auto] min-h-screen">
+          <Header />
+          <div className="mx-auto w-full max-w-3xl py-8 pt-20 sm:py-12 sm:pt-24 px-4 sm:px-6 lg:px-0">
+            <Outlet />
+          </div>
+          <Footer />
         </div>
-        <Footer />
         <ProtectedAuthDialog />
       </React.Fragment>
     )

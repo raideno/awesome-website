@@ -4,6 +4,7 @@ import { z } from 'zod/v4'
 export const MAX_TAGS = 16
 
 export const AwesomeListElementSchema = z.object({
+  id: z.string().regex(/^\d+$/).max(8),
   name: z.string().max(128),
   description: z.string().max(192),
   notes: z.string().optional().register(MetadataRegistry, { type: 'textarea' }),
@@ -13,14 +14,25 @@ export const AwesomeListElementSchema = z.object({
 })
 export type AwesomeListElement = z.infer<typeof AwesomeListElementSchema>
 
-export const AwesomeListSchema = z.object({
-  title: z.string().max(128),
-  description: z.string().max(192),
-  author: z.string().max(64),
-  thumbnail: z.string().optional(),
-  elements: z.array(AwesomeListElementSchema),
-  links: z.array(z.url()).max(4).optional(),
-})
+export const AwesomeListSchema = z
+  .object({
+    title: z.string().max(128),
+    description: z.string().max(192),
+    author: z.string().max(64),
+    thumbnail: z.string().optional(),
+    elements: z.array(AwesomeListElementSchema),
+    links: z.array(z.url()).max(4).optional(),
+  })
+  .refine(
+    (data) => {
+      const ids = data.elements.map((el) => el.id)
+      return new Set(ids).size === ids.length
+    },
+    {
+      message: 'Each element must have a unique id',
+      path: ['elements'],
+    },
+  )
 export type AwesomeList = z.infer<typeof AwesomeListSchema>
 
 export const AwesomeListMetadata = AwesomeListSchema.omit({

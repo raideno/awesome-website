@@ -53,7 +53,13 @@ export const Route = createFileRoute('/_authenticated/dashboard/')({
 
         <ImportRepositoryButton onClick={() => setIsImportDialogOpen(true)} />
 
-        <Flex gap="3" align="center" justify="between" wrap="wrap">
+        <Flex
+          gap="3"
+          align="center"
+          justify="between"
+          wrap="wrap"
+          className="w-full"
+        >
           <SearchBar
             value={globalFilter}
             onChange={setGlobalFilter}

@@ -12,10 +12,32 @@ import { Sheet } from '@/components/ui/sheet'
 
 import { useList } from '@/contexts/list'
 
+const generateUniqueId = (existingIds: Array<string>): string => {
+  const existingIdsSet = new Set(existingIds)
+
+  for (let i = 0; i < 100; i++) {
+    const id = Math.floor(Math.random() * 100000000)
+      .toString()
+      .padStart(8, '0')
+    if (!existingIdsSet.has(id)) {
+      return id
+    }
+  }
+
+  let maxId = 0
+  for (const id of existingIds) {
+    const numId = parseInt(id, 10)
+    if (!isNaN(numId) && numId > maxId) {
+      maxId = numId
+    }
+  }
+  return (maxId + 1).toString().padStart(8, '0')
+}
+
 export interface ResourceCreateSheetProps {
   children?: React.ReactNode
   state?: { open: boolean; onOpenChange: (open: boolean) => void }
-  defaults?: Partial<z.infer<typeof AwesomeListElementSchema>>
+  defaults?: Partial<Omit<z.infer<typeof AwesomeListElementSchema>, 'id'>>
 }
 
 export const ResourceCreateSheet: React.FC<ResourceCreateSheetProps> = ({
@@ -53,6 +75,9 @@ export const ResourceCreateSheet: React.FC<ResourceCreateSheetProps> = ({
     setOpen(false)
   }
 
+  const existingIds = list.content.new.elements.map((el) => el.id)
+  const generatedId = generateUniqueId(existingIds)
+
   return (
     <Sheet.Root open={isOpen && list.canEdit} onOpenChange={setOpen}>
       {children && (
@@ -62,6 +87,7 @@ export const ResourceCreateSheet: React.FC<ResourceCreateSheetProps> = ({
         <AutoForm.Root
           schema={AwesomeListElementSchema}
           defaultValues={{
+            id: generatedId,
             name: '',
             description: '',
             notes: '',

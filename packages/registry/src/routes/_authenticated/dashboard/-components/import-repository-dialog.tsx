@@ -7,6 +7,7 @@ import {
   Checkbox,
   Dialog,
   Flex,
+  Heading,
   ScrollArea,
   Spinner,
   Text,
@@ -158,11 +159,19 @@ export const ImportRepositoryDialog: React.FC<ImportRepositoryDialogProps> = ({
 
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
-      <Dialog.Content style={{ maxWidth: 600 }}>
-        <Dialog.Title>Import Repository</Dialog.Title>
-        <Dialog.Description size="2" mb="4">
-          Select repositories to import as awesome lists
-        </Dialog.Description>
+      <Dialog.Content>
+        <Box mb={'4'}>
+          <>
+            <Dialog.Title className="sr-only">Import Repository</Dialog.Title>
+            <Dialog.Description className="sr-only" size="2">
+              Select repositories to import as awesome lists
+            </Dialog.Description>
+          </>
+          <Box>
+            <Heading>Import Repository</Heading>
+            <Text>Select repositories to import as awesome lists</Text>
+          </Box>
+        </Box>
 
         {(error || importError) && (
           <Box
@@ -193,7 +202,7 @@ export const ImportRepositoryDialog: React.FC<ImportRepositoryDialogProps> = ({
               <Spinner size="3" />
             </Flex>
           ) : (
-            <ScrollArea style={{ height: 400 }}>
+            <ScrollArea style={{ height: 400 }} scrollbars="vertical">
               <Flex direction="column" gap="3">
                 {/* Awesome Repositories Section */}
                 {awesomeRepos.length > 0 && (

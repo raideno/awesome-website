@@ -1,1 +1,1 @@
-{"root":["./vite.config.ts","./src/background.ts","./src/routetree.gen.ts","./src/app.tsx","./src/main.tsx","./src/routes/__root.tsx","./src/routes/index.tsx"],"version":"5.7.3"}
+{"root":["./vite.config.ts","./src/background.ts","./src/routetree.gen.ts","./src/lib/storage.ts","./src/app.tsx","./src/main.tsx","./src/providers.tsx","./src/components/auth-dialog.tsx","./src/components/profile.tsx","./src/contexts/authentication.tsx","./src/routes/__root.tsx","./src/routes/index.tsx"],"version":"5.7.3"}

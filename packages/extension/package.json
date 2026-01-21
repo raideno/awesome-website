@@ -10,8 +10,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@convex-dev/auth": "^0.0.90",
+    "@radix-ui/react-icons": "^1.3.2",
+    "@radix-ui/themes": "^3.2.1",
     "@tanstack/react-router": "^1.151.3",
     "backend": "file:../backend",
+    "convex": "^1.31.5",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "shared": "file:../shared",
