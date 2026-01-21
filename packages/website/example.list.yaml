@@ -13,7 +13,7 @@ elements:
   - id: '2'
     name: Easy Awesome Website
     description: A tool to easily generate an awesome website for your awesome lists.
-    link: https://github.com/raideno/easy-awesome-website
+    link: https://github.com/raideno/easy-awesome
     tags:
       - awesome list
       - easy awesome website
