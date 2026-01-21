@@ -6,12 +6,13 @@ import '@/css/theme.light.css'
 
 import React from 'react'
 import ReactDOM from 'react-dom/client'
+import { ThemeProvider } from 'shared/contexts/theme'
 import { registerSW } from 'virtual:pwa-register'
+import { Pattern } from 'shared/components/layout/pattern'
 
 import { App } from '@/app'
 import { Providers } from '@/providers'
 
-import { ThemeProvider } from '@/contexts/theme'
 import { ErrorComponent } from '@/components/utils'
 
 registerSW({
@@ -71,6 +72,7 @@ if (rootElement && !rootElement.innerHTML) {
       >
         <ThemeProvider>
           <Providers>
+            <Pattern />
             <App />
           </Providers>
         </ThemeProvider>

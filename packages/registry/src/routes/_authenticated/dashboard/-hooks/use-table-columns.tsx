@@ -3,7 +3,7 @@ import { Badge, Flex, IconButton, Link, Text } from '@radix-ui/themes'
 import { type ColumnDef } from '@tanstack/react-table'
 import * as React from 'react'
 
-import type { AwesomeListRepository } from '@/types/awesome-list-repository'
+import type { AwesomeListRepository } from 'shared/types/awesome-list-repository'
 
 interface UseTableColumnsProps {
   onDelete: (id: string) => void

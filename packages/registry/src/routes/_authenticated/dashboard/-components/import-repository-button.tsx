@@ -12,9 +12,10 @@ export const ImportRepositoryButton: React.FC<ImportRepositoryButtonProps> = ({
   return (
     <Button
       aria-description=""
-      className="!w-full"
+      className="w-full sm:w-auto"
       variant="classic"
       onClick={onClick}
+      size="3"
     >
       <PlusIcon />
       Import Repository

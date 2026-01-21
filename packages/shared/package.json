@@ -1,3 +1,28 @@
 {
-    "name": "@awesome-website/shared"
+    "name": "shared",
+    "version": "0.0.0",
+    "private": true,
+    "type": "module",
+    "main": "./src/index.ts",
+    "types": "./src/index.ts",
+    "exports": {
+        "./constants": "./src/constants.ts",
+        "./hooks/*": "./src/hooks/*.ts",
+        "./lib/*": "./src/lib/*.ts",
+        "./types/*": "./src/types/*.ts",
+        "./contexts/*": "./src/contexts/*.tsx",
+        "./components/ui/*": "./src/components/ui/*.tsx",
+        "./components/utils/*": "./src/components/utils/*.tsx",
+        "./components/layout/*": "./src/components/layout/*.tsx"
+    },
+    "files": [
+        "src"
+    ],
+    "peerDependencies": {
+        "react": "^19.0.0",
+        "react-dom": "^19.0.0"
+    },
+    "sideEffects": [
+        "**/*.css"
+    ]
 }

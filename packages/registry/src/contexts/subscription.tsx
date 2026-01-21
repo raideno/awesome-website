@@ -2,7 +2,7 @@ import { useQuery } from 'convex/react'
 import { FunctionReturnType } from 'convex/server'
 import React from 'react'
 
-import { api } from '@/convex.generated/api'
+import { api } from 'backend/api'
 
 /**
  * undefined is set as a loading state meaning we do not know yet.

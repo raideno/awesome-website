@@ -20,11 +20,12 @@ import {
   RocketIcon,
 } from '@radix-ui/react-icons'
 
+import { ToggleGroup } from 'shared/components/ui/toggle-group'
+
 import type { MarkerBehavior } from '@/contexts/markers'
 
 import { useList } from '@/contexts/list'
 import { useMarkers } from '@/contexts/markers'
-import { ToggleGroup } from '@/components/ui/toggle-group'
 
 export interface MarkersModalProps {
   children: React.ReactNode

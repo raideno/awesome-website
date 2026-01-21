@@ -1,9 +1,9 @@
 import { MoonIcon, SunIcon } from '@radix-ui/react-icons'
 import { IconButton } from '@radix-ui/themes'
-import type { IconButtonProps } from '@radix-ui/themes'
+import { useTheme } from 'shared/contexts/theme'
+import { cn } from 'shared/lib/utils'
 
-import { cn } from '@/lib/utils'
-import { useTheme } from '@/contexts/theme'
+import type { IconButtonProps } from '@radix-ui/themes'
 
 export type ThemeSwitchButtonProps = IconButtonProps & {}
 

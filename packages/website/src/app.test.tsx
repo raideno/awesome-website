@@ -1,9 +1,9 @@
-import { describe, expect, test } from 'vitest'
 import { render, screen } from '@testing-library/react'
+import { ThemeProvider } from 'shared/contexts/theme'
+import { describe, expect, test } from 'vitest'
 
 import { App } from '@/app'
 import { Providers } from '@/providers'
-import { ThemeProvider } from '@/contexts/theme'
 
 describe('App', () => {
   test('renders', () => {

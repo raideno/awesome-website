@@ -13,9 +13,9 @@ export const SubscriptionBanner = () => {
 
   return (
     <div className="border-b border-[var(--gray-7)] bg-gradient-to-r from-[var(--orange-3)] to-[var(--amber-3)]">
-      <div className="mx-auto max-w-3xl py-3">
-        <div className="flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3 flex-1">
+      <div className="mx-auto max-w-3xl py-3 px-4 sm:px-6 lg:px-0">
+        <div className="flex items-center justify-between gap-3 sm:gap-4 flex-wrap sm:flex-nowrap">
+          <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
             <Sparkles
               width={20}
               height={20}
@@ -30,7 +30,11 @@ export const SubscriptionBanner = () => {
           </div>
           <div className="flex items-center gap-2">
             <Link to="/dashboard/payment">
-              <Button variant="classic" color="orange">
+              <Button
+                variant="classic"
+                color="orange"
+                size={{ initial: '2', sm: '3' }}
+              >
                 Upgrade Now
               </Button>
             </Link>

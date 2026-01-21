@@ -15,11 +15,10 @@ export const SearchBar: React.FC<SearchBarProps> = ({
 }) => {
   return (
     <TextField.Root
-      className="w-full"
+      className="w-full sm:min-w-[250px]"
       placeholder={placeholder}
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      style={{ minWidth: 250 }}
     >
       <TextField.Slot>
         <MagnifyingGlassIcon height="16" width="16" />

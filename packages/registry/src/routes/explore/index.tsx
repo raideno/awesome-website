@@ -5,20 +5,24 @@ import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/explore/')({
   component: () => (
-    <div>
+    <div className="w-full">
       <PageHeader
         title="Explore"
         body="Discover awesome lists and repositories shared by the community."
       />
 
-      <div className="flex min-h-[60vh] flex-col items-center justify-center px-4 py-16 text-center">
-        <div className="space-y-6 max-w-2xl">
+      <div className="flex min-h-[50vh] sm:min-h-[60vh] flex-col items-center justify-center px-4 py-12 sm:py-16 text-center">
+        <div className="space-y-4 sm:space-y-6 max-w-2xl w-full">
           <div className="">
             <div className="inline-flex items-center gap-2 text-sm text-muted-foreground">
               <Spinner />
               Check back soon for updates
             </div>
-            <Heading className="!mb-2" size={'9'} weight="bold">
+            <Heading
+              className="!mb-2"
+              size={{ initial: '7', sm: '8', md: '9' }}
+              weight="bold"
+            >
               Coming Soon
             </Heading>
             {/* <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200 text-sm font-medium">
@@ -31,7 +35,7 @@ export const Route = createFileRoute('/explore/')({
             </Badge>
           </div>
 
-          <p className="text-lg text-muted-foreground sm:text-xl">
+          <p className="text-base sm:text-lg text-muted-foreground">
             We're working hard to bring you something amazing. This page is
             currently being built and will be available soon.
           </p>

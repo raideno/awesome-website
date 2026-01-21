@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo } from 'react'
-import { useLocalStorageState } from './local-storage-state'
+
+import { useLocalStorageStateFactory } from 'shared/hooks/local-storage-state'
 
 interface CommitAwareData<T> {
   commitHash: string
@@ -21,7 +22,10 @@ export function useCommitAwareStorage<T>(
   initialValue: T,
 ) {
   const [persistedData, setPersistedData, clearPersistedData] =
-    useLocalStorageState<CommitAwareData<T> | null>(key, null)
+    useLocalStorageStateFactory(
+      __REPOSITORY_OWNER__,
+      __REPOSITORY_NAME__,
+    )<CommitAwareData<T> | null>(key, null)
 
   const isValidForCurrentCommit = useMemo(() => {
     if (!persistedData || !commitHash) return false
