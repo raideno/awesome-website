@@ -17,7 +17,9 @@ import {
 import { createFileRoute } from '@tanstack/react-router'
 import { Authenticated, Unauthenticated } from 'convex/react'
 import { useEffect, useState } from 'react'
+
 import type { AwesomeList } from 'shared/types/awesome-list'
+import type { SavedAwesomeWebsite } from '@/lib/storage'
 
 import { AuthDialog } from '@/components/auth-dialog'
 import { Profile } from '@/components/profile'
@@ -26,7 +28,6 @@ import {
   isWebsiteSaved,
   removeWebsite,
   saveWebsite,
-  type SavedAwesomeWebsite,
 } from '@/lib/storage'
 
 export const Route = createFileRoute('/')({
@@ -40,7 +41,9 @@ function Index() {
     title?: string
     url?: string
   }>({})
-  const [savedWebsites, setSavedWebsites] = useState<SavedAwesomeWebsite[]>([])
+  const [savedWebsites, setSavedWebsites] = useState<
+    Array<SavedAwesomeWebsite>
+  >([])
   const [isSaved, setIsSaved] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
