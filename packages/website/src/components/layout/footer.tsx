@@ -24,7 +24,7 @@ export const Footer: React.FC<FooterProps> = () => {
               weight={'bold'}
               size="2"
             >
-              Awesome Website
+              raideno/awesome
             </Text>
           </Flex>
         </Link>

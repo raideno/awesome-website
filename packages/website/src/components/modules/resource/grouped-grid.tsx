@@ -16,7 +16,7 @@ import React from 'react'
 import { toast } from 'sonner'
 import { z } from 'zod/v4'
 
-import type { AwesomeListElement } from '@/types/awesome-list'
+import type { AwesomeListElement } from 'shared/types/awesome-list'
 
 import { useFilter } from '@/contexts/filter'
 import { useEditing } from '@/contexts/editing'
