@@ -1,8 +1,8 @@
 import { defineConfig } from 'vite'
+import path from 'path'
 import react from '@vitejs/plugin-react'
 import { viteStaticCopy } from 'vite-plugin-static-copy'
 import { tanstackRouter } from '@tanstack/router-plugin/vite'
-import path from 'path'
 
 export default defineConfig({
   plugins: [
