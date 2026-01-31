@@ -15,14 +15,11 @@ import {
   Text,
 } from '@radix-ui/themes'
 import { createFileRoute } from '@tanstack/react-router'
-import { Authenticated, Unauthenticated } from 'convex/react'
 import { useEffect, useState } from 'react'
 
 import type { AwesomeList } from 'shared/types/awesome-list'
 import type { SavedAwesomeWebsite } from '@/lib/storage'
 
-import { AuthDialog } from '@/components/auth-dialog'
-import { Profile } from '@/components/profile'
 import {
   getSavedWebsites,
   isWebsiteSaved,
@@ -61,7 +58,29 @@ function Index() {
         currentWindow: true,
       })
 
-      if (!tab.id) return
+      if (!tab.id || !tab.url) {
+        // Reset state for tabs without URLs (new tab, settings, etc.)
+        setIsAwesomeWebsite(false)
+        setWebsiteInfo({})
+        setAwesomeList(null)
+        setIsSaved(false)
+        return
+      }
+
+      // Skip restricted URLs (chrome://, edge://, about:, etc.)
+      if (
+        tab.url.startsWith('chrome://') ||
+        tab.url.startsWith('edge://') ||
+        tab.url.startsWith('about:') ||
+        tab.url.startsWith('chrome-extension://') ||
+        tab.url.startsWith('edge-extension://')
+      ) {
+        setIsAwesomeWebsite(false)
+        setWebsiteInfo({})
+        setAwesomeList(null)
+        setIsSaved(false)
+        return
+      }
 
       const results = await chrome.scripting.executeScript({
         target: { tabId: tab.id },
@@ -96,6 +115,11 @@ function Index() {
       }
     } catch (error) {
       console.error('Error checking awesome website:', error)
+      // Reset state on error (e.g., can't access restricted pages)
+      setIsAwesomeWebsite(false)
+      setWebsiteInfo({})
+      setAwesomeList(null)
+      setIsSaved(false)
     }
   }
 
@@ -165,16 +189,6 @@ function Index() {
             <StarIcon className="w-5 h-5" />
             <Heading size="4">Awesome Lists</Heading>
           </Flex>
-          <Authenticated>
-            <Profile />
-          </Authenticated>
-          <Unauthenticated>
-            <AuthDialog>
-              <Button size="1" variant="soft">
-                Sign In
-              </Button>
-            </AuthDialog>
-          </Unauthenticated>
         </Flex>
       </Box>
 

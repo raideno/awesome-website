@@ -26,27 +26,16 @@ jobs:
 
       - name: build website
         env:
-          BASE_PATH: /${{ github.event.repository.name }}/website
+          BASE_PATH: /${{ github.event.repository.name }}
           LIST_FILE_PATH: example.list.yaml
           GITHUB_REPOSITORY_URL: https://github.com/${{ github.repository }}
         run: npm run build --workspace website
 
-      - name: build registry
-        env:
-          CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY }}
-        run: npm run convex:deploy --workspace registry
-
-      - name: build landing
-        run: npm run build --workspace landing
-
       - name: create deployment structure
         run: |
           mkdir -p deploy-artifact/website
-          mkdir -p deploy-artifact/registry
 
-          cp -r packages/landing/dist/* deploy-artifact/
-          cp -r packages/website/dist/* deploy-artifact/website/
-          cp -r packages/registry/dist/* deploy-artifact/registry/
+          cp -r packages/website/dist/* deploy-artifact/
 
       - name: upload build artifact
         uses: actions/upload-pages-artifact@v3
