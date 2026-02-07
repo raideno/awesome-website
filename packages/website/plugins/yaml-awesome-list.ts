@@ -1,50 +1,58 @@
-import fs from 'node:fs'
-import path from 'node:path'
-import yaml from 'js-yaml'
+import fs from "node:fs";
+import path from "node:path";
+import yaml from "js-yaml";
 
-import { AwesomeListSchema } from 'shared/types/awesome-list'
+import { AwesomeListSchema } from "shared/types/awesome-list";
 
-import type { Plugin } from 'vite'
-import type { AwesomeList } from 'shared/types/awesome-list'
+import type { Plugin } from "vite";
+import type { AwesomeList } from "shared/types/awesome-list";
 
 export const loadAwesomeList = (listPath: string | undefined): AwesomeList => {
   if (!listPath) {
-    throw new Error('LIST_FILE_PATH environment variable is not set')
+    throw new Error("LIST_FILE_PATH environment variable is not set");
   }
 
   if (!fs.existsSync(listPath)) {
-    throw new Error(`Awesome list file not found at ${listPath}`)
+    throw new Error(`Awesome list file not found at ${listPath}`);
   }
 
-  const yamlContent = fs.readFileSync(listPath, 'utf8')
-  const rawList = yaml.load(yamlContent)
+  const yamlContent = fs.readFileSync(listPath, "utf8");
+  const rawList = yaml.load(yamlContent);
 
-  const parsing = AwesomeListSchema.safeParse(rawList)
+  const parsing = AwesomeListSchema.safeParse(rawList);
   if (!parsing.success) {
-    throw new Error(`Invalid awesome list data: ${parsing.error.message}`)
+    throw new Error(`Invalid awesome list data: ${parsing.error.message}`);
   }
 
-  return parsing.data
-}
+  const list = parsing.data;
+
+  const listDir = path.dirname(listPath);
+  const readmePath = path.join(listDir, "README.md");
+
+  if (fs.existsSync(readmePath))
+    list.readme = fs.readFileSync(readmePath, "utf8");
+
+  return list;
+};
 
 const validateListFile = (listPath: string | undefined): AwesomeList => {
-  return loadAwesomeList(listPath)
-}
+  return loadAwesomeList(listPath);
+};
 
 export default (listPath: string): Plugin => {
-  const virtualModuleId = 'virtual:awesome-list'
-  const resolvedVirtualModuleId = '\0' + virtualModuleId
+  const virtualModuleId = "virtual:awesome-list";
+  const resolvedVirtualModuleId = "\0" + virtualModuleId;
 
   return {
-    name: 'yaml-awesome-list',
-    enforce: 'pre',
+    name: "yaml-awesome-list",
+    enforce: "pre",
 
     configResolved(config) {
-      validateListFile(listPath)
+      validateListFile(listPath);
 
       if (listPath) {
-        const absPath = path.resolve(config.root, listPath)
-        config.logger.info(`[yaml-awesome-list](watching): ${absPath}`)
+        const absPath = path.resolve(config.root, listPath);
+        config.logger.info(`[yaml-awesome-list](watching): ${absPath}`);
       }
     },
     // TODO: fix; currently a change in the website result in a refresh rather than HMR
@@ -61,14 +69,14 @@ export default (listPath: string): Plugin => {
     // },
     resolveId(id) {
       if (id === virtualModuleId) {
-        return resolvedVirtualModuleId
+        return resolvedVirtualModuleId;
       }
     },
     load(id) {
       if (id === resolvedVirtualModuleId) {
-        const awesomeList = validateListFile(listPath)
-        return `export default ${JSON.stringify(awesomeList)}`
+        const awesomeList = validateListFile(listPath);
+        return `export default ${JSON.stringify(awesomeList)}`;
       }
     },
-  }
-}
+  };
+};

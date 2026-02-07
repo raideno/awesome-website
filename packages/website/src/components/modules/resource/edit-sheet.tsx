@@ -1,23 +1,23 @@
-import { useState } from 'react'
+import { useState } from "react";
 
-import { Heading, Text } from '@radix-ui/themes'
-import { AutoForm } from '@raideno/auto-form/ui'
-import { AwesomeListElementSchema } from 'shared/types/awesome-list'
-import { toast } from 'sonner'
+import { Heading, Text } from "@radix-ui/themes";
+import { AutoForm } from "@raideno/auto-form/ui";
+import { AwesomeListElementSchema } from "shared/types/awesome-list";
+import { toast } from "sonner";
 
-import type React from 'react'
-import type { z } from 'zod/v4'
+import type React from "react";
+import type { z } from "zod/v4";
 
-import type { AwesomeListElement } from 'shared/types/awesome-list'
+import type { AwesomeListElement } from "shared/types/awesome-list";
 
-import { Sheet } from '@/components/ui/sheet'
+import { Sheet } from "@/components/ui/sheet";
 
-import { useList } from '@/contexts/list'
+import { useList } from "@/contexts/list";
 
 export interface ResourceEditSheetProps {
-  children?: React.ReactNode
-  element: AwesomeListElement
-  state?: { open: boolean; onOpenChange: (open: boolean) => void }
+  children?: React.ReactNode;
+  element: AwesomeListElement;
+  state?: { open: boolean; onOpenChange: (open: boolean) => void };
 }
 
 export const ResourceEditSheet: React.FC<ResourceEditSheetProps> = ({
@@ -25,12 +25,12 @@ export const ResourceEditSheet: React.FC<ResourceEditSheetProps> = ({
   element,
   state,
 }) => {
-  const list = useList()
+  const list = useList();
 
-  const [internalOpen, setInternalOpen] = useState(false)
+  const [internalOpen, setInternalOpen] = useState(false);
 
-  const isOpen = state?.open ?? internalOpen
-  const setOpen = state?.onOpenChange ?? setInternalOpen
+  const isOpen = state?.open ?? internalOpen;
+  const setOpen = state?.onOpenChange ?? setInternalOpen;
 
   const handleSubmit = async (
     data: z.infer<typeof AwesomeListElementSchema>,
@@ -40,20 +40,20 @@ export const ResourceEditSheet: React.FC<ResourceEditSheetProps> = ({
         elements: list.content.new.elements.map((el) =>
           el.name === element.name ? { ...el, ...data } : el,
         ),
-      })
-      setOpen(false)
+      });
+      setOpen(false);
     } catch (error) {
-      alert(error instanceof Error ? error.message : 'Failed to save changes')
+      toast.error("Failed to update resource. Please try again.");
     }
-  }
+  };
 
   const handleCancel = () => {
-    setOpen(false)
-  }
+    setOpen(false);
+  };
 
   const handleError = () => {
-    toast.error('Please fix the errors in the form before submitting.')
-  }
+    toast.error("Please fix the errors in the form before submitting.");
+  };
 
   return (
     <Sheet.Root open={isOpen && list.canEdit} onOpenChange={setOpen}>
@@ -87,7 +87,7 @@ export const ResourceEditSheet: React.FC<ResourceEditSheetProps> = ({
           </Sheet.Header>
           <Sheet.Body>
             <AutoForm.Content
-              fields={['name', 'description', 'link', 'tags', 'group']}
+              fields={["name", "description", "link", "tags", "group"]}
             />
           </Sheet.Body>
           <Sheet.Footer>
@@ -113,5 +113,5 @@ export const ResourceEditSheet: React.FC<ResourceEditSheetProps> = ({
         </AutoForm.Root>
       </Sheet.Content>
     </Sheet.Root>
-  )
-}
+  );
+};

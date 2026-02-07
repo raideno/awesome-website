@@ -1,50 +1,50 @@
-import { useState } from 'react'
+import { useState } from "react";
 
-import { Heading, ScrollArea, Text } from '@radix-ui/themes'
-import { AutoForm } from '@raideno/auto-form/ui'
-import { AwesomeListMetadata } from 'shared/types/awesome-list'
-import { toast } from 'sonner'
+import { Heading, ScrollArea, Text } from "@radix-ui/themes";
+import { AutoForm } from "@raideno/auto-form/ui";
+import { AwesomeListMetadata } from "shared/types/awesome-list";
+import { toast } from "sonner";
 
-import type React from 'react'
-import type { z } from 'zod/v4'
+import type React from "react";
+import type { z } from "zod/v4";
 
-import { Sheet } from '@/components/ui/sheet'
-import { useList } from '@/contexts/list'
+import { Sheet } from "@/components/ui/sheet";
+import { useList } from "@/contexts/list";
 
 export interface ListMetadataEditSheetProps {
-  children?: React.ReactNode
-  state?: { open: boolean; onOpenChange: (open: boolean) => void }
+  children?: React.ReactNode;
+  state?: { open: boolean; onOpenChange: (open: boolean) => void };
 }
 
 export const ListMetadataEditSheet: React.FC<ListMetadataEditSheetProps> = ({
   children,
   state,
 }) => {
-  const list = useList()
+  const list = useList();
 
-  const [internalOpen, setInternalOpen] = useState(false)
+  const [internalOpen, setInternalOpen] = useState(false);
 
-  const isOpen = state?.open ?? internalOpen
-  const setOpen = state?.onOpenChange ?? setInternalOpen
+  const isOpen = state?.open ?? internalOpen;
+  const setOpen = state?.onOpenChange ?? setInternalOpen;
 
   const handleSubmit = async (data: z.infer<typeof AwesomeListMetadata>) => {
     try {
       await list.updateList({
         ...data,
-      })
-      setOpen(false)
+      });
+      setOpen(false);
     } catch (error) {
-      alert(error instanceof Error ? error.message : 'Failed to save changes')
+      toast.error("Failed to update list metadata. Please try again.");
     }
-  }
+  };
 
   const handleCancel = () => {
-    setOpen(false)
-  }
+    setOpen(false);
+  };
 
   const handleError = () => {
-    toast.error('Please fix the errors in the form before submitting.')
-  }
+    toast.error("Please fix the errors in the form before submitting.");
+  };
 
   return (
     <Sheet.Root open={isOpen && list.canEdit} onOpenChange={setOpen}>
@@ -104,5 +104,5 @@ export const ListMetadataEditSheet: React.FC<ListMetadataEditSheetProps> = ({
         </AutoForm.Root>
       </Sheet.Content>
     </Sheet.Root>
-  )
-}
+  );
+};

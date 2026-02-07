@@ -1,5 +1,5 @@
-import { Portal } from '@radix-ui/react-dialog'
-import { ExclamationTriangleIcon } from '@radix-ui/react-icons'
+import { Portal } from "@radix-ui/react-dialog";
+import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import {
   Box,
   Button,
@@ -8,41 +8,41 @@ import {
   Flex,
   Heading,
   Text,
-} from '@radix-ui/themes'
-import { MetadataRegistry } from '@raideno/auto-form/registry'
-import { AutoForm } from '@raideno/auto-form/ui'
-import React, { useState } from 'react'
-import { z } from 'zod/v4'
+} from "@radix-ui/themes";
+import { MetadataRegistry } from "@raideno/auto-form/registry";
+import { AutoForm } from "@raideno/auto-form/ui";
+import React, { useState } from "react";
+import { z } from "zod/v4";
 
-import { toast } from 'sonner'
+import { toast } from "sonner";
 
-import type { AwesomeList } from 'shared/types/awesome-list'
+import type { AwesomeList } from "shared/types/awesome-list";
 
-import { useList } from '@/contexts/list'
-import { useGitHubAuth } from '@/hooks/github-auth'
-import { getWorkflowStatus } from '@/hooks/workflow-status'
-import { GitHubService } from '@/lib/github'
+import { useList } from "@/contexts/list";
+import { useGitHubAuth } from "@/hooks/github-auth";
+import { getWorkflowStatus } from "@/hooks/workflow-status";
+import { GitHubService } from "@/lib/github";
 
 interface PushChangesDialogProps {
-  children?: React.ReactNode
-  yamlContent: AwesomeList
-  open?: boolean
-  onOpenChange?: (open: boolean) => void
+  children?: React.ReactNode;
+  yamlContent: AwesomeList;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
 const PushChangesFormSchema = z.object({
   repository: z
     .string()
-    .register(MetadataRegistry, { label: 'Repository*', disabled: true }),
+    .register(MetadataRegistry, { label: "Repository*", disabled: true }),
   path: z
     .string()
-    .register(MetadataRegistry, { label: 'YAML File Path*', disabled: true }),
+    .register(MetadataRegistry, { label: "YAML File Path*", disabled: true }),
   message: z
     .string()
     .min(1)
     .max(48)
-    .register(MetadataRegistry, { label: 'Commit Message*', disabled: false }),
-})
+    .register(MetadataRegistry, { label: "Commit Message*", disabled: false }),
+});
 
 export const PushChangesDialog: React.FC<PushChangesDialogProps> = ({
   children,
@@ -50,66 +50,66 @@ export const PushChangesDialog: React.FC<PushChangesDialogProps> = ({
   open: controlledOpen,
   onOpenChange: controlledOnOpenChange,
 }) => {
-  const [isOpen, setIsOpen] = useState(false)
-  const githubAuth = useGitHubAuth()
-  const { clearChanges, syncRemoteList } = useList()
+  const [isOpen, setIsOpen] = useState(false);
+  const githubAuth = useGitHubAuth();
+  const { clearChanges, syncRemoteList } = useList();
 
-  const dialogOpen = controlledOpen !== undefined ? controlledOpen : isOpen
-  const setDialogOpen = controlledOnOpenChange || setIsOpen
+  const dialogOpen = controlledOpen !== undefined ? controlledOpen : isOpen;
+  const setDialogOpen = controlledOnOpenChange || setIsOpen;
 
   const handleError = () => {
-    toast.error('Something is wrong with your inputs.')
-  }
+    toast.error("Something is wrong with your inputs.");
+  };
 
   const handleSubmit = async (data: z.infer<typeof PushChangesFormSchema>) => {
     try {
       if (!githubAuth.isAuthenticated || !githubAuth.token) {
-        toast.error('Authentication required', {
+        toast.error("Authentication required", {
           description:
-            'Please set your GitHub token in Settings (long-press the star button)',
-        })
-        return
+            "Please set your GitHub token in Settings (long-press the star button)",
+        });
+        return;
       }
 
-      const status = await getWorkflowStatus({ token: githubAuth.token })
+      const status = await getWorkflowStatus({ token: githubAuth.token });
 
       if (status.isWorkflowRunning) {
-        toast.error('Build in progress', {
+        toast.error("Build in progress", {
           description:
-            'Cannot push changes while website is being updated. Please wait for the build to complete.',
-        })
-        return
+            "Cannot push changes while website is being updated. Please wait for the build to complete.",
+        });
+        return;
       }
 
       const github = new GitHubService({
         token: githubAuth.token,
         owner: __REPOSITORY_OWNER__,
         repo: __REPOSITORY_NAME__,
-      })
+      });
 
-      await github.updateYamlFile(data.path, yamlContent, data.message)
+      await github.update(data.path, yamlContent, data.message);
 
-      toast.success('Changes pushed successfully!', {
-        description: 'The repository has been updated',
-      })
+      toast.success("Changes pushed successfully!", {
+        description: "The repository has been updated",
+      });
 
-      setDialogOpen(false)
+      setDialogOpen(false);
 
       // NOTE: optimistic update, set the new list as the base list and clear changes to disable update button until new changes are made
-      syncRemoteList(yamlContent)
+      syncRemoteList(yamlContent);
     } catch (err) {
       const errorMessage =
-        err instanceof Error ? err.message : 'An unexpected error occurred'
-      toast.error('Failed to push changes', {
+        err instanceof Error ? err.message : "An unexpected error occurred";
+      toast.error("Failed to push changes", {
         description: errorMessage,
-      })
+      });
     }
-  }
+  };
 
   const handleDiscardChanges = () => {
-    clearChanges()
-    setDialogOpen(false)
-  }
+    clearChanges();
+    setDialogOpen(false);
+  };
 
   return (
     <Dialog.Root open={dialogOpen} onOpenChange={setDialogOpen}>
@@ -120,7 +120,7 @@ export const PushChangesDialog: React.FC<PushChangesDialogProps> = ({
             defaultValues={{
               path: __YAML_FILE_PATH__,
               repository: `${__REPOSITORY_OWNER__}/${__REPOSITORY_NAME__}`,
-              message: 'chore: update',
+              message: "chore: update",
             }}
             schema={PushChangesFormSchema}
             onError={handleError}
@@ -137,7 +137,7 @@ export const PushChangesDialog: React.FC<PushChangesDialogProps> = ({
                     Review and confirm pushing your changes to the repository.
                   </Dialog.Description>
                 </>
-                <Flex direction={'row'} align={'center'} justify={'between'}>
+                <Flex direction={"row"} align={"center"} justify={"between"}>
                   <Heading>Push Changes to Repository</Heading>
                   <Button
                     type="button"
@@ -166,7 +166,7 @@ export const PushChangesDialog: React.FC<PushChangesDialogProps> = ({
 
               <AutoForm.Content />
               <AutoForm.Actions>
-                <Flex direction={'column'} gap="3" justify="end">
+                <Flex direction={"column"} gap="3" justify="end">
                   <AutoForm.Action variant="soft" color="red" type="reset">
                     Discard Changes
                   </AutoForm.Action>
@@ -180,5 +180,5 @@ export const PushChangesDialog: React.FC<PushChangesDialogProps> = ({
         </Dialog.Content>
       </Portal>
     </Dialog.Root>
-  )
-}
+  );
+};
