@@ -22,6 +22,11 @@
       "items": {
         "type": "object",
         "properties": {
+          "id": {
+            "type": "string",
+            "maxLength": 8,
+            "pattern": "^\\d+$"
+          },
           "name": {
             "type": "string",
             "maxLength": 128
@@ -50,6 +55,7 @@
           }
         },
         "required": [
+          "id",
           "name",
           "description",
           "tags"

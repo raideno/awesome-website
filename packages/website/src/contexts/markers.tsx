@@ -1,5 +1,5 @@
 import React, { createContext, useContext } from 'react'
-import { useLocalStorageState } from '@/hooks/local-storage-state'
+import { useLocalStorageStateFactory } from 'shared/hooks/local-storage-state'
 
 export type MarkerBehavior = 'hide' | 'cross' | 'highlight' | 'none'
 
@@ -30,10 +30,10 @@ export const useMarkers = () => {
 export const MarkersProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [rules, setRules] = useLocalStorageState<Array<MarkerRule>>(
-    'markers.rules',
-    [],
-  )
+  const [rules, setRules] = useLocalStorageStateFactory(
+    __REPOSITORY_OWNER__,
+    __REPOSITORY_NAME__,
+  )<Array<MarkerRule>>('markers.rules', [])
 
   const addRule = (tag: string, behavior: MarkerBehavior) => {
     setRules((prev) => {

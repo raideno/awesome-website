@@ -1,6 +1,6 @@
 import React, { createContext, useContext } from 'react'
 
-import { useLocalStorageState } from '@/hooks/local-storage-state'
+import { useLocalStorageStateFactory } from 'shared/hooks/local-storage-state'
 
 interface EditingContextType {
   editingEnabled: boolean
@@ -19,10 +19,10 @@ export const useEditing = () => {
 export const EditingProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [editingEnabled, setEditingEnabled] = useLocalStorageState<boolean>(
-    'editing.enabled',
-    false,
-  )
+  const [editingEnabled, setEditingEnabled] = useLocalStorageStateFactory(
+    __REPOSITORY_OWNER__,
+    __REPOSITORY_NAME__,
+  )<boolean>('editing.enabled', false)
 
   return (
     <EditingContext.Provider value={{ editingEnabled, setEditingEnabled }}>
