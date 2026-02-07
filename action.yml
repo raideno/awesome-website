@@ -33,7 +33,7 @@ runs:
 
     - name: copy user YAML file
       run: |
-        cp ${{ github.workspace }}/${{ inputs.yaml-path }} awesome-src/packages/website${{ inputs.yaml-path }}
+        cp ${{ github.workspace }}/${{ inputs.yaml-path }} awesome-src/packages/website/${{ inputs.yaml-path }}
       shell: bash
 
     - name: determine BASE_PATH
@@ -71,4 +71,10 @@ runs:
       run: |
         cd awesome-src
         npm run build --workspace website
+      shell: bash
+
+    - name: backward compatibility
+      run: |
+        mkdir -p awesome-website-src
+        cp -r awesome-src/packages/website/dist awesome-website-src/dist
       shell: bash
