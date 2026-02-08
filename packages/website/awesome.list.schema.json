@@ -17,6 +17,9 @@
     "thumbnail": {
       "type": "string"
     },
+    "readme": {
+      "type": "string"
+    },
     "elements": {
       "type": "array",
       "items": {
