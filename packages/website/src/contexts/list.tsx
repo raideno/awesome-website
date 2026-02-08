@@ -1,132 +1,150 @@
 // @ts-ignore: idk
-import list_ from 'virtual:awesome-list'
+import list_ from "virtual:awesome-list";
 
-import { useQuery, useQueryClient } from '@tanstack/react-query'
-import React, { createContext, useContext, useMemo } from 'react'
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import React, { createContext, useContext, useMemo } from "react";
 
-import type { AwesomeList } from '@/types/awesome-list'
+import { useDocumentTitle } from "shared/hooks/document-title";
+import { useDynamicMetadata } from "shared/hooks/dynamic-metadata";
+import { AwesomeListSchema } from "shared/types/awesome-list";
 
-import { AwesomeListSchema } from '@/types/awesome-list'
+import type { AwesomeList } from "shared/types/awesome-list";
 
-import { GitHubService } from '@/lib/github'
+import { GitHubService } from "@/lib/github";
 
-import { useCommitAwareStorage } from '@/hooks/commit-aware-storage'
-import { useDocumentTitle } from '@/hooks/document-title'
-import { useDynamicMetadata } from '@/hooks/dynamic-metadata'
-import { useGitHubAuth } from '@/hooks/github-auth'
-import { useWorkflowStatus } from '@/hooks/workflow-status'
+import * as yaml from "js-yaml";
+
+import { useCommitAwareStorage } from "@/hooks/commit-aware-storage";
+import { useGitHubAuth } from "@/hooks/github-auth";
+import { useWorkflowStatus } from "@/hooks/workflow-status";
 
 interface ListContextType {
   content: {
-    old: AwesomeList
-    new: AwesomeList
-  }
-  allTags: Array<string>
-  updateList: (updates: Partial<AwesomeList>) => void
-  clearChanges: () => void
-  syncRemoteList: (newList: AwesomeList) => void
-  hasUnsavedChanges: boolean
-  isWorkflowRunning: boolean
-  canEdit: boolean
-  isLoading: boolean
-  error: string | null
+    old: AwesomeList;
+    new: AwesomeList;
+  };
+  allTags: Array<string>;
+  updateList: (updates: Partial<AwesomeList>) => void;
+  clearChanges: () => void;
+  syncRemoteList: (newList: AwesomeList) => void;
+  hasUnsavedChanges: boolean;
+  isWorkflowRunning: boolean;
+  canEdit: boolean;
+  isLoading: boolean;
+  error: string | null;
 }
 
-const ListContext = createContext<ListContextType | undefined>(undefined)
+const ListContext = createContext<ListContextType | undefined>(undefined);
 
 export const useList = () => {
-  const context = useContext(ListContext)
+  const context = useContext(ListContext);
   if (!context) {
-    throw new Error('useList must be used within a ListProvider')
+    throw new Error("useList must be used within a ListProvider");
   }
-  return context
-}
+  return context;
+};
 
 export const ListProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const githubAuth = useGitHubAuth()
-  const { isWorkflowRunning, checkWorkflowStatus } = useWorkflowStatus()
-  const queryClient = useQueryClient()
+  const githubAuth = useGitHubAuth();
+  const { isWorkflowRunning, checkWorkflowStatus } = useWorkflowStatus();
+  const queryClient = useQueryClient();
 
   const {
     data: changes,
     setData: setChanges,
     clearData: clearPersistedChanges,
   } = useCommitAwareStorage<Partial<AwesomeList>>(
-    'awesome-list-changes',
+    "awesome-list-changes",
     __USER_REPOSITORY_COMMIT_HASH__,
     {},
-  )
+  );
 
   const enabled = Boolean(
     githubAuth.isAuthenticated && githubAuth.token && !import.meta.env.DEV,
-  )
+  );
 
   const {
     data: remoteList,
     isLoading,
     error: queryError,
   } = useQuery({
-    queryKey: ['awesome-list'],
+    queryKey: ["awesome-list"],
     queryFn: async () => {
       try {
         const github = new GitHubService({
           token: githubAuth.token || undefined,
           owner: __REPOSITORY_OWNER__,
           repo: __REPOSITORY_NAME__,
-        })
-        const file = await github.getYamlFile(__YAML_FILE_PATH__)
+        });
+        const file = await github.getFile(__YAML_FILE_PATH__);
+        const content = yaml.load(file.content);
 
-        const parsing = AwesomeListSchema.safeParse(file.content)
+        const parsing = AwesomeListSchema.safeParse(content);
 
-        if (parsing.error) throw parsing.error
+        if (parsing.error) throw parsing.error;
 
-        return parsing.data
+        const list = parsing.data;
+
+        try {
+          const readmePath = __YAML_FILE_PATH__.replace(/[^/]+$/, "README.md");
+          const readmeFile = await github.getFile(readmePath);
+          list.readme = readmeFile.content;
+        } catch (err) {
+          console.warn("Failed to fetch remote README:", err);
+          if (list_.readme) {
+            list.readme = list_.readme;
+          }
+        }
+
+        return list;
       } catch (err) {
-        console.warn('Failed to fetch remote YAML, using preloaded data:', err)
-        return list_
+        console.warn("Failed to fetch remote YAML, using preloaded data:", err);
+        return list_;
       }
     },
     enabled,
     initialData: list_,
     retry: (failureCount, _error) => failureCount < 3,
-  })
+  });
 
-  const baseList = remoteList || list_
+  const baseList = remoteList || list_;
   const list = useMemo<AwesomeList>(() => {
-    return { ...baseList, ...changes }
-  }, [baseList, changes])
+    return { ...baseList, ...changes };
+  }, [baseList, changes]);
 
   const allTags = useMemo(() => {
-    return [...new Set(list.elements.flatMap((element) => element.tags))].sort()
-  }, [list])
+    return [
+      ...new Set(list.elements.flatMap((element) => element.tags)),
+    ].sort();
+  }, [list]);
 
   const updateList = async (updates: Partial<AwesomeList>) => {
-    await checkWorkflowStatus()
+    await checkWorkflowStatus();
     if (isWorkflowRunning) {
       throw new Error(
-        'Cannot edit while website is being updated. Please wait for the build to complete.',
-      )
+        "Cannot edit while website is being updated. Please wait for the build to complete.",
+      );
     }
-    setChanges((prev: Partial<AwesomeList>) => ({ ...prev, ...updates }))
-  }
+    setChanges((prev: Partial<AwesomeList>) => ({ ...prev, ...updates }));
+  };
 
   const clearChanges = () => {
-    clearPersistedChanges()
-  }
+    clearPersistedChanges();
+  };
 
   const syncRemoteList = (newList: AwesomeList) => {
-    queryClient.setQueryData(['awesome-list'], newList)
-    clearPersistedChanges()
-  }
+    queryClient.setQueryData(["awesome-list"], newList);
+    clearPersistedChanges();
+  };
 
-  const hasUnsavedChanges = Object.keys(changes).length > 0
-  const canEdit = !isWorkflowRunning
-  const error = queryError?.message || null
+  const hasUnsavedChanges = Object.keys(changes).length > 0;
+  const canEdit = !isWorkflowRunning;
+  const error = queryError?.message || null;
 
-  useDocumentTitle(hasUnsavedChanges)
-  useDynamicMetadata(list)
+  useDocumentTitle(hasUnsavedChanges);
+  useDynamicMetadata(list);
 
   return (
     <ListContext.Provider
@@ -148,5 +166,5 @@ export const ListProvider: React.FC<{ children: React.ReactNode }> = ({
     >
       {children}
     </ListContext.Provider>
-  )
-}
+  );
+};

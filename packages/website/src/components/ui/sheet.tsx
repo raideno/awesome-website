@@ -6,7 +6,7 @@ import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { Cross1Icon } from '@radix-ui/react-icons'
 import { IconButton } from '@radix-ui/themes'
 
-import { cn } from '@/lib/utils'
+import { cn } from 'shared/lib/utils'
 
 function SheetRoot({
   ...props

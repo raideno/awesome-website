@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { Cross1Icon, MagnifyingGlassIcon } from '@radix-ui/react-icons'
 import {
   Box,
   Button,
@@ -12,13 +13,12 @@ import {
   Text,
   TextField,
 } from '@radix-ui/themes'
-import { Cross1Icon, MagnifyingGlassIcon } from '@radix-ui/react-icons'
+import { ToggleGroup } from 'shared/components/ui/toggle-group'
 
 import type { TagsFilterOperator } from '@/contexts/filter'
 
-import { useList } from '@/contexts/list'
 import { useFilter } from '@/contexts/filter'
-import { ToggleGroup } from '@/components/ui/toggle-group'
+import { useList } from '@/contexts/list'
 
 export interface FilterModalProps {
   children: React.ReactNode

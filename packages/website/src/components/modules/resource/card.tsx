@@ -1,12 +1,13 @@
 import React from 'react'
 
 import { Badge, Box, Card, Flex, Heading, Link, Text } from '@radix-ui/themes'
+import { cn } from 'shared/lib/utils'
+
 import { ResourceCardDialog } from './card-dialog'
 
-import type { AwesomeListElement } from '@/types/awesome-list'
 import type { CardProps } from '@radix-ui/themes'
+import type { AwesomeListElement } from 'shared/types/awesome-list'
 
-import { cn } from '@/lib/utils'
 import { useMarkers } from '@/contexts/markers'
 
 export interface ResourceCardProps extends CardProps {

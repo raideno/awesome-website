@@ -1,20 +1,23 @@
 # Awesome Website
 
-**NOTE:** To easily deploy an awesome list; Use the [**Template Repository**](https://github.com/raideno/easy-awesome-website).
+Awesome website is a project that transforms a simple YAML file into a beautiful, interactive, and easily deployable website to store your resources (links, images, files, etc) directly inside your github repository. It's the perfect solution for creating and maintaining "awesome lists" with a polished and professional look.
 
-This repository contains the source code for "Awesome Website", a project that transforms a simple YAML file into a beautiful, interactive, and easily deployable website. It's the perfect solution for creating and maintaining "awesome lists" with a polished and professional look.
+**Demo:** [https://raideno.github.io/awesome](https://raideno.github.io/awesome/website)
 
-**Demo:** [https://raideno.github.io/awesome](https://raideno.github.io/awesome/)
+## Automatic Setup
 
-![website-preview](./assets/preview.png)
+1. Fork the [**Template Repository**](https://github.com/raideno/easy-awesome).
+2. Enable the github pages in the repository's settings (`Settings > Pages > Build and Deployment > Source > GitHub Actions).
+3. Run the github action to deploy the website.
+4. Modify the awesome list as you want.
 
-## Getting Started
+## Manual Setup
 
-To create your own awesome list website, you'll need to fork this repository and modify the `example.list.yaml` file.
-
-### Usage
-
+1. Create a github repository with a `list.yaml` file containing your awesome list. Follow the [schema](#yaml-file-structure) or copy the [example list](packages/website/example.list.yaml).
+2. Enable the github pages in the repository's settings (`Settings > Pages > Build and Deployment > Source > GitHub Actions).
+3. Copy the github action to build the website `.github/workflows/deploy-awesome-website.yml`.
 ```yaml
+# .github/workflows/deploy-awesome-website.yml
 name: Deploy Awesome Website to GitHub Pages
 
 on:
@@ -52,15 +55,9 @@ jobs:
           artifact_name: github-pages
 
 ```
+4. Push your changes and wait for the github action to complete in order to see your changes.
 
-1. **Create a GitHub repository.**
-2. **Create List File:** Copy [`example.list.yaml`](./example.list.yaml) into your repository.
-3. **Customize your list:** Edit the `example.list.yaml` file to add your own title, description, and list of resources. See the [YAML File Structure](#yaml-file-structure) section below for a detailed explanation of the available fields.
-4. **Enable GitHub Pages:** In your repository's settings, go to the "Pages" section and select "GitHub Actions" as the source. This will trigger the deployment workflow.
-5. **Create Workflow file:** Copy [.github/workflows/deploy-awesome-website.yml](./.github/workflows/deploy-awesome-website.yml) into your repository.
-6. **Finally:** Push your changes and wait for the github action to complete in order to see your changes.
-
-Your new awesome list website will be available at `https://<your-username>.github.io/<your-repository-name>/`.
+Your new awesome list website will be available at `https://<your-username>.github.io/<your-repository-name>/`. To edit it you can either use the website directly or by editing the `list.yml` file.
 
 ## YAML File Structure
 
@@ -80,6 +77,7 @@ The `example.list.yaml` file has a clear structure that's easy to understand and
 
 | Field         | Type             | Description                                                             |
 | :------------ | :--------------- | :---------------------------------------------------------------------- |
+| `id`          | String           | A unique id to identify the resource.                                   |
 | `name`        | String           | The name of the resource.                                               |
 | `description` | String           | A short description of the resource.                                    |
 | `link`        | Url              | A relevant URL for the resource (e.g., website, GitHub, documentation). |
@@ -102,4 +100,3 @@ Copy the [`.env.example`](./.env.example) file to `.env` and fill in the require
 - Start Build: `npm run start`
 
 Do your changes in a separate branch and create a pull request to merge them into the `main` branch or `develop` branch if you are working on a feature.
-

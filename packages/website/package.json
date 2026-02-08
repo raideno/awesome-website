@@ -8,10 +8,7 @@
     "build": "dotenv -e .env -- vite build && tsc",
     "serve": "dotenv -e .env -- vite preview",
     "test": "dotenv -e .env -- vitest run",
-    "generate-schema": "node --import tsx scripts/gen-schema.ts",
-    "lint": "eslint",
-    "format": "prettier",
-    "check": "prettier --write . && eslint --fix"
+    "generate-schema": "node --import tsx scripts/gen-schema.ts"
   },
   "dependencies": {
     "@octokit/rest": "^22.0.0",
@@ -29,12 +26,12 @@
     "react-dom": "^19.0.0",
     "rehype-katex": "^7.0.1",
     "remark-math": "^6.0.0",
+    "shared": "file:../shared",
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.3.1",
     "tsx": "^4.20.3"
   },
   "devDependencies": {
-    "@tanstack/eslint-config": "^0.1.0",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/react": "^16.2.0",
     "@types/js-yaml": "^4.0.9",
@@ -46,7 +43,6 @@
     "autoprefixer": "^10.4.21",
     "jsdom": "^26.0.0",
     "postcss": "^8.5.6",
-    "prettier": "^3.5.3",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.7.2",
     "vite": "^6.1.0",

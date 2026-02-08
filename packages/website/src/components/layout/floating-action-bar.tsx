@@ -8,11 +8,10 @@ import {
   UploadIcon,
 } from '@radix-ui/react-icons'
 import { Box, Card, Flex, IconButton, Tooltip } from '@radix-ui/themes'
+import { useLongPress } from 'shared/hooks/long-press'
 
 import { useEditing } from '@/contexts/editing'
 import { useList } from '@/contexts/list'
-
-import { useLongPress } from '@/hooks/long-press'
 
 import { ThemeSwitchButton } from '@/components/layout/theme-switch-button'
 import { ListMetadataEditSheet } from '@/components/modules/misc/list-metadata-edit-sheet'

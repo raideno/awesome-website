@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 
 import {
   AlertDialog,
@@ -7,51 +7,49 @@ import {
   Flex,
   Heading,
   Text,
-} from '@radix-ui/themes'
-import { AutoForm } from '@raideno/auto-form/ui'
-import { toast } from 'sonner'
-import { z } from 'zod/v4'
+} from "@radix-ui/themes";
+import { AutoForm } from "@raideno/auto-form/ui";
+import { MAX_TAGS } from "shared/types/awesome-list";
+import { toast } from "sonner";
+import { z } from "zod/v4";
 
-import type { AwesomeListElement } from '@/types/awesome-list'
-import { MAX_TAGS } from '@/types/awesome-list'
+import type { AwesomeListElement } from "shared/types/awesome-list";
 
-import { useList } from '@/contexts/list'
-import { useEditing } from '@/contexts/editing'
+import { useEditing } from "@/contexts/editing";
+import { useList } from "@/contexts/list";
 
-import { AdminOnly } from '@/components/utils/admin-only'
-import { useConfirm } from '@/components/utils/alert-dialog'
-import { ResourceEditSheet } from '@/components/modules/resource/edit-sheet'
+import { ResourceEditSheet } from "@/components/modules/resource/edit-sheet";
+import { AdminOnly } from "@/components/utils/admin-only";
+import { useConfirm } from "@/components/utils/alert-dialog";
 
 const AddTagSchema = z.object({
-  tag: z.string().min(1, 'Tag is required').max(32),
-})
+  tag: z.string().min(1, "Tag is required").max(32),
+});
 
 export interface ResourceCardContextMenuProps {
-  children?: React.ReactNode
-  element: AwesomeListElement
+  children?: React.ReactNode;
+  element: AwesomeListElement;
 }
 
 export const ResourceCardContextMenu: React.FC<
   ResourceCardContextMenuProps
 > = ({ children, element }) => {
-  const [open, setOpen] = React.useState(false)
-  const [addTagDialogOpen, setAddTagDialogOpen] = React.useState(false)
-  const list = useList()
-  const confirm = useConfirm()
-  const { editingEnabled } = useEditing()
+  const [open, setOpen] = React.useState(false);
+  const [addTagDialogOpen, setAddTagDialogOpen] = React.useState(false);
+  const list = useList();
+  const confirm = useConfirm();
+  const { editingEnabled } = useEditing();
 
   const handleDeleteButtonClick = async () => {
     if (!list.canEdit) {
-      alert(
-        'Cannot edit while website is being updated. Please wait for the build to complete.',
-      )
-      return
+      toast.error("You do not have permission to delete this resource");
+      return;
     }
 
     const confirmation = await confirm({
-      title: 'Delete Resource',
+      title: "Delete Resource",
       body: `Are you sure you want to delete the resource "${element.name}"? This action cannot be undone.`,
-    })
+    });
 
     if (confirmation) {
       try {
@@ -59,41 +57,45 @@ export const ResourceCardContextMenu: React.FC<
           elements: list.content.new.elements.filter(
             (el) => el.name !== element.name,
           ),
-        })
+        });
       } catch (error) {
-        alert(
-          error instanceof Error ? error.message : 'Failed to delete resource',
-        )
+        toast.error(
+          error instanceof Error ? error.message : "Failed to delete resource",
+        );
       }
     }
-  }
+  };
 
   const handleCopyButtonClick = async () => {
     if (!element.link) {
-      alert('No link available to copy')
-      return
+      toast.error("No link available to copy for this resource");
+      return;
     }
 
     try {
-      await navigator.clipboard.writeText(element.link)
+      await navigator.clipboard.writeText(element.link);
 
-      alert('Copied link to clipboard')
+      toast.success("Link copied to clipboard");
     } catch (error) {
-      alert(error instanceof Error ? error.message : 'Failed to copy link')
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Failed to copy link to clipboard",
+      );
     }
-  }
+  };
 
   const handleAddTag = async (data: z.infer<typeof AddTagSchema>) => {
-    const trimmedTag = data.tag.trim()
+    const trimmedTag = data.tag.trim();
 
     if (element.tags.includes(trimmedTag)) {
-      toast.error('This tag already exists on the resource')
-      return
+      toast.error("This tag already exists on the resource");
+      return;
     }
 
     if (element.tags.length >= MAX_TAGS) {
-      toast.error(`Cannot add more than ${MAX_TAGS} tags to a resource`)
-      return
+      toast.error(`Cannot add more than ${MAX_TAGS} tags to a resource`);
+      return;
     }
 
     try {
@@ -103,17 +105,17 @@ export const ResourceCardContextMenu: React.FC<
             ? { ...el, tags: [...el.tags, trimmedTag] }
             : el,
         ),
-      })
-      setAddTagDialogOpen(false)
-      toast.success('Tag added successfully')
+      });
+      setAddTagDialogOpen(false);
+      toast.success("Tag added successfully");
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to add tag')
+      toast.error(error instanceof Error ? error.message : "Failed to add tag");
     }
-  }
+  };
 
   const handleAddTagError = () => {
-    toast.error('Please fix the errors in the form before submitting.')
-  }
+    toast.error("Please fix the errors in the form before submitting.");
+  };
 
   return (
     <>
@@ -166,7 +168,7 @@ export const ResourceCardContextMenu: React.FC<
             <AlertDialog.Content>
               <AutoForm.Root
                 schema={AddTagSchema}
-                defaultValues={{ tag: '' }}
+                defaultValues={{ tag: "" }}
                 onSubmit={handleAddTag}
                 onError={handleAddTagError}
               >
@@ -186,7 +188,7 @@ export const ResourceCardContextMenu: React.FC<
                 </Text>
 
                 <Flex direction="column" gap="3" mt="4">
-                  <AutoForm.Content fields={['tag']} />
+                  <AutoForm.Content fields={["tag"]} />
                 </Flex>
 
                 <Flex gap="3" mt="4" justify="end">
@@ -205,5 +207,5 @@ export const ResourceCardContextMenu: React.FC<
         </>
       )}
     </>
-  )
-}
+  );
+};
