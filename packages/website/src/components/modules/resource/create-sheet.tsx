@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, type ComponentProps } from "react";
 
 import { Heading, ScrollArea, Text } from "@radix-ui/themes";
+import { MetadataRegistry } from "@raideno/auto-form/registry";
 import { AutoForm } from "@raideno/auto-form/ui";
 import { AwesomeListElementSchema } from "shared/types/awesome-list";
 import { toast } from "sonner";
@@ -10,6 +11,7 @@ import type { z } from "zod/v4";
 
 import { Sheet } from "@/components/ui/sheet";
 
+import { GroupsControllerFactory } from "@/components/controllers/groups-input";
 import { useList } from "@/contexts/list";
 
 const generateUniqueId = (existingIds: Array<string>): string => {
@@ -47,34 +49,50 @@ export const ResourceCreateSheet: React.FC<ResourceCreateSheetProps> = ({
 }) => {
   const list = useList();
 
+  const groups = Array.from(
+    new Set(
+      list.content.new.elements
+        .map((el) => el.group)
+        .filter((group): group is string => typeof group === "string"),
+    ),
+  );
+
+  const GroupAwareAwesomeListElementSchema = AwesomeListElementSchema.extend({
+    group: AwesomeListElementSchema.shape.group.register(MetadataRegistry, {
+      controller: GroupsControllerFactory({ groups: groups }) as any,
+    }),
+  });
+
   const [internalOpen, setInternalOpen] = useState(false);
 
   const isOpen = state?.open ?? internalOpen;
   const setOpen = state?.onOpenChange ?? setInternalOpen;
 
-  const handleSubmit = async (
-    data: z.infer<typeof AwesomeListElementSchema>,
-  ) => {
-    try {
-      await list.updateList({
-        elements: [...list.content.new.elements, data],
-      });
+  const handleSubmit: ComponentProps<
+    typeof AutoForm.Root<typeof AwesomeListElementSchema>
+  >["onSubmit"] = async (data, tag, _helpers) => {
+    if (tag === "submit") {
+      try {
+        await list.updateList({
+          elements: [...list.content.new.elements, data],
+        });
+        setOpen(false);
+      } catch (error) {
+        toast.error(
+          error instanceof Error
+            ? error.message
+            : "Failed to create resource. Please try again.",
+        );
+      }
+    } else if (tag === "cancel") {
       setOpen(false);
-    } catch (error) {
-      toast.error(
-        error instanceof Error
-          ? error.message
-          : "Failed to create resource. Please try again.",
-      );
+    } else {
+      toast.error("Please fix the errors in the form before submitting.");
     }
   };
 
   const handleError = () => {
     toast.error("Please fix the errors in the form before submitting.");
-  };
-
-  const handleCancel = () => {
-    setOpen(false);
   };
 
   const existingIds = list.content.new.elements.map((el) => el.id);
@@ -87,7 +105,7 @@ export const ResourceCreateSheet: React.FC<ResourceCreateSheetProps> = ({
       )}
       <Sheet.Content portal={false} side="right">
         <AutoForm.Root
-          schema={AwesomeListElementSchema}
+          schema={GroupAwareAwesomeListElementSchema}
           defaultValues={{
             id: generatedId,
             name: "",
@@ -98,7 +116,6 @@ export const ResourceCreateSheet: React.FC<ResourceCreateSheetProps> = ({
             group: "",
             ...defaults,
           }}
-          onCancel={handleCancel}
           onSubmit={handleSubmit}
           onError={handleError}
           className="h-full grid grid-rows-[auto_1fr_auto] gap-4"
@@ -120,7 +137,7 @@ export const ResourceCreateSheet: React.FC<ResourceCreateSheetProps> = ({
           <ScrollArea scrollbars="vertical">
             <Sheet.Body>
               <AutoForm.Content
-                fields={["name", "description", "link", "tags", "group"]}
+                show={["name", "description", "link", "tags", "group"]}
               />
             </Sheet.Body>
           </ScrollArea>
@@ -128,7 +145,7 @@ export const ResourceCreateSheet: React.FC<ResourceCreateSheetProps> = ({
             <AutoForm.Actions className="flex flex-col gap-4 w-full items-center">
               <Sheet.Close asChild className="!w-full">
                 <AutoForm.Action
-                  type="reset"
+                  tag="cancel"
                   className="!w-full"
                   variant="outline"
                 >
@@ -136,7 +153,7 @@ export const ResourceCreateSheet: React.FC<ResourceCreateSheetProps> = ({
                 </AutoForm.Action>
               </Sheet.Close>
               <AutoForm.Action
-                type="submit"
+                tag="submit"
                 className="!w-full"
                 variant="classic"
               >

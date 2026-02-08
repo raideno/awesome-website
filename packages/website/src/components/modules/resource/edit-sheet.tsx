@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type ComponentProps } from "react";
 
 import { Heading, Text } from "@radix-ui/themes";
 import { AutoForm } from "@raideno/auto-form/ui";
@@ -6,13 +6,14 @@ import { AwesomeListElementSchema } from "shared/types/awesome-list";
 import { toast } from "sonner";
 
 import type React from "react";
-import type { z } from "zod/v4";
 
 import type { AwesomeListElement } from "shared/types/awesome-list";
 
 import { Sheet } from "@/components/ui/sheet";
 
+import { GroupsControllerFactory } from "@/components/controllers/groups-input";
 import { useList } from "@/contexts/list";
+import { MetadataRegistry } from "@raideno/auto-form/registry";
 
 export interface ResourceEditSheetProps {
   children?: React.ReactNode;
@@ -27,28 +28,44 @@ export const ResourceEditSheet: React.FC<ResourceEditSheetProps> = ({
 }) => {
   const list = useList();
 
+  const groups = Array.from(
+    new Set(
+      list.content.new.elements
+        .map((el) => el.group)
+        .filter((group): group is string => typeof group === "string"),
+    ),
+  );
+
+  const GroupAwareAwesomeListElementSchema = AwesomeListElementSchema.extend({
+    group: AwesomeListElementSchema.shape.group.register(MetadataRegistry, {
+      controller: GroupsControllerFactory({ groups: groups }) as any,
+    }),
+  });
+
   const [internalOpen, setInternalOpen] = useState(false);
 
   const isOpen = state?.open ?? internalOpen;
   const setOpen = state?.onOpenChange ?? setInternalOpen;
 
-  const handleSubmit = async (
-    data: z.infer<typeof AwesomeListElementSchema>,
-  ) => {
-    try {
-      await list.updateList({
-        elements: list.content.new.elements.map((el) =>
-          el.name === element.name ? { ...el, ...data } : el,
-        ),
-      });
+  const handleSubmit: ComponentProps<
+    typeof AutoForm.Root<typeof GroupAwareAwesomeListElementSchema>
+  >["onSubmit"] = async (data, tag, _helpers) => {
+    if (tag === "submit")
+      try {
+        await list.updateList({
+          elements: list.content.new.elements.map((el) =>
+            el.name === element.name ? { ...el, ...data } : el,
+          ),
+        });
+        setOpen(false);
+      } catch (error) {
+        toast.error("Failed to update resource. Please try again.");
+      }
+    else if (tag === "cancel") {
       setOpen(false);
-    } catch (error) {
-      toast.error("Failed to update resource. Please try again.");
+    } else {
+      toast.error("Unknown action. Please try again.");
     }
-  };
-
-  const handleCancel = () => {
-    setOpen(false);
   };
 
   const handleError = () => {
@@ -66,7 +83,6 @@ export const ResourceEditSheet: React.FC<ResourceEditSheetProps> = ({
           defaultValues={{
             ...element,
           }}
-          onCancel={handleCancel}
           onSubmit={handleSubmit}
           onError={handleError}
           className="w-full h-full grid grid-rows-[auto_1fr_auto] gap-4"
@@ -87,14 +103,14 @@ export const ResourceEditSheet: React.FC<ResourceEditSheetProps> = ({
           </Sheet.Header>
           <Sheet.Body>
             <AutoForm.Content
-              fields={["name", "description", "link", "tags", "group"]}
+              show={["name", "description", "link", "tags", "group"]}
             />
           </Sheet.Body>
           <Sheet.Footer>
             <AutoForm.Actions className="flex flex-col gap-4 w-full items-center">
               <Sheet.Close asChild className="!w-full">
                 <AutoForm.Action
-                  type="reset"
+                  tag="cancel"
                   className="!w-full"
                   variant="outline"
                 >
@@ -102,7 +118,7 @@ export const ResourceEditSheet: React.FC<ResourceEditSheetProps> = ({
                 </AutoForm.Action>
               </Sheet.Close>
               <AutoForm.Action
-                type="submit"
+                tag="submit"
                 className="w-full"
                 variant="classic"
               >

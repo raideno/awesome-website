@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type ComponentProps } from "react";
 
 import { Heading, ScrollArea, Text } from "@radix-ui/themes";
 import { AutoForm } from "@raideno/auto-form/ui";
@@ -6,7 +6,6 @@ import { AwesomeListMetadata } from "shared/types/awesome-list";
 import { toast } from "sonner";
 
 import type React from "react";
-import type { z } from "zod/v4";
 
 import { Sheet } from "@/components/ui/sheet";
 import { useList } from "@/contexts/list";
@@ -27,19 +26,23 @@ export const ListMetadataEditSheet: React.FC<ListMetadataEditSheetProps> = ({
   const isOpen = state?.open ?? internalOpen;
   const setOpen = state?.onOpenChange ?? setInternalOpen;
 
-  const handleSubmit = async (data: z.infer<typeof AwesomeListMetadata>) => {
-    try {
-      await list.updateList({
-        ...data,
-      });
+  const handleSubmit: ComponentProps<
+    typeof AutoForm.Root<typeof AwesomeListMetadata>
+  >["onSubmit"] = async (data, tag, _helpers) => {
+    if (tag === "submit") {
+      try {
+        await list.updateList({
+          ...data,
+        });
+        setOpen(false);
+      } catch (error) {
+        toast.error("Failed to update list metadata. Please try again.");
+      }
+    } else if (tag === "cancel") {
       setOpen(false);
-    } catch (error) {
-      toast.error("Failed to update list metadata. Please try again.");
+    } else {
+      toast.error("Please fix the errors in the form before submitting.");
     }
-  };
-
-  const handleCancel = () => {
-    setOpen(false);
   };
 
   const handleError = () => {
@@ -57,7 +60,6 @@ export const ListMetadataEditSheet: React.FC<ListMetadataEditSheetProps> = ({
           defaultValues={{
             ...list.content.new,
           }}
-          onCancel={handleCancel}
           onSubmit={handleSubmit}
           onError={handleError}
           className="h-full grid grid-rows-[auto_1fr_auto] gap-4"
@@ -85,7 +87,7 @@ export const ListMetadataEditSheet: React.FC<ListMetadataEditSheetProps> = ({
             <AutoForm.Actions className="flex flex-col gap-4 w-full items-center">
               <Sheet.Close asChild className="!w-full">
                 <AutoForm.Action
-                  type="reset"
+                  tag="cancel"
                   className="!w-full"
                   variant="outline"
                 >
@@ -93,7 +95,7 @@ export const ListMetadataEditSheet: React.FC<ListMetadataEditSheetProps> = ({
                 </AutoForm.Action>
               </Sheet.Close>
               <AutoForm.Action
-                type="submit"
+                tag="submit"
                 className="!w-full"
                 variant="classic"
               >

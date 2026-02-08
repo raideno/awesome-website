@@ -9,7 +9,7 @@
         "./constants": "./src/constants.ts",
         "./hooks/*": "./src/hooks/*.ts",
         "./lib/*": "./src/lib/*.ts",
-        "./types/*": "./src/types/*.ts",
+        "./types/*": "./src/types/*.tsx",
         "./contexts/*": "./src/contexts/*.tsx",
         "./components/ui/*": "./src/components/ui/*.tsx",
         "./components/utils/*": "./src/components/utils/*.tsx",

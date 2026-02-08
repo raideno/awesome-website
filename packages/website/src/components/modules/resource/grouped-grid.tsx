@@ -10,23 +10,25 @@ import {
   Heading,
   Text,
 } from "@radix-ui/themes";
+import { MetadataRegistry } from "@raideno/auto-form/registry";
 import { AutoForm } from "@raideno/auto-form/ui";
 
-import React from "react";
+import React, { type ComponentProps } from "react";
 import { toast } from "sonner";
 import { z } from "zod/v4";
 
 import type { AwesomeListElement } from "shared/types/awesome-list";
 
-import { useFilter } from "@/contexts/filter";
 import { useEditing } from "@/contexts/editing";
+import { useFilter } from "@/contexts/filter";
 import { useList } from "@/contexts/list";
 
+import { GroupsControllerFactory } from "@/components/controllers/groups-input";
+import { OnlyWhenEditingEnabled } from "@/components/layout/only-when-editing-enabled";
 import { ResourceCard } from "@/components/modules/resource/card";
 import { ResourceCardContextMenu } from "@/components/modules/resource/card-context-menu";
 import { ResourceCreateSheet } from "@/components/modules/resource/create-sheet";
 import { AdminOnly } from "@/components/utils/admin-only";
-import { OnlyWhenEditingEnabled } from "@/components/layout/only-when-editing-enabled";
 
 export interface GroupedResourceGridProps {
   filteredElements: Array<AwesomeListElement>;
@@ -46,26 +48,49 @@ const GroupContainer: React.FC<{
   const { editingEnabled } = useEditing();
   const list = useList();
 
-  const handleRenameGroup = async (data: z.infer<typeof RenameSchema>) => {
-    if (data.name === groupName) {
-      setRenameDialogOpen(false);
-      return;
-    }
+  const groups = Array.from(
+    new Set(
+      list.content.new.elements
+        .map((el) => el.group)
+        .filter((group): group is string => typeof group === "string"),
+    ),
+  );
 
-    try {
-      await list.updateList({
-        elements: list.content.new.elements.map((el) => {
-          const elementGroup = el.group || "Ungrouped";
-          const belongsToGroup = elementGroup === groupName;
+  const GroupAwareRenameSchema = RenameSchema.extend({
+    name: RenameSchema.shape.name.register(MetadataRegistry, {
+      controller: GroupsControllerFactory({ groups }) as any,
+    }),
+  });
 
-          return belongsToGroup ? { ...el, group: data.name } : el;
-        }),
-      });
+  const handleRenameGroup: ComponentProps<
+    typeof AutoForm.Root<typeof RenameSchema>
+  >["onSubmit"] = async (data, tag, _helpers) => {
+    if (tag === "submit") {
+      if (data.name === groupName) {
+        setRenameDialogOpen(false);
+        return;
+      }
+
+      try {
+        await list.updateList({
+          elements: list.content.new.elements.map((el) => {
+            const elementGroup = el.group || "Ungrouped";
+            const belongsToGroup = elementGroup === groupName;
+
+            return belongsToGroup ? { ...el, group: data.name } : el;
+          }),
+        });
+        setRenameDialogOpen(false);
+      } catch (error) {
+        toast.error(
+          error instanceof Error ? error.message : "Failed to rename group",
+        );
+      }
+    } else if (tag === "cancel") {
+      console.log("Canceling rename group");
       setRenameDialogOpen(false);
-    } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : "Failed to rename group",
-      );
+    } else {
+      toast.error("Please fix the errors in the form before submitting.");
     }
   };
 
@@ -156,7 +181,7 @@ const GroupContainer: React.FC<{
           >
             <AlertDialog.Content>
               <AutoForm.Root
-                schema={RenameSchema}
+                schema={GroupAwareRenameSchema}
                 defaultValues={{ name: groupName }}
                 onSubmit={handleRenameGroup}
                 onError={handleRenameError}
@@ -179,16 +204,14 @@ const GroupContainer: React.FC<{
                 </Text>
 
                 <Flex direction="column" gap="3" mt="4">
-                  <AutoForm.Content fields={["name"]} />
+                  <AutoForm.Content show={["name"]} />
                 </Flex>
 
                 <Flex gap="3" mt="4" justify="end">
-                  <AlertDialog.Cancel>
-                    <Button variant="soft" color="gray" type="button">
-                      Cancel
-                    </Button>
-                  </AlertDialog.Cancel>
-                  <AutoForm.Action type="submit" variant="classic">
+                  <AutoForm.Action tag="cancel" variant="soft" color="gray">
+                    Cancel
+                  </AutoForm.Action>
+                  <AutoForm.Action tag="submit" variant="classic">
                     Rename
                   </AutoForm.Action>
                 </Flex>

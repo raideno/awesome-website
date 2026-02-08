@@ -1,45 +1,52 @@
-import React from 'react'
+import React, { type ComponentProps } from "react";
 
-import { InfoCircledIcon } from '@radix-ui/react-icons'
-import { Box, Callout, Dialog, Flex, Heading, Text } from '@radix-ui/themes'
-import { MetadataRegistry } from '@raideno/auto-form/registry'
-import { AutoForm } from '@raideno/auto-form/ui'
-import { z } from 'zod/v4'
+import { InfoCircledIcon } from "@radix-ui/react-icons";
+import { Box, Callout, Dialog, Flex, Heading, Text } from "@radix-ui/themes";
+import { MetadataRegistry } from "@raideno/auto-form/registry";
+import { AutoForm } from "@raideno/auto-form/ui";
+import { z } from "zod/v4";
 
-import { useGitHubAuth } from '@/hooks/github-auth'
+import { useGitHubAuth } from "@/hooks/github-auth";
+import { toast } from "sonner";
 
 interface SettingsDialogProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }
 
 const SettingsFormSchema = z.object({
   token: z.string().register(MetadataRegistry, {
-    type: 'password',
-    placeholder: 'ghp_xxxxxxxxxxxxxxxxxxxx',
-    label: 'GitHub Personal Access Token',
+    type: "password",
+    placeholder: "ghp_xxxxxxxxxxxxxxxxxxxx",
+    label: "GitHub Personal Access Token",
     description:
-      'Required for editing and pushing changes. Token is automatically saved.',
+      "Required for editing and pushing changes. Token is automatically saved.",
   }),
-})
+});
 
 export const SettingsDialog: React.FC<SettingsDialogProps> = ({
   open,
   onOpenChange,
 }) => {
-  const githubAuth = useGitHubAuth()
+  const githubAuth = useGitHubAuth();
 
-  const handleSubmit = (data: z.infer<typeof SettingsFormSchema>) => {
-    githubAuth.setToken(data.token.trim())
-    onOpenChange(false)
-  }
+  const handleSubmit: ComponentProps<
+    typeof AutoForm.Root<typeof SettingsFormSchema>
+  >["onSubmit"] = (data, tag, _helpers) => {
+    if (tag === "submit") {
+      githubAuth.setToken(data.token.trim());
+      onOpenChange(false);
+    } else {
+      toast.error("Please fix the errors in the form before submitting.");
+    }
+  };
 
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Content>
         <AutoForm.Root
           defaultValues={{
-            token: githubAuth.token || 'empty',
+            token: githubAuth.token || "empty",
           }}
           schema={SettingsFormSchema}
           onSubmit={handleSubmit}
@@ -64,12 +71,12 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({
               </Callout.Icon>
               <Callout.Text>
                 You'll need a GitHub personal access token with repository write
-                permissions.{' '}
+                permissions.{" "}
                 <a
                   href="https://github.com/settings/tokens"
                   target="_blank"
                   rel="noopener noreferrer"
-                  style={{ textDecoration: 'underline' }}
+                  style={{ textDecoration: "underline" }}
                 >
                   Create one here
                 </a>
@@ -78,9 +85,9 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({
             </Callout.Root>
             <AutoForm.Actions>
               <AutoForm.Action
+                tag="submit"
                 className="w-full"
                 variant="classic"
-                type="submit"
               >
                 Save
               </AutoForm.Action>
@@ -89,5 +96,5 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({
         </AutoForm.Root>
       </Dialog.Content>
     </Dialog.Root>
-  )
-}
+  );
+};
