@@ -213,4 +213,46 @@ export class GitHubService {
       );
     }
   }
+
+  async getCommitsBetween(
+    baseSha: string,
+    headSha: string,
+  ): Promise<{
+    commits: Array<{
+      sha: string;
+      message: string;
+      author: {
+        name: string;
+        date: string;
+      };
+      html_url: string;
+    }>;
+    totalCount: number;
+  }> {
+    try {
+      const response = await this.octokit.rest.repos.compareCommits({
+        owner: this.config.owner,
+        repo: this.config.repo,
+        base: baseSha,
+        head: headSha,
+      });
+
+      return {
+        commits: response.data.commits.map((commit) => ({
+          sha: commit.sha,
+          message: commit.commit.message,
+          author: {
+            name: commit.commit.author?.name || "Unknown",
+            date: commit.commit.author?.date || "",
+          },
+          html_url: commit.html_url,
+        })),
+        totalCount: response.data.total_commits || response.data.commits.length,
+      };
+    } catch (error) {
+      throw new Error(
+        `Failed to get commits between: ${error instanceof Error ? error.message : "Unknown error"}`,
+      );
+    }
+  }
 }

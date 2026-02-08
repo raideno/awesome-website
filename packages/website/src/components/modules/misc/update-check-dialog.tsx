@@ -7,12 +7,27 @@ import {
   Link,
   Text,
 } from '@radix-ui/themes'
-import { ExternalLinkIcon, ReloadIcon } from '@radix-ui/react-icons'
+import {
+  ChevronDownIcon,
+  ChevronUpIcon,
+  ExternalLinkIcon,
+  ReloadIcon,
+} from '@radix-ui/react-icons'
 import React, { useState } from 'react'
 
 import { toast } from 'sonner'
 
 import { GitHubService } from '@/lib/github'
+
+interface CommitInfo {
+  sha: string
+  message: string
+  author: {
+    name: string
+    date: string
+  }
+  html_url: string
+}
 
 interface UpdateCheckDialogProps {
   open: boolean
@@ -21,7 +36,16 @@ interface UpdateCheckDialogProps {
   latestCommitHash: string
   githubToken: string
   onUpdateTriggered?: () => void
+  currentCommitMessage?: string
+  latestCommitMessage?: string
+  commitsBetween?: CommitInfo[]
+  commitCount?: number
 }
+
+const getCommitFirstLine = (message: string) => message.split('\n')[0]
+
+const pluralizeCommit = (count: number) =>
+  `${count} commit${count !== 1 ? 's' : ''}`
 
 export const UpdateCheckDialog: React.FC<UpdateCheckDialogProps> = ({
   open,
@@ -30,8 +54,13 @@ export const UpdateCheckDialog: React.FC<UpdateCheckDialogProps> = ({
   latestCommitHash,
   githubToken,
   onUpdateTriggered,
+  currentCommitMessage,
+  latestCommitMessage,
+  commitsBetween = [],
+  commitCount = 0,
 }) => {
   const [isUpdating, setIsUpdating] = useState(false)
+  const [isExpanded, setIsExpanded] = useState(false)
 
   const handleUpdate = async () => {
     setIsUpdating(true)
@@ -105,9 +134,19 @@ export const UpdateCheckDialog: React.FC<UpdateCheckDialogProps> = ({
         </Box>
 
         <Flex direction="column" gap="2" mt="3">
-          <Text size="2">A new version of the website is available.</Text>
           <Text size="2">
-            Current version:{' '}
+            A new version of the website is available.{' '}
+            {commitCount > 0 && (
+              <Text weight="bold" color="blue">
+                {pluralizeCommit(commitCount)} ahead
+              </Text>
+            )}
+          </Text>
+
+          <Box>
+            <Text size="2" weight="medium">
+              Current version:{' '}
+            </Text>
             <Link
               href={`https://github.com/raideno/awesome/commit/${currentCommitHash}`}
               target="_blank"
@@ -116,10 +155,17 @@ export const UpdateCheckDialog: React.FC<UpdateCheckDialogProps> = ({
             >
               {currentCommitHash.slice(0, 7)} <ExternalLinkIcon />
             </Link>
-            .
-          </Text>
-          <Text size="2">
-            New version:{' '}
+            {currentCommitMessage && (
+              <Text size="1" color="gray" style={{ display: 'block', marginTop: '4px' }}>
+                {getCommitFirstLine(currentCommitMessage)}
+              </Text>
+            )}
+          </Box>
+
+          <Box>
+            <Text size="2" weight="medium">
+              New version:{' '}
+            </Text>
             <Link
               href={`https://github.com/raideno/awesome/commit/${latestCommitHash}`}
               target="_blank"
@@ -128,9 +174,74 @@ export const UpdateCheckDialog: React.FC<UpdateCheckDialogProps> = ({
             >
               {latestCommitHash.slice(0, 7)} <ExternalLinkIcon />
             </Link>
-            .
-          </Text>
-          <Text size="2" color="gray">
+            {latestCommitMessage && (
+              <Text size="1" color="gray" style={{ display: 'block', marginTop: '4px' }}>
+                {getCommitFirstLine(latestCommitMessage)}
+              </Text>
+            )}
+          </Box>
+
+          {commitsBetween.length > 0 && (
+            <Box mt="2">
+              <Button
+                variant="ghost"
+                size="1"
+                onClick={() => setIsExpanded(!isExpanded)}
+                style={{
+                  width: '100%',
+                  justifyContent: 'space-between',
+                  padding: '8px',
+                }}
+              >
+                <Text size="2" weight="medium">
+                  View all {pluralizeCommit(commitCount)}
+                </Text>
+                {isExpanded ? <ChevronUpIcon /> : <ChevronDownIcon />}
+              </Button>
+
+              {isExpanded && (
+                <Box
+                  mt="2"
+                  p="3"
+                  style={{
+                    backgroundColor: 'var(--gray-a2)',
+                    borderRadius: 'var(--radius-3)',
+                    maxHeight: '300px',
+                    overflowY: 'auto',
+                  }}
+                >
+                  <Flex direction="column" gap="3">
+                    {commitsBetween.map((commit) => (
+                      <Box key={commit.sha}>
+                        <Flex align="center" gap="2" mb="1">
+                          <Link
+                            href={commit.html_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex gap-1 items-center"
+                          >
+                            <Text size="1" style={{ fontFamily: 'monospace' }}>
+                              {commit.sha.slice(0, 7)}
+                            </Text>
+                            <ExternalLinkIcon width={12} height={12} />
+                          </Link>
+                        </Flex>
+                        <Text size="2" style={{ display: 'block' }}>
+                          {getCommitFirstLine(commit.message)}
+                        </Text>
+                        <Text size="1" color="gray" style={{ display: 'block', marginTop: '4px' }}>
+                          {commit.author.name} •{' '}
+                          {new Date(commit.author.date).toLocaleDateString()}
+                        </Text>
+                      </Box>
+                    ))}
+                  </Flex>
+                </Box>
+              )}
+            </Box>
+          )}
+
+          <Text size="2" color="gray" mt="2">
             Updating will trigger a new deployment with the latest changes.
           </Text>
         </Flex>

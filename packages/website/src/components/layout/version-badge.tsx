@@ -24,6 +24,21 @@ export const VersionBadge: React.FC<VersionBadgeProps> = () => {
   const [isChecking, setIsChecking] = useState(false)
   const [updateDialogOpen, setUpdateDialogOpen] = useState(false)
   const [latestCommitHash, setLatestCommitHash] = useState<string | null>(null)
+  const [currentCommitMessage, setCurrentCommitMessage] = useState<
+    string | undefined
+  >(undefined)
+  const [latestCommitMessage, setLatestCommitMessage] = useState<
+    string | undefined
+  >(undefined)
+  const [commitsBetween, setCommitsBetween] = useState<
+    Array<{
+      sha: string
+      message: string
+      author: { name: string; date: string }
+      html_url: string
+    }>
+  >([])
+  const [commitCount, setCommitCount] = useState(0)
 
   const isClickable =
     editingEnabled && isAuthenticated && buildCommitHash && !import.meta.env.DEV
@@ -77,6 +92,28 @@ export const VersionBadge: React.FC<VersionBadgeProps> = () => {
         })
       } else {
         setLatestCommitHash(latestCommit.sha)
+        setLatestCommitMessage(latestCommit.commit.message)
+
+        // Fetch current commit message
+        try {
+          const currentCommit = await github.getLatestCommit(buildCommitHash)
+          setCurrentCommitMessage(currentCommit.commit.message)
+        } catch (error) {
+          console.warn('Failed to fetch current commit message:', error)
+        }
+
+        // Fetch commits between current and latest
+        try {
+          const commitsData = await github.getCommitsBetween(
+            buildCommitHash,
+            latestCommit.sha,
+          )
+          setCommitsBetween(commitsData.commits)
+          setCommitCount(commitsData.totalCount)
+        } catch (error) {
+          console.warn('Failed to fetch commits between:', error)
+        }
+
         setUpdateDialogOpen(true)
       }
     } catch (error) {
@@ -140,6 +177,10 @@ export const VersionBadge: React.FC<VersionBadgeProps> = () => {
           latestCommitHash={latestCommitHash}
           githubToken={token}
           onUpdateTriggered={handleUpdateTriggered}
+          currentCommitMessage={currentCommitMessage}
+          latestCommitMessage={latestCommitMessage}
+          commitsBetween={commitsBetween}
+          commitCount={commitCount}
         />
       )}
     </>
