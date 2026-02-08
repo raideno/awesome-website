@@ -1,4 +1,4 @@
-import { FileTextIcon, Pencil1Icon, PlusIcon } from '@radix-ui/react-icons'
+import { FileTextIcon, Pencil1Icon, PlusIcon } from "@radix-ui/react-icons";
 import {
   AlertDialog,
   Box,
@@ -9,68 +9,69 @@ import {
   Grid,
   Heading,
   Text,
-} from '@radix-ui/themes'
-import { AutoForm } from '@raideno/auto-form/ui'
+} from "@radix-ui/themes";
+import { AutoForm } from "@raideno/auto-form/ui";
 
-import React from 'react'
-import { toast } from 'sonner'
-import { z } from 'zod/v4'
+import React from "react";
+import { toast } from "sonner";
+import { z } from "zod/v4";
 
-import type { AwesomeListElement } from 'shared/types/awesome-list'
+import type { AwesomeListElement } from "shared/types/awesome-list";
 
-import { useFilter } from '@/contexts/filter'
-import { useEditing } from '@/contexts/editing'
-import { useList } from '@/contexts/list'
+import { useFilter } from "@/contexts/filter";
+import { useEditing } from "@/contexts/editing";
+import { useList } from "@/contexts/list";
 
-import { ResourceCard } from '@/components/modules/resource/card'
-import { ResourceCardContextMenu } from '@/components/modules/resource/card-context-menu'
-import { ResourceCreateSheet } from '@/components/modules/resource/create-sheet'
-import { AdminOnly } from '@/components/utils/admin-only'
+import { ResourceCard } from "@/components/modules/resource/card";
+import { ResourceCardContextMenu } from "@/components/modules/resource/card-context-menu";
+import { ResourceCreateSheet } from "@/components/modules/resource/create-sheet";
+import { AdminOnly } from "@/components/utils/admin-only";
+import { OnlyWhenEditingEnabled } from "@/components/layout/only-when-editing-enabled";
 
 export interface GroupedResourceGridProps {
-  filteredElements: Array<AwesomeListElement>
+  filteredElements: Array<AwesomeListElement>;
 }
 
 const RenameSchema = z.object({
-  name: z.string().min(1, 'Group name is required').max(64),
-})
+  name: z.string().min(1, "Group name is required").max(64),
+});
 
 const GroupContainer: React.FC<{
-  groupName: string
-  elements: Array<AwesomeListElement>
-  color: string
+  groupName: string;
+  elements: Array<AwesomeListElement>;
+  color: string;
 }> = ({ groupName, elements, color }) => {
-  const [createSheetOpen, setCreateSheetOpen] = React.useState(false)
-  const [renameDialogOpen, setRenameDialogOpen] = React.useState(false)
-  const { editingEnabled } = useEditing()
-  const list = useList()
+  const [createSheetOpen, setCreateSheetOpen] = React.useState(false);
+  const [renameDialogOpen, setRenameDialogOpen] = React.useState(false);
+  const { editingEnabled } = useEditing();
+  const list = useList();
 
   const handleRenameGroup = async (data: z.infer<typeof RenameSchema>) => {
     if (data.name === groupName) {
-      setRenameDialogOpen(false)
-      return
+      setRenameDialogOpen(false);
+      return;
     }
 
     try {
       await list.updateList({
         elements: list.content.new.elements.map((el) => {
-          const elementGroup = el.group || 'Ungrouped'
-          const belongsToGroup = elementGroup === groupName
+          const elementGroup = el.group || "Ungrouped";
+          const belongsToGroup = elementGroup === groupName;
 
-          return belongsToGroup ? { ...el, group: data.name } : el
+          return belongsToGroup ? { ...el, group: data.name } : el;
         }),
-      })
-      setRenameDialogOpen(false)
+      });
+      setRenameDialogOpen(false);
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : 'Failed to rename group',
-      )
+        error instanceof Error ? error.message : "Failed to rename group",
+      );
     }
-  }
+  };
 
   const handleRenameError = () => {
-    toast.error('Please fix the errors in the form before submitting.')
-  }
+    toast.error("Please fix the errors in the form before submitting.");
+  };
 
   return (
     <>
@@ -88,9 +89,9 @@ const GroupContainer: React.FC<{
                 <Flex align="center" gap="2">
                   <Box
                     style={{
-                      width: '12px',
-                      height: '12px',
-                      borderRadius: '50%',
+                      width: "12px",
+                      height: "12px",
+                      borderRadius: "50%",
                       backgroundColor: color,
                     }}
                   />
@@ -102,9 +103,9 @@ const GroupContainer: React.FC<{
 
               <Grid
                 columns={{
-                  initial: '1',
-                  md: '2',
-                  lg: '3',
+                  initial: "1",
+                  md: "2",
+                  lg: "3",
                 }}
                 gap="4"
               >
@@ -118,7 +119,7 @@ const GroupContainer: React.FC<{
           </Card>
         </ContextMenu.Trigger>
         <ContextMenu.Content>
-          {editingEnabled && (
+          <OnlyWhenEditingEnabled>
             <AdminOnly>
               <ContextMenu.Item onClick={() => setCreateSheetOpen(true)}>
                 <Flex align="center" gap="2">
@@ -133,16 +134,19 @@ const GroupContainer: React.FC<{
                 </Flex>
               </ContextMenu.Item>
             </AdminOnly>
-          )}
+          </OnlyWhenEditingEnabled>
         </ContextMenu.Content>
       </ContextMenu.Root>
 
-      {editingEnabled && (
+      <OnlyWhenEditingEnabled>
         <>
           <ResourceCreateSheet
-            state={{ open: createSheetOpen, onOpenChange: setCreateSheetOpen }}
+            state={{
+              open: createSheetOpen,
+              onOpenChange: setCreateSheetOpen,
+            }}
             defaults={
-              groupName !== 'Ungrouped' ? { group: groupName } : undefined
+              groupName !== "Ungrouped" ? { group: groupName } : undefined
             }
           />
 
@@ -162,20 +166,20 @@ const GroupContainer: React.FC<{
                     Rename Group
                   </AlertDialog.Title>
                   <AlertDialog.Description className="sr-only">
-                    Enter a new name for the group "{groupName}". All{' '}
-                    {elements.length} item{elements.length !== 1 ? 's' : ''} in
+                    Enter a new name for the group "{groupName}". All{" "}
+                    {elements.length} item{elements.length !== 1 ? "s" : ""} in
                     this group will be updated.
                   </AlertDialog.Description>
                 </>
                 <Heading>Rename Group</Heading>
                 <Text>
-                  Enter a new name for the group "{groupName}". All{' '}
-                  {elements.length} item{elements.length !== 1 ? 's' : ''} in
+                  Enter a new name for the group "{groupName}". All{" "}
+                  {elements.length} item{elements.length !== 1 ? "s" : ""} in
                   this group will be updated.
                 </Text>
 
                 <Flex direction="column" gap="3" mt="4">
-                  <AutoForm.Content fields={['name']} />
+                  <AutoForm.Content fields={["name"]} />
                 </Flex>
 
                 <Flex gap="3" mt="4" justify="end">
@@ -192,48 +196,48 @@ const GroupContainer: React.FC<{
             </AlertDialog.Content>
           </AlertDialog.Root>
         </>
-      )}
+      </OnlyWhenEditingEnabled>
     </>
-  )
-}
+  );
+};
 
 const getGroupColor = (index: number): string => {
   const colors = [
-    '#3b82f6', // blue
-    '#10b981', // green
-    '#f59e0b', // amber
-    '#ef4444', // red
-    '#8b5cf6', // violet
-    '#ec4899', // pink
-    '#06b6d4', // cyan
-    '#f97316', // orange
-  ]
-  return colors[index % colors.length]
-}
+    "#3b82f6", // blue
+    "#10b981", // green
+    "#f59e0b", // amber
+    "#ef4444", // red
+    "#8b5cf6", // violet
+    "#ec4899", // pink
+    "#06b6d4", // cyan
+    "#f97316", // orange
+  ];
+  return colors[index % colors.length];
+};
 
 export const GroupedResourceGrid: React.FC<GroupedResourceGridProps> = ({
   filteredElements,
 }) => {
-  const { search, selectedTags, clearTags } = useFilter()
+  const { search, selectedTags, clearTags } = useFilter();
 
   const groupedElements = React.useMemo(() => {
-    const groups = new Map<string, Array<AwesomeListElement>>()
+    const groups = new Map<string, Array<AwesomeListElement>>();
 
     filteredElements.forEach((element) => {
-      const groupName = element.group || 'Ungrouped'
+      const groupName = element.group || "Ungrouped";
       if (!groups.has(groupName)) {
-        groups.set(groupName, [])
+        groups.set(groupName, []);
       }
-      groups.get(groupName)!.push(element)
-    })
+      groups.get(groupName)!.push(element);
+    });
 
     return Array.from(groups.entries()).sort((a, b) => {
       // Sort "Ungrouped" to the start
-      if (a[0] === 'Ungrouped') return -1
-      if (b[0] === 'Ungrouped') return 1
-      return a[0].localeCompare(b[0])
-    })
-  }, [filteredElements])
+      if (a[0] === "Ungrouped") return -1;
+      if (b[0] === "Ungrouped") return 1;
+      return a[0].localeCompare(b[0]);
+    });
+  }, [filteredElements]);
 
   return (
     <Box>
@@ -260,18 +264,18 @@ export const GroupedResourceGrid: React.FC<GroupedResourceGridProps> = ({
 
           <Flex direction="column" align="center" gap="2">
             <Heading>
-              {selectedTags.length > 0 || search !== ''
-                ? 'No resource found'
-                : 'No resource uploaded'}
+              {selectedTags.length > 0 || search !== ""
+                ? "No resource found"
+                : "No resource uploaded"}
             </Heading>
 
             <Text as="p" color="gray">
-              {selectedTags.length > 0 && search !== ''
-                ? 'No resources match your search and selected tags.'
+              {selectedTags.length > 0 && search !== ""
+                ? "No resources match your search and selected tags."
                 : selectedTags.length > 0
-                  ? 'Try selecting different tags or clearing your current selection.'
-                  : search !== ''
-                    ? 'No resources match your search query. Try different keywords.'
+                  ? "Try selecting different tags or clearing your current selection."
+                  : search !== ""
+                    ? "No resources match your search query. Try different keywords."
                     : "The awesome list's owner haven't uploaded any elements yet."}
             </Text>
           </Flex>
@@ -284,5 +288,5 @@ export const GroupedResourceGrid: React.FC<GroupedResourceGridProps> = ({
         </Flex>
       )}
     </Box>
-  )
-}
+  );
+};
