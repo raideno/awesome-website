@@ -42,6 +42,11 @@ interface UpdateCheckDialogProps {
   commitCount?: number
 }
 
+const getCommitFirstLine = (message: string) => message.split('\n')[0]
+
+const pluralizeCommit = (count: number) =>
+  `${count} commit${count !== 1 ? 's' : ''}`
+
 export const UpdateCheckDialog: React.FC<UpdateCheckDialogProps> = ({
   open,
   onOpenChange,
@@ -133,7 +138,7 @@ export const UpdateCheckDialog: React.FC<UpdateCheckDialogProps> = ({
             A new version of the website is available.{' '}
             {commitCount > 0 && (
               <Text weight="bold" color="blue">
-                {commitCount} commit{commitCount !== 1 ? 's' : ''} ahead
+                {pluralizeCommit(commitCount)} ahead
               </Text>
             )}
           </Text>
@@ -152,7 +157,7 @@ export const UpdateCheckDialog: React.FC<UpdateCheckDialogProps> = ({
             </Link>
             {currentCommitMessage && (
               <Text size="1" color="gray" style={{ display: 'block', marginTop: '4px' }}>
-                {currentCommitMessage.split('\n')[0]}
+                {getCommitFirstLine(currentCommitMessage)}
               </Text>
             )}
           </Box>
@@ -171,7 +176,7 @@ export const UpdateCheckDialog: React.FC<UpdateCheckDialogProps> = ({
             </Link>
             {latestCommitMessage && (
               <Text size="1" color="gray" style={{ display: 'block', marginTop: '4px' }}>
-                {latestCommitMessage.split('\n')[0]}
+                {getCommitFirstLine(latestCommitMessage)}
               </Text>
             )}
           </Box>
@@ -189,7 +194,7 @@ export const UpdateCheckDialog: React.FC<UpdateCheckDialogProps> = ({
                 }}
               >
                 <Text size="2" weight="medium">
-                  View all {commitCount} commit{commitCount !== 1 ? 's' : ''}
+                  View all {pluralizeCommit(commitCount)}
                 </Text>
                 {isExpanded ? <ChevronUpIcon /> : <ChevronDownIcon />}
               </Button>
@@ -222,7 +227,7 @@ export const UpdateCheckDialog: React.FC<UpdateCheckDialogProps> = ({
                           </Link>
                         </Flex>
                         <Text size="2" style={{ display: 'block' }}>
-                          {commit.message.split('\n')[0]}
+                          {getCommitFirstLine(commit.message)}
                         </Text>
                         <Text size="1" color="gray" style={{ display: 'block', marginTop: '4px' }}>
                           {commit.author.name} •{' '}
