@@ -120,6 +120,7 @@ export class GitHubService {
       html_url: string;
       created_at: string;
       workflow_name: string;
+      head_sha: string;
     };
   }> {
     try {
@@ -148,6 +149,7 @@ export class GitHubService {
           html_url: latestRun.html_url,
           created_at: latestRun.created_at,
           workflow_name: latestRun.name || "Deployment",
+          head_sha: latestRun.head_sha,
         },
       };
     } catch (error) {
