@@ -13,6 +13,7 @@ import {
   ChevronUpIcon,
   ExclamationTriangleIcon,
   ExternalLinkIcon,
+  InfoCircledIcon,
   ReloadIcon,
 } from '@radix-ui/react-icons'
 import React, { useEffect, useState } from 'react'
@@ -67,15 +68,17 @@ export const UpdateCheckDialog: React.FC<UpdateCheckDialogProps> = ({
     url: string
     name: string
   } | null>(null)
+  const [isCached, setIsCached] = useState(false)
 
-  // Check for running workflow when dialog opens
+  // Check for running workflow and caching when dialog opens
   useEffect(() => {
     if (!open || !__GITHUB_WORKFLOW_FILE_NAME__) {
       setRunningWorkflow(null)
+      setIsCached(false)
       return
     }
 
-    const checkRunningWorkflow = async () => {
+    const checkWorkflowStatus = async () => {
       try {
         const github = new GitHubService({
           token: githubToken,
@@ -95,14 +98,27 @@ export const UpdateCheckDialog: React.FC<UpdateCheckDialogProps> = ({
         } else {
           setRunningWorkflow(null)
         }
+
+        // Check if latest successful workflow already deployed the target commit
+        if (
+          !workflowStatus.isRunning &&
+          workflowStatus.latestRun &&
+          workflowStatus.latestRun.conclusion === 'success' &&
+          workflowStatus.latestRun.head_sha === latestCommitHash
+        ) {
+          setIsCached(true)
+        } else {
+          setIsCached(false)
+        }
       } catch (error) {
-        console.warn('Failed to check for running workflow:', error)
+        console.warn('Failed to check workflow status:', error)
         setRunningWorkflow(null)
+        setIsCached(false)
       }
     }
 
-    checkRunningWorkflow()
-  }, [open, githubToken])
+    checkWorkflowStatus()
+  }, [open, githubToken, latestCommitHash])
 
   const handleUpdate = async () => {
     setIsUpdating(true)
@@ -201,6 +217,18 @@ export const UpdateCheckDialog: React.FC<UpdateCheckDialogProps> = ({
                   View workflow
                 </Link>{' '}
                 to check if it's the update you're looking for before triggering a new one.
+              </Callout.Text>
+            </Callout.Root>
+          )}
+
+          {isCached && (
+            <Callout.Root color="blue" size="1" style={{ marginTop: '8px' }}>
+              <Callout.Icon>
+                <InfoCircledIcon />
+              </Callout.Icon>
+              <Callout.Text>
+                The latest version has already been deployed, but you may be seeing a cached version. 
+                Try clearing your browser cache or wait a few minutes for the cache to expire.
               </Callout.Text>
             </Callout.Root>
           )}
