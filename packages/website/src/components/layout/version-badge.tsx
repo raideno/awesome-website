@@ -55,35 +55,6 @@ export const VersionBadge: React.FC<VersionBadgeProps> = () => {
         repo: 'awesome-website',
       })
 
-      if (__GITHUB_WORKFLOW_FILE_NAME__) {
-        const workflowStatus = await github.getDeploymentWorkflowRuns(
-          __GITHUB_WORKFLOW_FILE_NAME__,
-        )
-
-        if (workflowStatus.isRunning) {
-          const workflowUrl = workflowStatus.latestRun?.html_url
-          toast.info('Update in progress', {
-            description: workflowUrl ? (
-              <span>
-                A deployment workflow is already running.{' '}
-                <a
-                  href={workflowUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ textDecoration: 'underline', fontWeight: 'bold' }}
-                >
-                  View workflow
-                </a>
-              </span>
-            ) : (
-              'A deployment workflow is already running. Please wait for it to complete.'
-            ),
-          })
-          setIsChecking(false)
-          return
-        }
-      }
-
       const latestCommit = await github.getLatestCommit('main')
 
       if (latestCommit.sha === buildCommitHash) {

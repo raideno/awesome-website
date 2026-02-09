@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Callout,
   Dialog,
   Flex,
   Heading,
@@ -10,10 +11,11 @@ import {
 import {
   ChevronDownIcon,
   ChevronUpIcon,
+  ExclamationTriangleIcon,
   ExternalLinkIcon,
   ReloadIcon,
 } from '@radix-ui/react-icons'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { toast } from 'sonner'
 
@@ -61,6 +63,46 @@ export const UpdateCheckDialog: React.FC<UpdateCheckDialogProps> = ({
 }) => {
   const [isUpdating, setIsUpdating] = useState(false)
   const [isExpanded, setIsExpanded] = useState(false)
+  const [runningWorkflow, setRunningWorkflow] = useState<{
+    url: string
+    name: string
+  } | null>(null)
+
+  // Check for running workflow when dialog opens
+  useEffect(() => {
+    if (!open || !__GITHUB_WORKFLOW_FILE_NAME__) {
+      setRunningWorkflow(null)
+      return
+    }
+
+    const checkRunningWorkflow = async () => {
+      try {
+        const github = new GitHubService({
+          token: githubToken,
+          owner: __REPOSITORY_OWNER__,
+          repo: __REPOSITORY_NAME__,
+        })
+
+        const workflowStatus = await github.getDeploymentWorkflowRuns(
+          __GITHUB_WORKFLOW_FILE_NAME__,
+        )
+
+        if (workflowStatus.isRunning && workflowStatus.latestRun) {
+          setRunningWorkflow({
+            url: workflowStatus.latestRun.html_url,
+            name: workflowStatus.latestRun.workflow_name,
+          })
+        } else {
+          setRunningWorkflow(null)
+        }
+      } catch (error) {
+        console.warn('Failed to check for running workflow:', error)
+        setRunningWorkflow(null)
+      }
+    }
+
+    checkRunningWorkflow()
+  }, [open, githubToken])
 
   const handleUpdate = async () => {
     setIsUpdating(true)
@@ -142,6 +184,26 @@ export const UpdateCheckDialog: React.FC<UpdateCheckDialogProps> = ({
               </Text>
             )}
           </Text>
+
+          {runningWorkflow && (
+            <Callout.Root color="amber" size="1" style={{ marginTop: '8px' }}>
+              <Callout.Icon>
+                <ExclamationTriangleIcon />
+              </Callout.Icon>
+              <Callout.Text>
+                An update is already in progress.{' '}
+                <Link
+                  href={runningWorkflow.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ fontWeight: 'bold' }}
+                >
+                  View workflow
+                </Link>{' '}
+                to check if it's the update you're looking for before triggering a new one.
+              </Callout.Text>
+            </Callout.Root>
+          )}
 
           <Box>
             <Text size="2" weight="medium">
