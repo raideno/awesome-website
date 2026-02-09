@@ -227,7 +227,7 @@ export const UpdateCheckDialog: React.FC<UpdateCheckDialogProps> = ({
                 <InfoCircledIcon />
               </Callout.Icon>
               <Callout.Text>
-                The latest version has already been deployed, but you may be seeing a cached version. 
+                The latest version has already been deployed, but you may be seeing a cached version.
                 Try clearing your browser cache or wait a few minutes for the cache to expire.
               </Callout.Text>
             </Callout.Root>
