@@ -9,6 +9,7 @@ import yamlAwesomeListPlugin, {
   loadAwesomeList,
 } from "./plugins/yaml-awesome-list";
 import metadataAwesomeList from "./plugins/metadata-awesome-list";
+import listFormatsPlugin from "./plugins/list-formats";
 
 console.log("[process.env.BASE_PATH]:", process.env.BASE_PATH);
 console.log("[process.env.LIST_FILE_PATH]:", process.env.LIST_FILE_PATH);
@@ -90,6 +91,7 @@ export default vite.defineConfig({
     viteReact(),
     yamlAwesomeListPlugin(YAML_FILE_PATH),
     metadataAwesomeList(AWESOME_LIST, GITHUB_REPOSITORY_URL),
+    listFormatsPlugin(AWESOME_LIST),
     VitePWA({
       registerType: "autoUpdate",
       workbox: {
