@@ -1,8 +1,8 @@
-# Awesome Website
+# Awesome Website - https://raideno.github.io/awesome
 
 Awesome website is a project that transforms a simple YAML file into a beautiful, interactive, and easily deployable website to store your resources (links, images, files, etc) directly inside your github repository. It's the perfect solution for creating and maintaining "awesome lists" with a polished and professional look.
 
-**Demo:** [https://raideno.github.io/awesome](https://raideno.github.io/awesome/website)
+Using your GitHub token you can then update the website directly from within the website itself, without the need to edit the YAML file manually. This makes it easy to keep your awesome list up-to-date and share it with others.
 
 ## Automatic Setup
 
