@@ -10,15 +10,15 @@ export const PasswordWithToggleController: React.FC<
 
   return (
     <TextField.Root
+      size="3"
       type={showPassword ? "text" : "password"}
       value={props.field.value}
       onChange={(event) => props.field.onChange(event.target.value)}
-      placeholder={props.metadata.placeholder}
+      placeholder={props.fieldConfig.placeholder}
     >
       <TextField.Slot side="right">
         <IconButton
           type="button"
-          size="1"
           variant="ghost"
           onClick={() => setShowPassword(!showPassword)}
           aria-label={showPassword ? "Hide token" : "Show token"}
