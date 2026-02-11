@@ -30,7 +30,7 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({
   onOpenChange,
 }) => {
   const githubAuth = useGitHubAuth();
-  const [tokenValue, setTokenValue] = useState(githubAuth.token || "");
+  const [tokenValue, setTokenValue] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -92,7 +92,7 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({
                     onClick={() => setShowPassword(!showPassword)}
                     aria-label={showPassword ? "Hide token" : "Show token"}
                   >
-                    {showPassword ? <EyeClosedIcon /> : <EyeOpenIcon />}
+                    {showPassword ? <EyeOpenIcon /> : <EyeClosedIcon />}
                   </IconButton>
                 </TextField.Slot>
               </TextField.Root>
