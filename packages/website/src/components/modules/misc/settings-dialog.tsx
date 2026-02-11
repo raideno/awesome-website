@@ -35,13 +35,13 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     const trimmedToken = tokenValue.trim();
     if (!trimmedToken) {
       toast.error("Token cannot be empty");
       return;
     }
-    
+
     githubAuth.setToken(trimmedToken);
     onOpenChange(false);
     toast.success("Token saved successfully");
