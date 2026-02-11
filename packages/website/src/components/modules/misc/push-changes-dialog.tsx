@@ -18,6 +18,7 @@ import ReactDiffViewer from "react-diff-viewer-continued";
 
 import { toast } from "sonner";
 
+import { useTheme } from "shared/contexts/theme";
 import type { AwesomeList } from "shared/types/awesome-list";
 
 import { useList } from "@/contexts/list";
@@ -57,6 +58,7 @@ export const PushChangesDialog: React.FC<PushChangesDialogProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const githubAuth = useGitHubAuth();
   const { clearChanges, syncRemoteList, content } = useList();
+  const { theme } = useTheme();
 
   const dialogOpen = controlledOpen !== undefined ? controlledOpen : isOpen;
   const setDialogOpen = controlledOnOpenChange || setIsOpen;
@@ -95,11 +97,6 @@ export const PushChangesDialog: React.FC<PushChangesDialogProps> = ({
       hasReadmeChanges: oldReadme !== newReadme,
     };
   }, [content.old.readme, yamlContent.readme]);
-
-  // Detect dark theme once per render
-  const isDarkTheme = useMemo(() => {
-    return document.documentElement.classList.contains("dark");
-  }, [dialogOpen]);
 
   const handleError = () => {
     toast.error("Something is wrong with your inputs.");
@@ -245,7 +242,7 @@ export const PushChangesDialog: React.FC<PushChangesDialogProps> = ({
                             oldValue={oldYaml}
                             newValue={newYaml}
                             splitView={true}
-                            useDarkTheme={isDarkTheme}
+                            useDarkTheme={theme === "dark"}
                             leftTitle="Current (Remote)"
                             rightTitle="New (Local)"
                             hideLineNumbers={false}
@@ -274,7 +271,7 @@ export const PushChangesDialog: React.FC<PushChangesDialogProps> = ({
                             oldValue={oldReadme}
                             newValue={newReadme}
                             splitView={true}
-                            useDarkTheme={isDarkTheme}
+                            useDarkTheme={theme === "dark"}
                             leftTitle="Current (Remote)"
                             rightTitle="New (Local)"
                             hideLineNumbers={false}
