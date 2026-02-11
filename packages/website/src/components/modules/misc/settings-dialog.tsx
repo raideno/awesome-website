@@ -1,10 +1,21 @@
-import React, { type ComponentProps } from "react";
+import React, { useState } from "react";
 
-import { InfoCircledIcon } from "@radix-ui/react-icons";
-import { Box, Callout, Dialog, Flex, Heading, Text } from "@radix-ui/themes";
-import { MetadataRegistry } from "@raideno/auto-form/registry";
-import { AutoForm } from "@raideno/auto-form/ui";
-import { z } from "zod/v4";
+import {
+  InfoCircledIcon,
+  EyeOpenIcon,
+  EyeClosedIcon,
+} from "@radix-ui/react-icons";
+import {
+  Box,
+  Button,
+  Callout,
+  Dialog,
+  Flex,
+  Heading,
+  IconButton,
+  Text,
+  TextField,
+} from "@radix-ui/themes";
 
 import { useGitHubAuth } from "@/hooks/github-auth";
 import { toast } from "sonner";
@@ -14,43 +25,39 @@ interface SettingsDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
-const SettingsFormSchema = z.object({
-  token: z.string().register(MetadataRegistry, {
-    type: "password",
-    placeholder: "ghp_xxxxxxxxxxxxxxxxxxxx",
-    label: "GitHub Personal Access Token",
-    description:
-      "Required for editing and pushing changes. Token is automatically saved.",
-  }),
-});
-
 export const SettingsDialog: React.FC<SettingsDialogProps> = ({
   open,
   onOpenChange,
 }) => {
   const githubAuth = useGitHubAuth();
+  const [tokenValue, setTokenValue] = useState(githubAuth.token || "");
+  const [showPassword, setShowPassword] = useState(false);
 
-  const handleSubmit: ComponentProps<
-    typeof AutoForm.Root<typeof SettingsFormSchema>
-  >["onSubmit"] = (data, tag, _helpers) => {
-    if (tag === "submit") {
-      githubAuth.setToken(data.token.trim());
-      onOpenChange(false);
-    } else {
-      toast.error("Please fix the errors in the form before submitting.");
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    const trimmedToken = tokenValue.trim();
+    if (!trimmedToken) {
+      toast.error("Token cannot be empty");
+      return;
     }
+    
+    githubAuth.setToken(trimmedToken);
+    onOpenChange(false);
+    toast.success("Token saved successfully");
   };
+
+  // Update tokenValue when dialog opens
+  React.useEffect(() => {
+    if (open) {
+      setTokenValue(githubAuth.token || "");
+    }
+  }, [open, githubAuth.token]);
 
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Content>
-        <AutoForm.Root
-          defaultValues={{
-            token: githubAuth.token || "empty",
-          }}
-          schema={SettingsFormSchema}
-          onSubmit={handleSubmit}
-        >
+        <form onSubmit={handleSubmit}>
           <Flex direction="column" gap="4">
             <Box>
               <>
@@ -63,7 +70,37 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({
               <Text>Manage your GitHub authentication and preferences</Text>
             </Box>
 
-            <AutoForm.Content />
+            <Flex direction="column" gap="2">
+              <label htmlFor="github-token">
+                <Text size="2" weight="medium">
+                  GitHub Personal Access Token
+                </Text>
+              </label>
+              <TextField.Root
+                id="github-token"
+                type={showPassword ? "text" : "password"}
+                placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
+                value={tokenValue}
+                onChange={(e) => setTokenValue(e.target.value)}
+                required
+              >
+                <TextField.Slot side="right">
+                  <IconButton
+                    type="button"
+                    size="1"
+                    variant="ghost"
+                    onClick={() => setShowPassword(!showPassword)}
+                    aria-label={showPassword ? "Hide token" : "Show token"}
+                  >
+                    {showPassword ? <EyeClosedIcon /> : <EyeOpenIcon />}
+                  </IconButton>
+                </TextField.Slot>
+              </TextField.Root>
+              <Text size="1" color="gray">
+                Required for editing and pushing changes. Token is automatically
+                saved.
+              </Text>
+            </Flex>
 
             <Callout.Root color="blue" variant="soft">
               <Callout.Icon>
@@ -83,17 +120,11 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({
                 .
               </Callout.Text>
             </Callout.Root>
-            <AutoForm.Actions>
-              <AutoForm.Action
-                tag="submit"
-                className="w-full"
-                variant="classic"
-              >
-                Save
-              </AutoForm.Action>
-            </AutoForm.Actions>
+            <Button type="submit" className="w-full" variant="classic">
+              Save
+            </Button>
           </Flex>
-        </AutoForm.Root>
+        </form>
       </Dialog.Content>
     </Dialog.Root>
   );
