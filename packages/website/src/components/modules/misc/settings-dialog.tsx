@@ -30,7 +30,7 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({
   onOpenChange,
 }) => {
   const githubAuth = useGitHubAuth();
-  const [tokenValue, setTokenValue] = useState("");
+  const [tokenValue, setTokenValue] = useState(githubAuth.token || "");
   const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -47,7 +47,7 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({
     toast.success("Token saved successfully");
   };
 
-  // Update tokenValue when dialog opens
+  // Update tokenValue when dialog opens or token changes
   React.useEffect(() => {
     if (open) {
       setTokenValue(githubAuth.token || "");
@@ -92,7 +92,7 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({
                     onClick={() => setShowPassword(!showPassword)}
                     aria-label={showPassword ? "Hide token" : "Show token"}
                   >
-                    {showPassword ? <EyeOpenIcon /> : <EyeClosedIcon />}
+                    {showPassword ? <EyeClosedIcon /> : <EyeOpenIcon />}
                   </IconButton>
                 </TextField.Slot>
               </TextField.Root>
