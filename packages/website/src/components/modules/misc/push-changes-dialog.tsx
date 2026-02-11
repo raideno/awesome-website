@@ -8,11 +8,13 @@ import {
   Flex,
   Heading,
   Text,
+  Tabs,
 } from "@radix-ui/themes";
 import { MetadataRegistry } from "@raideno/auto-form/registry";
 import { AutoForm } from "@raideno/auto-form/ui";
-import React, { useState, type ComponentProps } from "react";
+import React, { useState, useMemo, type ComponentProps } from "react";
 import { z } from "zod/v4";
+import ReactDiffViewer from "react-diff-viewer-continued";
 
 import { toast } from "sonner";
 
@@ -22,6 +24,8 @@ import { useList } from "@/contexts/list";
 import { useGitHubAuth } from "@/hooks/github-auth";
 import { getWorkflowStatus } from "@/hooks/workflow-status";
 import { GitHubService } from "@/lib/github";
+
+import * as yaml from "js-yaml";
 
 interface PushChangesDialogProps {
   children?: React.ReactNode;
@@ -52,10 +56,45 @@ export const PushChangesDialog: React.FC<PushChangesDialogProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const githubAuth = useGitHubAuth();
-  const { clearChanges, syncRemoteList } = useList();
+  const { clearChanges, syncRemoteList, content } = useList();
 
   const dialogOpen = controlledOpen !== undefined ? controlledOpen : isOpen;
   const setDialogOpen = controlledOnOpenChange || setIsOpen;
+
+  // Generate YAML content for old and new versions
+  const { oldYaml, newYaml, hasYamlChanges } = useMemo(() => {
+    const { readme: oldReadme, ...oldYamlData } = content.old;
+    const { readme: newReadme, ...newYamlData } = yamlContent;
+
+    const oldYaml = yaml.dump(oldYamlData, {
+      indent: 2,
+      lineWidth: -1,
+      noRefs: true,
+    });
+    const newYaml = yaml.dump(newYamlData, {
+      indent: 2,
+      lineWidth: -1,
+      noRefs: true,
+    });
+
+    return {
+      oldYaml,
+      newYaml,
+      hasYamlChanges: oldYaml !== newYaml,
+    };
+  }, [content.old, yamlContent]);
+
+  // Check for README changes
+  const { oldReadme, newReadme, hasReadmeChanges } = useMemo(() => {
+    const oldReadme = content.old.readme || "";
+    const newReadme = yamlContent.readme || "";
+
+    return {
+      oldReadme,
+      newReadme,
+      hasReadmeChanges: oldReadme !== newReadme,
+    };
+  }, [content.old.readme, yamlContent.readme]);
 
   const handleError = () => {
     toast.error("Something is wrong with your inputs.");
@@ -119,7 +158,7 @@ export const PushChangesDialog: React.FC<PushChangesDialogProps> = ({
     <Dialog.Root open={dialogOpen} onOpenChange={setDialogOpen}>
       {children && <Dialog.Trigger>{children}</Dialog.Trigger>}
       <Portal container={document.body}>
-        <Dialog.Content>
+        <Dialog.Content style={{ maxWidth: "90vw", width: "1200px" }}>
           <AutoForm.Root
             defaultValues={{
               path: __YAML_FILE_PATH__,
@@ -168,6 +207,84 @@ export const PushChangesDialog: React.FC<PushChangesDialogProps> = ({
               )}
 
               <AutoForm.Content />
+              
+              {/* Preview Changes Section */}
+              <Box>
+                <Heading size="3" mb="2">
+                  Preview Changes
+                </Heading>
+                <Tabs.Root defaultValue={hasYamlChanges ? "yaml" : hasReadmeChanges ? "readme" : "yaml"}>
+                  <Tabs.List>
+                    <Tabs.Trigger value="yaml">
+                      list.yaml {hasYamlChanges && "(Modified)"}
+                    </Tabs.Trigger>
+                    {hasReadmeChanges && (
+                      <Tabs.Trigger value="readme">
+                        README.md (Modified)
+                      </Tabs.Trigger>
+                    )}
+                  </Tabs.List>
+
+                  <Box pt="3">
+                    <Tabs.Content value="yaml">
+                      {hasYamlChanges ? (
+                        <Box
+                          style={{
+                            maxHeight: "400px",
+                            overflow: "auto",
+                            border: "1px solid var(--gray-6)",
+                            borderRadius: "var(--radius-2)",
+                          }}
+                        >
+                          <ReactDiffViewer
+                            oldValue={oldYaml}
+                            newValue={newYaml}
+                            splitView={true}
+                            useDarkTheme={
+                              document.documentElement.classList.contains("dark")
+                            }
+                            leftTitle="Current (Remote)"
+                            rightTitle="New (Local)"
+                            hideLineNumbers={false}
+                          />
+                        </Box>
+                      ) : (
+                        <Callout.Root>
+                          <Callout.Text>
+                            No changes to list.yaml file
+                          </Callout.Text>
+                        </Callout.Root>
+                      )}
+                    </Tabs.Content>
+
+                    {hasReadmeChanges && (
+                      <Tabs.Content value="readme">
+                        <Box
+                          style={{
+                            maxHeight: "400px",
+                            overflow: "auto",
+                            border: "1px solid var(--gray-6)",
+                            borderRadius: "var(--radius-2)",
+                          }}
+                        >
+                          <ReactDiffViewer
+                            oldValue={oldReadme}
+                            newValue={newReadme}
+                            splitView={true}
+                            useDarkTheme={
+                              document.documentElement.classList.contains("dark")
+                            }
+                            leftTitle="Current (Remote)"
+                            rightTitle="New (Local)"
+                            hideLineNumbers={false}
+                          />
+                        </Box>
+                      </Tabs.Content>
+                    )}
+                  </Box>
+                </Tabs.Root>
+              </Box>
+
               <AutoForm.Actions>
                 <Flex direction={"column"} gap="3" justify="end">
                   <AutoForm.Action tag="discard" variant="soft" color="red">
