@@ -7,6 +7,7 @@ import React, { createContext, useContext, useMemo } from "react";
 import { useDocumentTitle } from "shared/hooks/document-title";
 import { useDynamicMetadata } from "shared/hooks/dynamic-metadata";
 import { AwesomeListSchema } from "shared/types/awesome-list";
+import { deepEqual } from "shared/lib/utils";
 
 import type { AwesomeList } from "shared/types/awesome-list";
 
@@ -139,7 +140,20 @@ export const ListProvider: React.FC<{ children: React.ReactNode }> = ({
     clearPersistedChanges();
   };
 
-  const hasUnsavedChanges = Object.keys(changes).length > 0;
+  // Check if there are actual changes by comparing the merged list with the base list
+  const hasUnsavedChanges = useMemo(() => {
+    if (Object.keys(changes).length === 0) return false;
+    
+    // Compare each changed field
+    for (const key of Object.keys(changes) as Array<keyof AwesomeList>) {
+      if (!deepEqual(list[key], baseList[key])) {
+        return true;
+      }
+    }
+    
+    return false;
+  }, [changes, list, baseList]);
+
   const canEdit = !isWorkflowRunning;
   const error = queryError?.message || null;
 
