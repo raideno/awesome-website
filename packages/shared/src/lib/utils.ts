@@ -12,7 +12,7 @@ export function cn(...inputs: Array<ClassValue>): string {
  * @param b - Second value to compare
  * @returns true if values are deeply equal, false otherwise
  */
-export function deepEqual(a: any, b: any): boolean {
+export function deepEqual(a: unknown, b: unknown): boolean {
   if (a === b) return true
 
   if (a == null || b == null) return a === b
@@ -21,15 +21,20 @@ export function deepEqual(a: any, b: any): boolean {
 
   if (Array.isArray(a) !== Array.isArray(b)) return false
 
-  if (Array.isArray(a)) {
+  if (Array.isArray(a) && Array.isArray(b)) {
     if (a.length !== b.length) return false
     return a.every((item, index) => deepEqual(item, b[index]))
   }
 
-  const keysA = Object.keys(a)
-  const keysB = Object.keys(b)
+  const keysA = Object.keys(a as object)
+  const keysB = Object.keys(b as object)
 
   if (keysA.length !== keysB.length) return false
 
-  return keysA.every((key) => deepEqual(a[key], b[key]))
+  return keysA.every((key) =>
+    deepEqual(
+      (a as Record<string, unknown>)[key],
+      (b as Record<string, unknown>)[key],
+    ),
+  )
 }

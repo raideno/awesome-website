@@ -96,6 +96,11 @@ export const PushChangesDialog: React.FC<PushChangesDialogProps> = ({
     };
   }, [content.old.readme, yamlContent.readme]);
 
+  // Detect dark theme once per render
+  const isDarkTheme = useMemo(() => {
+    return document.documentElement.classList.contains("dark");
+  }, [dialogOpen]);
+
   const handleError = () => {
     toast.error("Something is wrong with your inputs.");
   };
@@ -213,7 +218,7 @@ export const PushChangesDialog: React.FC<PushChangesDialogProps> = ({
                 <Heading size="3" mb="2">
                   Preview Changes
                 </Heading>
-                <Tabs.Root defaultValue={hasYamlChanges ? "yaml" : hasReadmeChanges ? "readme" : "yaml"}>
+                <Tabs.Root defaultValue="yaml">
                   <Tabs.List>
                     <Tabs.Trigger value="yaml">
                       list.yaml {hasYamlChanges && "(Modified)"}
@@ -240,9 +245,7 @@ export const PushChangesDialog: React.FC<PushChangesDialogProps> = ({
                             oldValue={oldYaml}
                             newValue={newYaml}
                             splitView={true}
-                            useDarkTheme={
-                              document.documentElement.classList.contains("dark")
-                            }
+                            useDarkTheme={isDarkTheme}
                             leftTitle="Current (Remote)"
                             rightTitle="New (Local)"
                             hideLineNumbers={false}
@@ -271,9 +274,7 @@ export const PushChangesDialog: React.FC<PushChangesDialogProps> = ({
                             oldValue={oldReadme}
                             newValue={newReadme}
                             splitView={true}
-                            useDarkTheme={
-                              document.documentElement.classList.contains("dark")
-                            }
+                            useDarkTheme={isDarkTheme}
                             leftTitle="Current (Remote)"
                             rightTitle="New (Local)"
                             hideLineNumbers={false}
