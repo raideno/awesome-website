@@ -37,6 +37,7 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({
   >["onSubmit"] = (data, tag, _helpers) => {
     if (tag === "submit") {
       githubAuth.setToken(data.token.trim());
+      toast.success("Token saved successfully");
       onOpenChange(false);
     } else {
       toast.error("Please fix the errors in the form before submitting.");
@@ -48,7 +49,7 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({
       <Dialog.Content>
         <AutoForm.Root
           defaultValues={{
-            token: githubAuth.token || "empty",
+            token: githubAuth.token || "",
           }}
           schema={SettingsFormSchema}
           onSubmit={handleSubmit}
