@@ -37,9 +37,9 @@ jobs:
         uses: actions/checkout@v4
 
       - name: build awesome website
-        uses: raideno/awesome@main
+        uses: raideno/awesome@v0.2.0
         with:
-          # Formatted according to the structure specified below
+          # NOTE: formatted according to the structure specified below
           yaml-path: 'example.list.yaml'
 
       - name: upload build artifact
@@ -53,7 +53,6 @@ jobs:
         uses: actions/deploy-pages@v4
         with:
           artifact_name: github-pages
-
 ```
 4. Push your changes and wait for the github action to complete in order to see your changes.
 

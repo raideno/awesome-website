@@ -58,7 +58,7 @@ export const ListProvider: React.FC<{ children: React.ReactNode }> = ({
     clearData: clearPersistedChanges,
   } = useCommitAwareStorage<Partial<AwesomeList>>(
     "awesome-list-changes",
-    __USER_REPOSITORY_COMMIT_HASH__,
+    __CONFIGURATION__.repository.commit,
     {},
   );
 
@@ -76,10 +76,10 @@ export const ListProvider: React.FC<{ children: React.ReactNode }> = ({
       try {
         const github = new GitHubService({
           token: githubAuth.token || undefined,
-          owner: __REPOSITORY_OWNER__,
-          repo: __REPOSITORY_NAME__,
+          owner: __CONFIGURATION__.repository.owner,
+          repo: __CONFIGURATION__.repository.name,
         });
-        const file = await github.getFile(__YAML_FILE_PATH__);
+        const file = await github.getFile(__CONFIGURATION__.list.path);
         const content = yaml.load(file.content);
 
         const parsing = AwesomeListSchema.safeParse(content);
@@ -89,7 +89,10 @@ export const ListProvider: React.FC<{ children: React.ReactNode }> = ({
         const list = parsing.data;
 
         try {
-          const readmePath = __YAML_FILE_PATH__.replace(/[^/]+$/, "README.md");
+          const readmePath = __CONFIGURATION__.list.path.replace(
+            /[^/]+$/,
+            "README.md",
+          );
           const readmeFile = await github.getFile(readmePath);
           list.readme = readmeFile.content;
         } catch (err) {
@@ -143,14 +146,14 @@ export const ListProvider: React.FC<{ children: React.ReactNode }> = ({
   // Check if there are actual changes by comparing the merged list with the base list
   const hasUnsavedChanges = useMemo(() => {
     if (Object.keys(changes).length === 0) return false;
-    
+
     // Compare each changed field
     for (const key of Object.keys(changes) as Array<keyof AwesomeList>) {
       if (!deepEqual(list[key], baseList[key])) {
         return true;
       }
     }
-    
+
     return false;
   }, [changes, list, baseList]);
 

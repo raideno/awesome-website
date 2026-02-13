@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from "react";
 
 /**
  * Generates a prefixed localStorage key to avoid conflicts between different
@@ -12,116 +12,116 @@ function getPrefixedKey(
   repositoryName: string,
   key: string,
 ): string {
-  return `awesome-website=${repositoryOwner}:${repositoryName}:${key}`
+  return `awesome-website=${repositoryOwner}:${repositoryName}:${key}`;
 }
 
-// const repositoryName = __REPOSITORY_NAME__ || 'default-repository'
-// const ownerName = __REPOSITORY_OWNER__ || 'default-owner'
-
 export function useLocalStorageStateFactory(
-  repositoryOwner: string = 'default-owner',
-  repositoryName: string = 'default-repository',
+  repositoryOwner: string = "default-owner",
+  repositoryName: string = "default-repository",
 ) {
   function useLocalStorageState<T>(
     key: string,
     initialValue: T,
     options: {
-      serialize?: (value: T) => string
-      deserialize?: (value: string) => T
+      serialize?: (value: T) => string;
+      deserialize?: (value: string) => T;
     } = {},
   ) {
-    const { serialize = JSON.stringify, deserialize = JSON.parse } = options
+    const { serialize = JSON.stringify, deserialize = JSON.parse } = options;
 
-    const prefixedKey = getPrefixedKey(repositoryOwner, repositoryName, key)
+    const prefixedKey = getPrefixedKey(repositoryOwner, repositoryName, key);
 
     const getStoredValue = useCallback((): T => {
       try {
-        const item = window.localStorage.getItem(prefixedKey)
-        return item ? deserialize(item) : initialValue
+        const item = window.localStorage.getItem(prefixedKey);
+        return item ? deserialize(item) : initialValue;
       } catch (error) {
-        console.warn(`Error reading localStorage key "${prefixedKey}":`, error)
-        return initialValue
+        console.warn(`Error reading localStorage key "${prefixedKey}":`, error);
+        return initialValue;
       }
-    }, [prefixedKey, initialValue, deserialize])
+    }, [prefixedKey, initialValue, deserialize]);
 
-    const [state, setState] = useState<T>(getStoredValue)
+    const [state, setState] = useState<T>(getStoredValue);
 
     const setValue = useCallback(
       (value: T | ((val: T) => T)) => {
         try {
-          const valueToStore = value instanceof Function ? value(state) : value
+          const valueToStore = value instanceof Function ? value(state) : value;
 
-          setState(valueToStore)
+          setState(valueToStore);
 
-          window.localStorage.setItem(prefixedKey, serialize(valueToStore))
+          window.localStorage.setItem(prefixedKey, serialize(valueToStore));
 
           window.dispatchEvent(
-            new CustomEvent('localStorage-update', {
+            new CustomEvent("localStorage-update", {
               detail: { key: prefixedKey, value: valueToStore },
             }),
-          )
+          );
         } catch (error) {
           console.warn(
             `Error setting localStorage key "${prefixedKey}":`,
             error,
-          )
+          );
         }
       },
       [prefixedKey, serialize, state],
-    )
+    );
 
     useEffect(() => {
       const handleStorageChange = (e: StorageEvent | CustomEvent) => {
-        if ('key' in e && e.key === prefixedKey) {
+        if ("key" in e && e.key === prefixedKey) {
           if (e.newValue !== null) {
             try {
-              const newValue = deserialize(e.newValue)
-              setState(newValue)
+              const newValue = deserialize(e.newValue);
+              setState(newValue);
             } catch (error) {
               console.warn(
                 `Error deserializing localStorage key "${prefixedKey}":`,
                 error,
-              )
+              );
             }
           }
-        } else if ('detail' in e && e.detail?.key === prefixedKey) {
-          setState(e.detail.value)
+        } else if ("detail" in e && e.detail?.key === prefixedKey) {
+          setState(e.detail.value);
         }
-      }
+      };
 
-      window.addEventListener('storage', handleStorageChange)
+      window.addEventListener("storage", handleStorageChange);
 
       window.addEventListener(
-        'localStorage-update',
+        "localStorage-update",
         handleStorageChange as EventListener,
-      )
+      );
 
       return () => {
-        window.removeEventListener('storage', handleStorageChange)
+        window.removeEventListener("storage", handleStorageChange);
         window.removeEventListener(
-          'localStorage-update',
+          "localStorage-update",
           handleStorageChange as EventListener,
-        )
-      }
-    }, [prefixedKey, deserialize])
+        );
+      };
+    }, [prefixedKey, deserialize]);
 
     const clearValue = useCallback(() => {
       try {
-        window.localStorage.removeItem(prefixedKey)
-        setState(initialValue)
+        window.localStorage.removeItem(prefixedKey);
+        setState(initialValue);
 
         window.dispatchEvent(
-          new CustomEvent('localStorage-update', {
+          new CustomEvent("localStorage-update", {
             detail: { key: prefixedKey, value: initialValue },
           }),
-        )
+        );
       } catch (error) {
-        console.warn(`Error removing localStorage key "${prefixedKey}":`, error)
+        console.warn(
+          `Error removing localStorage key "${prefixedKey}":`,
+          error,
+        );
       }
-    }, [prefixedKey, initialValue])
+    }, [prefixedKey, initialValue]);
 
-    return [state, setValue, clearValue] as const
+    return [state, setValue, clearValue] as const;
   }
 
-  return useLocalStorageState
+  return useLocalStorageState;
 }

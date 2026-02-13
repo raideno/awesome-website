@@ -1,108 +1,71 @@
-import { ReloadIcon } from '@radix-ui/react-icons'
-import { Badge, Flex, Tooltip } from '@radix-ui/themes'
+import { ReloadIcon } from "@radix-ui/react-icons";
+import { Badge, Flex, Tooltip } from "@radix-ui/themes";
 
-import { useState } from 'react'
+import { useState } from "react";
 
-import { toast } from 'sonner'
+import { toast } from "sonner";
 
-import type React from 'react'
+import type React from "react";
 
-import { UpdateCheckDialog } from '@/components/modules/misc/update-check-dialog'
-import { useEditing } from '@/contexts/editing'
-import { useGitHubAuth } from '@/hooks/github-auth'
-import { GitHubService } from '@/lib/github'
+import { UpdateCheckDialog } from "@/components/modules/misc/update-check-dialog";
+import { useEditing } from "@/contexts/editing";
+import { useGitHubAuth } from "@/hooks/github-auth";
+import { GitHubService } from "@/lib/github";
 
 export interface VersionBadgeProps {}
 
+const AWESOME_ACTION_OWNER = "raideno";
+const AWESOME_ACTION_REPO = "awesome";
+
 export const VersionBadge: React.FC<VersionBadgeProps> = () => {
-  const buildCommitHash = __AWESOME_WEBSITE_BUILD_COMMIT_HASH__
-  const shortHash = buildCommitHash ? buildCommitHash.slice(0, 7) : 'dev'
+  const buildTag = __CONFIGURATION__.build.tag;
 
-  const { editingEnabled } = useEditing()
-  const { isAuthenticated, token } = useGitHubAuth()
+  const { editingEnabled } = useEditing();
+  const { isAuthenticated, token } = useGitHubAuth();
 
-  const [isChecking, setIsChecking] = useState(false)
-  const [updateDialogOpen, setUpdateDialogOpen] = useState(false)
-  const [latestCommitHash, setLatestCommitHash] = useState<string | null>(null)
-  const [currentCommitMessage, setCurrentCommitMessage] = useState<
-    string | undefined
-  >(undefined)
-  const [latestCommitMessage, setLatestCommitMessage] = useState<
-    string | undefined
-  >(undefined)
-  const [commitsBetween, setCommitsBetween] = useState<
-    Array<{
-      sha: string
-      message: string
-      author: { name: string; date: string }
-      html_url: string
-    }>
-  >([])
-  const [commitCount, setCommitCount] = useState(0)
+  const [isChecking, setIsChecking] = useState(false);
+  const [updateDialogOpen, setUpdateDialogOpen] = useState(false);
+  const [availableTags, setAvailableTags] = useState<string[]>([]);
 
-  const isClickable =
-    editingEnabled && isAuthenticated && buildCommitHash && !import.meta.env.DEV
+  const isClickable = Boolean(
+    editingEnabled && isAuthenticated && Boolean(buildTag),
+  );
 
   const handleBadgeClick = async () => {
-    if (!isClickable || !token) return
+    if (!isClickable || !token) return;
 
-    setIsChecking(true)
+    setIsChecking(true);
 
     try {
       const github = new GitHubService({
         token,
-        owner: 'raideno',
-        repo: 'awesome-website',
-      })
+        owner: AWESOME_ACTION_OWNER,
+        repo: AWESOME_ACTION_REPO,
+      });
 
-      const latestCommit = await github.getLatestCommit('main')
+      const tags = await github.listTags(50);
+      const resolvedTags = tags.map((tag) => tag.name);
+      setAvailableTags(
+        resolvedTags.length > 0 ? resolvedTags : buildTag ? [buildTag] : [],
+      );
 
-      if (latestCommit.sha === buildCommitHash) {
-        toast.success('Up to date', {
-          description: 'You are running the latest version',
-        })
-      } else {
-        setLatestCommitHash(latestCommit.sha)
-        setLatestCommitMessage(latestCommit.commit.message)
-
-        // Fetch current commit message
-        try {
-          const currentCommit = await github.getLatestCommit(buildCommitHash)
-          setCurrentCommitMessage(currentCommit.commit.message)
-        } catch (error) {
-          console.warn('Failed to fetch current commit message:', error)
-        }
-
-        // Fetch commits between current and latest
-        try {
-          const commitsData = await github.getCommitsBetween(
-            buildCommitHash,
-            latestCommit.sha,
-          )
-          setCommitsBetween(commitsData.commits)
-          setCommitCount(commitsData.totalCount)
-        } catch (error) {
-          console.warn('Failed to fetch commits between:', error)
-        }
-
-        setUpdateDialogOpen(true)
-      }
+      setUpdateDialogOpen(true);
     } catch (error) {
-      console.error('Failed to check for updates:', error)
-      toast.error('Failed to check for updates', {
+      console.error("Failed to check for updates:", error);
+      toast.error("Failed to check for updates", {
         description:
-          error instanceof Error ? error.message : 'Unknown error occurred',
-      })
+          error instanceof Error ? error.message : "Unknown error occurred",
+      });
     } finally {
-      setIsChecking(false)
+      setIsChecking(false);
     }
-  }
+  };
 
   const handleUpdateTriggered = () => {
-    toast.success('Update triggered!', {
-      description: 'Website deployment has been initiated',
-    })
-  }
+    toast.success("Version updated", {
+      description: "Workflow reference has been updated to the selected tag",
+    });
+  };
 
   const getBadgeContent = () => {
     if (isChecking) {
@@ -111,17 +74,17 @@ export const VersionBadge: React.FC<VersionBadgeProps> = () => {
           <ReloadIcon width={12} height={12} className="animate-spin" />
           Checking...
         </Flex>
-      )
+      );
     }
-    return shortHash
-  }
+    return buildTag;
+  };
 
   const getTooltipContent = () => {
     if (isClickable) {
-      return `Build: ${buildCommitHash || 'development'} (Click to check for updates)`
+      return `Version: ${buildTag || "development"} (Click to check for updates)`;
     }
-    return `Build: ${buildCommitHash || 'development'}`
-  }
+    return `Version: ${buildTag || "development"}`;
+  };
 
   return (
     <>
@@ -132,28 +95,24 @@ export const VersionBadge: React.FC<VersionBadgeProps> = () => {
           size="1"
           onClick={isClickable ? handleBadgeClick : undefined}
           style={{
-            cursor: isClickable ? 'pointer' : 'default',
-            userSelect: 'none',
+            cursor: isClickable ? "pointer" : "default",
+            userSelect: "none",
           }}
         >
           {getBadgeContent()}
         </Badge>
       </Tooltip>
 
-      {latestCommitHash && token && (
+      {token && updateDialogOpen && (
         <UpdateCheckDialog
           open={updateDialogOpen}
           onOpenChange={setUpdateDialogOpen}
-          currentCommitHash={buildCommitHash || ''}
-          latestCommitHash={latestCommitHash}
+          currentTag={buildTag || ""}
+          availableTags={availableTags}
           githubToken={token}
           onUpdateTriggered={handleUpdateTriggered}
-          currentCommitMessage={currentCommitMessage}
-          latestCommitMessage={latestCommitMessage}
-          commitsBetween={commitsBetween}
-          commitCount={commitCount}
         />
       )}
     </>
-  )
-}
+  );
+};

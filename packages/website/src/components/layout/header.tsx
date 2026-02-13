@@ -31,7 +31,7 @@ export const Header: React.FC<HeaderProps> = () => {
     ? list.allTags
     : list.allTags.slice(0, MAX_HEADER_TAGS);
 
-  const commitHash = __USER_REPOSITORY_COMMIT_HASH__;
+  const commitHash = __CONFIGURATION__.repository.commit;
   const shortHash = commitHash ? commitHash.slice(0, 7) : "dev";
 
   return (
@@ -44,16 +44,22 @@ export const Header: React.FC<HeaderProps> = () => {
       <Flex align="center" gap="2" wrap="wrap" justify="center">
         <Text size={"2"} color={"gray"}>
           By {list.content.new.author} • Updated{" "}
-          {new Date(__BUILD_TIME__).toLocaleDateString(undefined, {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          })}{" "}
+          {new Date(__CONFIGURATION__.build.time).toLocaleDateString(
+            undefined,
+            {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            },
+          )}{" "}
           at{" "}
-          {new Date(__BUILD_TIME__).toLocaleTimeString(undefined, {
-            hour: "2-digit",
-            minute: "2-digit",
-          })}
+          {new Date(__CONFIGURATION__.build.time).toLocaleTimeString(
+            undefined,
+            {
+              hour: "2-digit",
+              minute: "2-digit",
+            },
+          )}
         </Text>
         {commitHash && (
           <Tooltip
@@ -137,7 +143,7 @@ export const Header: React.FC<HeaderProps> = () => {
         </EditReadmeDialog>
         <Link
           rel="noopener noreferrer"
-          href={__REPOSITORY_URL__}
+          href={__CONFIGURATION__.repository.url}
           target="_blank"
         >
           <Button className="!cursor-pointer" size={"3"} variant="classic">

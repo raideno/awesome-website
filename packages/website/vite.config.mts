@@ -1,39 +1,42 @@
-import path from "node:path";
 import child from "node:child_process";
+import path from "node:path";
 
+import * as z from "zod/v4";
 import * as vite from "vite";
 
-import { VitePWA } from "vite-plugin-pwa";
 import viteReact from "@vitejs/plugin-react";
+import { VitePWA } from "vite-plugin-pwa";
+import listFormatsPlugin from "./plugins/list-formats";
+import metadataAwesomeList from "./plugins/metadata-awesome-list";
 import yamlAwesomeListPlugin, {
   loadAwesomeList,
 } from "./plugins/yaml-awesome-list";
-import metadataAwesomeList from "./plugins/metadata-awesome-list";
-import listFormatsPlugin from "./plugins/list-formats";
 
-console.log("[process.env.BASE_PATH]:", process.env.BASE_PATH);
-console.log("[process.env.LIST_FILE_PATH]:", process.env.LIST_FILE_PATH);
-console.log(
-  "[process.env.GITHUB_REPOSITORY_URL]:",
-  process.env.GITHUB_REPOSITORY_URL,
-);
+const EnvironmentSchema = z.looseObject({
+  BASE_PATH: z.string().min(1),
+  LIST_FILE_PATH: z.string().min(1),
+  GITHUB_REPOSITORY_URL: z.string().min(1),
+  USER_REPOSITORY_COMMIT_HASH: z.string().min(1),
+  AWESOME_WEBSITE_TAG: z.string().optional().default("unknown"),
+  GITHUB_WORKFLOW_REF: z.string(),
+});
 
-const GITHUB_REPOSITORY_URL = process.env.GITHUB_REPOSITORY_URL || "";
+const ENVIRONMENT = EnvironmentSchema.parse(process.env);
 
 const [GITHUB_REPOSITORY_OWNER, GITHUB_REPOSITORY_NAME] =
-  GITHUB_REPOSITORY_URL.split("/").slice(-2);
+  ENVIRONMENT.GITHUB_REPOSITORY_URL.split("/").slice(-2);
 
-const BASE_PATH = process.env.BASE_PATH
-  ? process.env.BASE_PATH
+const BASE_PATH = ENVIRONMENT.BASE_PATH
+  ? ENVIRONMENT.BASE_PATH
   : `/${GITHUB_REPOSITORY_NAME}`;
 
-const YAML_FILE_PATH = process.env.LIST_FILE_PATH || "";
+const YAML_FILE_PATH = ENVIRONMENT.LIST_FILE_PATH;
 
 const AWESOME_LIST = loadAwesomeList(YAML_FILE_PATH);
 
 const USER_REPOSITORY_COMMIT_HASH = (() => {
-  if (process.env.USER_REPOSITORY_COMMIT_HASH) {
-    return process.env.USER_REPOSITORY_COMMIT_HASH;
+  if (ENVIRONMENT.USER_REPOSITORY_COMMIT_HASH) {
+    return ENVIRONMENT.USER_REPOSITORY_COMMIT_HASH;
   }
   try {
     return child.execSync("git rev-parse HEAD", { encoding: "utf8" }).trim();
@@ -43,54 +46,42 @@ const USER_REPOSITORY_COMMIT_HASH = (() => {
   }
 })();
 
-const AWESOME_WEBSITE_BUILD_COMMIT_HASH =
-  process.env.AWESOME_WEBSITE_COMMIT_HASH || "";
+const AWESOME_WEBSITE_BUILD_TAG = (() => {
+  if (ENVIRONMENT.AWESOME_WEBSITE_TAG) {
+    return ENVIRONMENT.AWESOME_WEBSITE_TAG;
+  }
 
-const GITHUB_WORKFLOW_NAME = process.env.GITHUB_WORKFLOW_NAME || "";
-const GITHUB_WORKFLOW_REF = process.env.GITHUB_WORKFLOW_REF || "";
+  try {
+    return child
+      .execSync("git describe --tags --exact-match", { encoding: "utf8" })
+      .trim();
+  } catch {
+    return "unknown";
+  }
+})();
 
 // NOTE: try to extract workflow filename from github.workflow_ref or github.workflow
 // github.workflow_ref format: owner/repo/.github/workflows/filename.yml@refs/heads/branch
 // github.workflow can be either a name (e.g., "Build Awesome Website") or filename
 const GITHUB_WORKFLOW_FILE_NAME = (() => {
-  if (GITHUB_WORKFLOW_REF) {
-    const match = GITHUB_WORKFLOW_REF.match(/\.github\/workflows\/([^@]+)/);
+  if (ENVIRONMENT.GITHUB_WORKFLOW_REF) {
+    const match = ENVIRONMENT.GITHUB_WORKFLOW_REF.match(
+      /\.github\/workflows\/([^@]+)/,
+    );
     if (match?.[1]) {
       return match[1];
     }
   }
 
-  if (
-    GITHUB_WORKFLOW_NAME &&
-    (GITHUB_WORKFLOW_NAME.endsWith(".yml") ||
-      GITHUB_WORKFLOW_NAME.endsWith(".yaml"))
-  ) {
-    return GITHUB_WORKFLOW_NAME;
-  }
-
   return "";
 })();
-
-console.log("[BASE_PATH]:", BASE_PATH);
-console.log("[GITHUB_REPOSITORY_URL]:", GITHUB_REPOSITORY_URL);
-console.log("[GITHUB_REPOSITORY_OWNER]:", GITHUB_REPOSITORY_OWNER);
-console.log("[GITHUB_REPOSITORY_NAME]:", GITHUB_REPOSITORY_NAME);
-console.log("[YAML_FILE_PATH]:", YAML_FILE_PATH);
-console.log("[USER_REPOSITORY_COMMIT_HASH]:", USER_REPOSITORY_COMMIT_HASH);
-console.log(
-  "[AWESOME_WEBSITE_BUILD_COMMIT_HASH]:",
-  AWESOME_WEBSITE_BUILD_COMMIT_HASH,
-);
-console.log("[GITHUB_WORKFLOW_NAME]:", GITHUB_WORKFLOW_NAME);
-console.log("[GITHUB_WORKFLOW_REF]:", GITHUB_WORKFLOW_REF);
-console.log("[GITHUB_WORKFLOW_FILE_NAME]:", GITHUB_WORKFLOW_FILE_NAME);
 
 // NOTE: https://vitejs.dev/config/
 export default vite.defineConfig({
   plugins: [
     viteReact(),
     yamlAwesomeListPlugin(YAML_FILE_PATH),
-    metadataAwesomeList(AWESOME_LIST, GITHUB_REPOSITORY_URL),
+    metadataAwesomeList(AWESOME_LIST, ENVIRONMENT.GITHUB_REPOSITORY_URL),
     listFormatsPlugin(AWESOME_LIST),
     VitePWA({
       registerType: "autoUpdate",
@@ -131,20 +122,26 @@ export default vite.defineConfig({
     environment: "jsdom",
   },
   define: {
-    __BUILD_TIME__: JSON.stringify(new Date().toISOString()),
-    __REPOSITORY_URL__: JSON.stringify(GITHUB_REPOSITORY_URL),
-    __REPOSITORY_OWNER__: JSON.stringify(GITHUB_REPOSITORY_OWNER),
-    __REPOSITORY_NAME__: JSON.stringify(GITHUB_REPOSITORY_NAME),
-    __YAML_FILE_PATH__: JSON.stringify(YAML_FILE_PATH),
-    __USER_REPOSITORY_COMMIT_HASH__: JSON.stringify(
-      USER_REPOSITORY_COMMIT_HASH,
-    ),
-    __AWESOME_WEBSITE_BUILD_COMMIT_HASH__: JSON.stringify(
-      AWESOME_WEBSITE_BUILD_COMMIT_HASH,
-    ),
-    __AWESOME_WEBSITE__: true,
-    __GITHUB_WORKFLOW_FILE_NAME__: JSON.stringify(GITHUB_WORKFLOW_FILE_NAME),
-    __AWESOME_LIST__: JSON.stringify(AWESOME_LIST),
+    __CONFIGURATION__: {
+      repository: {
+        url: ENVIRONMENT.GITHUB_REPOSITORY_URL,
+        owner: GITHUB_REPOSITORY_OWNER,
+        name: GITHUB_REPOSITORY_NAME,
+        commit: USER_REPOSITORY_COMMIT_HASH,
+        workflow: {
+          name: GITHUB_WORKFLOW_FILE_NAME,
+        },
+      },
+      build: {
+        time: new Date().toISOString(),
+        tag: AWESOME_WEBSITE_BUILD_TAG,
+      },
+      awesome: true,
+      list: {
+        content: AWESOME_LIST,
+        path: YAML_FILE_PATH,
+      },
+    } satisfies typeof __CONFIGURATION__,
   },
   base: BASE_PATH,
   resolve: {

@@ -87,7 +87,6 @@ const GroupContainer: React.FC<{
         );
       }
     } else if (tag === "cancel") {
-      console.log("Canceling rename group");
       setRenameDialogOpen(false);
     } else {
       toast.error("Please fix the errors in the form before submitting.");

@@ -16,31 +16,15 @@ jobs:
       - name: checkout repository
         uses: actions/checkout@v4
 
-      - name: setup node.js
-        uses: actions/setup-node@v4
+      - name: build awesome website
+        uses: raideno/awesome@main
         with:
-          node-version: 20
-
-      - name: install dependencies
-        run: npm ci
-
-      - name: build website
-        env:
-          BASE_PATH: /${{ github.event.repository.name }}
-          LIST_FILE_PATH: example.list.yaml
-          GITHUB_REPOSITORY_URL: https://github.com/${{ github.repository }}
-        run: npm run build --workspace website
-
-      - name: create deployment structure
-        run: |
-          mkdir -p deploy-artifact/website
-
-          cp -r packages/website/dist/* deploy-artifact/
+          yaml-path: ./example.list.yaml
 
       - name: upload build artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: deploy-artifact
+          path: awesome-src/dist
           name: github-pages
 
       - name: deploy to github pages

@@ -1,11 +1,11 @@
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo } from "react";
 
-import { useLocalStorageStateFactory } from 'shared/hooks/local-storage-state'
+import { useLocalStorageStateFactory } from "shared/hooks/local-storage-state";
 
 interface CommitAwareData<T> {
-  commitHash: string
-  changes: T
-  timestamp: string
+  commitHash: string;
+  changes: T;
+  timestamp: string;
 }
 
 /**
@@ -23,45 +23,45 @@ export function useCommitAwareStorage<T>(
 ) {
   const [persistedData, setPersistedData, clearPersistedData] =
     useLocalStorageStateFactory(
-      __REPOSITORY_OWNER__,
-      __REPOSITORY_NAME__,
-    )<CommitAwareData<T> | null>(key, null)
+      __CONFIGURATION__.repository.owner,
+      __CONFIGURATION__.repository.name,
+    )<CommitAwareData<T> | null>(key, null);
 
   const isValidForCurrentCommit = useMemo(() => {
-    if (!persistedData || !commitHash) return false
-    return persistedData.commitHash === commitHash
-  }, [persistedData, commitHash])
+    if (!persistedData || !commitHash) return false;
+    return persistedData.commitHash === commitHash;
+  }, [persistedData, commitHash]);
 
   const data = useMemo(() => {
     if (isValidForCurrentCommit && persistedData) {
-      return persistedData.changes
+      return persistedData.changes;
     }
-    return initialValue
-  }, [isValidForCurrentCommit, persistedData, initialValue])
+    return initialValue;
+  }, [isValidForCurrentCommit, persistedData, initialValue]);
 
   const setData = useCallback(
     (value: T | ((prev: T) => T)) => {
-      const newValue = value instanceof Function ? value(data) : value
+      const newValue = value instanceof Function ? value(data) : value;
 
       setPersistedData({
         commitHash,
         changes: newValue,
         timestamp: new Date().toISOString(),
-      })
+      });
     },
     [commitHash, data, setPersistedData],
-  )
+  );
 
   const clearData = useCallback(() => {
-    clearPersistedData()
-  }, [clearPersistedData])
+    clearPersistedData();
+  }, [clearPersistedData]);
 
   useEffect(() => {
     if (persistedData && !isValidForCurrentCommit) {
       console.warn(
         `Persisted data for key "${key}" is from a different commit (${persistedData.commitHash} vs ${commitHash}). Clearing stale data.`,
-      )
-      clearPersistedData()
+      );
+      clearPersistedData();
     }
   }, [
     persistedData,
@@ -69,7 +69,7 @@ export function useCommitAwareStorage<T>(
     commitHash,
     key,
     clearPersistedData,
-  ])
+  ]);
 
   return {
     data,
@@ -78,5 +78,5 @@ export function useCommitAwareStorage<T>(
     hasData: isValidForCurrentCommit && persistedData !== null,
     isStale: !isValidForCurrentCommit && persistedData !== null,
     staleCommitHash: persistedData?.commitHash,
-  }
+  };
 }

@@ -127,8 +127,8 @@ export const PushChangesDialog: React.FC<PushChangesDialogProps> = ({
 
         const github = new GitHubService({
           token: githubAuth.token,
-          owner: __REPOSITORY_OWNER__,
-          repo: __REPOSITORY_NAME__,
+          owner: __CONFIGURATION__.repository.owner,
+          repo: __CONFIGURATION__.repository.name,
         });
 
         await github.update(data.path, yamlContent, data.message);
@@ -163,8 +163,8 @@ export const PushChangesDialog: React.FC<PushChangesDialogProps> = ({
         <Dialog.Content style={{ maxWidth: "90vw", width: "1200px" }}>
           <AutoForm.Root
             defaultValues={{
-              path: __YAML_FILE_PATH__,
-              repository: `${__REPOSITORY_OWNER__}/${__REPOSITORY_NAME__}`,
+              path: __CONFIGURATION__.list.path,
+              repository: `${__CONFIGURATION__.repository.owner}/${__CONFIGURATION__.repository.name}`,
               message: "chore: update",
             }}
             schema={PushChangesFormSchema}
@@ -209,7 +209,7 @@ export const PushChangesDialog: React.FC<PushChangesDialogProps> = ({
               )}
 
               <AutoForm.Content />
-              
+
               {/* Preview Changes Section */}
               <Box>
                 <Heading size="3" mb="2">
