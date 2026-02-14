@@ -13,11 +13,22 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: determine awesome source ref
+      id: awesome-ref
+      run: |
+        REF="${{ github.action_ref }}"
+        if [ -z "$REF" ]; then
+          REF="main"
+        fi
+        echo "value=$REF" >> "$GITHUB_OUTPUT"
+      shell: bash
+
     - name: checkout awesome website source
       uses: actions/checkout@v4
       with:
         repository: raideno/awesome
-        ref: main
+        ref: ${{ steps.awesome-ref.outputs.value }}
+        fetch-depth: 0
         path: awesome-src
 
     - name: setup node.js
@@ -70,9 +81,15 @@ runs:
       id: awesome-tag
       run: |
         cd awesome-src
-        TAG=$(git describe --tags --exact-match 2>/dev/null || true)
+        TAG="${{ github.action_ref }}"
         if [ -z "$TAG" ]; then
-          TAG="unknown"
+          TAG=$(git describe --tags --exact-match 2>/dev/null || true)
+        fi
+        if [ -z "$TAG" ]; then
+          TAG=$(git describe --tags --abbrev=0 2>/dev/null || true)
+        fi
+        if [ -z "$TAG" ]; then
+          TAG=$(git rev-parse --short HEAD)
         fi
         echo "tag=$TAG" >> "$GITHUB_OUTPUT"
       shell: bash
