@@ -24,7 +24,7 @@ jobs:
       - name: upload build artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: awesome-src/dist
+          path: awesome-website-src/dist
           name: github-pages
 
       - name: deploy to github pages
