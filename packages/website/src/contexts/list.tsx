@@ -11,7 +11,7 @@ import { deepEqual } from "shared/lib/utils";
 
 import type { AwesomeList } from "shared/types/awesome-list";
 
-import { GitHubService } from "@/lib/github";
+import { GitHubService } from "@raideno/github-service";
 
 import * as yaml from "js-yaml";
 
@@ -79,6 +79,7 @@ export const ListProvider: React.FC<{ children: React.ReactNode }> = ({
           owner: __CONFIGURATION__.repository.owner,
           repo: __CONFIGURATION__.repository.name,
         });
+
         const file = await github.getFile(__CONFIGURATION__.list.path);
         const content = yaml.load(file.content);
 

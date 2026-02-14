@@ -10,7 +10,7 @@ import type React from "react";
 import { UpdateCheckDialog } from "@/components/modules/misc/update-check-dialog";
 import { useEditing } from "@/contexts/editing";
 import { useGitHubAuth } from "@/hooks/github-auth";
-import { GitHubService } from "@/lib/github";
+import { GitHubService } from "@raideno/github-service";
 
 export interface VersionBadgeProps {}
 

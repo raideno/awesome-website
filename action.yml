@@ -94,6 +94,12 @@ runs:
         echo "tag=$TAG" >> "$GITHUB_OUTPUT"
       shell: bash
 
+    - name: build internal packages
+      run: |
+        cd awesome-src
+        npm run build --workspace @raideno/github-service
+      shell: bash
+
     - name: build awesome website
       env:
         BASE_PATH: ${{ steps.base.outputs.value }}

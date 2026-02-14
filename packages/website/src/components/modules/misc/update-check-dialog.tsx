@@ -23,7 +23,7 @@ import { toast } from "sonner";
 
 import { useList } from "@/contexts/list";
 
-import { GitHubService } from "@/lib/github";
+import { GitHubService } from "@raideno/github-service";
 import type { AwesomeList } from "shared/types/awesome-list";
 import { replaceTextareaTypeInPlace } from "shared/lib/utils";
 

@@ -24,7 +24,7 @@ import type { AwesomeList } from "shared/types/awesome-list";
 import { useList } from "@/contexts/list";
 import { useGitHubAuth } from "@/hooks/github-auth";
 import { getWorkflowStatus } from "@/hooks/workflow-status";
-import { GitHubService } from "@/lib/github";
+import { GitHubService } from "@raideno/github-service";
 
 import * as yaml from "js-yaml";
 
