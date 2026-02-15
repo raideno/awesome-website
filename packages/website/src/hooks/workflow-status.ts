@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { GitHubService } from "@/lib/github";
+import { GitHubService } from "@raideno/github-service";
 import { useGitHubAuth } from "@/hooks/github-auth";
 
 export interface Workflow {

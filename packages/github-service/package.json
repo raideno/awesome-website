@@ -1,0 +1,35 @@
+{
+    "name": "@raideno/github-service",
+    "version": "0.0.0",
+    "private": false,
+    "type": "module",
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js"
+        }
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "sideEffects": false,
+    "files": [
+        "dist",
+        "README.md"
+    ],
+    "scripts": {
+        "build": "tsc -p tsconfig.build.json",
+        "build:watch": "tsc -p tsconfig.build.json --watch --preserveWatchOutput",
+        "build::watch": "npm run build:watch",
+        "prepublishOnly": "npm run build"
+    },
+    "dependencies": {
+        "@octokit/rest": "^22.0.0",
+        "js-yaml": "^4.1.0"
+    },
+    "devDependencies": {
+        "typescript": "^5.7.2"
+    }
+}
