@@ -20,7 +20,9 @@ export const useNetwork = () => {
 export const NetworkProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [state, setState] = React.useState<NetworkState>("online");
+  const [state, setState] = React.useState<NetworkState>(
+    navigator.onLine ? "online" : "offline",
+  );
 
   const onOnline = () => setState("online");
   const onOffline = () => setState("offline");
