@@ -37,7 +37,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: build awesome website
-        uses: raideno/awesome@v0.2.0
+        uses: raideno/awesome@v0.2.1
         with:
           # NOTE: formatted according to the structure specified below
           yaml-path: 'example.list.yaml'
