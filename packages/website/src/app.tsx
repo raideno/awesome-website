@@ -1,23 +1,23 @@
-import React from 'react'
+import React from "react";
 
-import { MagnifyingGlassIcon } from '@radix-ui/react-icons'
-import { Box, TextField } from '@radix-ui/themes'
+import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
+import { Box, TextField } from "@radix-ui/themes";
 
-import { useFilter } from '@/contexts/filter'
+import { useFilter } from "@/contexts/filter";
 
-import { FloatingActionBar } from '@/components/layout/floating-action-bar'
-import { Footer } from '@/components/layout/footer'
-import { Header } from '@/components/layout/header'
-import { TagFilterModal } from '@/components/modules/filter/modal'
-import { FilterModalTrigger } from '@/components/modules/filter/modal-trigger'
-import { MarkersModal } from '@/components/modules/markers/modal'
-import { MarkersModalTrigger } from '@/components/modules/markers/modal-trigger'
-import { ResourceGrid } from '@/components/modules/resource/grid'
+import { FloatingActionBar } from "@/components/layout/floating-action-bar";
+import { Footer } from "@/components/layout/footer";
+import { Header } from "@/components/layout/header";
+import { TagFilterModal } from "@/components/modules/filter/modal";
+import { FilterModalTrigger } from "@/components/modules/filter/modal-trigger";
+import { MarkersModal } from "@/components/modules/markers/modal";
+import { MarkersModalTrigger } from "@/components/modules/markers/modal-trigger";
+import { ResourceGrid } from "@/components/modules/resource/grid";
 
 export interface AppProps {}
 
 export const App: React.FC<AppProps> = () => {
-  const { search, setSearch } = useFilter()
+  const { search, setSearch } = useFilter();
 
   return (
     <>
@@ -95,5 +95,5 @@ export const App: React.FC<AppProps> = () => {
         </div>
       </div>
     </>
-  )
-}
+  );
+};
