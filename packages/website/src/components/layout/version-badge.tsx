@@ -11,6 +11,7 @@ import { UpdateCheckDialog } from "@/components/modules/misc/update-check-dialog
 import { useEditing } from "@/contexts/editing";
 import { useGitHubAuth } from "@/hooks/github-auth";
 import { GitHubService } from "@raideno/github-service";
+import { useNetwork } from "@/contexts/network";
 
 export interface VersionBadgeProps {}
 
@@ -20,6 +21,7 @@ const AWESOME_ACTION_REPO = "awesome";
 export const VersionBadge: React.FC<VersionBadgeProps> = () => {
   const buildTag = __CONFIGURATION__.build.tag;
 
+  const network = useNetwork();
   const { editingEnabled } = useEditing();
   const { isAuthenticated, token } = useGitHubAuth();
 
@@ -27,9 +29,18 @@ export const VersionBadge: React.FC<VersionBadgeProps> = () => {
   const [updateDialogOpen, setUpdateDialogOpen] = useState(false);
   const [availableTags, setAvailableTags] = useState<string[]>([]);
 
-  const isClickable = Boolean(
-    editingEnabled && isAuthenticated && Boolean(buildTag),
-  );
+  const isVersionCheckDisabled: [boolean, string] =
+    network.state === "offline"
+      ? [true, "No internet available to check for updates."]
+      : !editingEnabled
+        ? [true, "Enable editing to check for updates."]
+        : !isAuthenticated
+          ? [true, "Sign in to GitHub to check for updates."]
+          : !buildTag
+            ? [true, "Current build tag is missing."]
+            : [false, "Click to check for updates."];
+
+  const isClickable = !isVersionCheckDisabled[0];
 
   const handleBadgeClick = async () => {
     if (!isClickable || !token) return;
@@ -80,10 +91,7 @@ export const VersionBadge: React.FC<VersionBadgeProps> = () => {
   };
 
   const getTooltipContent = () => {
-    if (isClickable) {
-      return `Version: ${buildTag || "development"} (Click to check for updates)`;
-    }
-    return `Version: ${buildTag || "development"}`;
+    return `Version: ${buildTag || "development"}. ${isVersionCheckDisabled[1]}`;
   };
 
   return (

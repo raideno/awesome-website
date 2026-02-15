@@ -1,23 +1,28 @@
-import React from 'react'
+import React from "react";
 
-import { MagnifyingGlassIcon } from '@radix-ui/react-icons'
-import { Box, TextField } from '@radix-ui/themes'
+import {
+  ExclamationTriangleIcon,
+  MagnifyingGlassIcon,
+} from "@radix-ui/react-icons";
+import { Box, Callout, TextField } from "@radix-ui/themes";
 
-import { useFilter } from '@/contexts/filter'
+import { useFilter } from "@/contexts/filter";
+import { useNetwork } from "@/contexts/network";
 
-import { FloatingActionBar } from '@/components/layout/floating-action-bar'
-import { Footer } from '@/components/layout/footer'
-import { Header } from '@/components/layout/header'
-import { TagFilterModal } from '@/components/modules/filter/modal'
-import { FilterModalTrigger } from '@/components/modules/filter/modal-trigger'
-import { MarkersModal } from '@/components/modules/markers/modal'
-import { MarkersModalTrigger } from '@/components/modules/markers/modal-trigger'
-import { ResourceGrid } from '@/components/modules/resource/grid'
+import { FloatingActionBar } from "@/components/layout/floating-action-bar";
+import { Footer } from "@/components/layout/footer";
+import { Header } from "@/components/layout/header";
+import { TagFilterModal } from "@/components/modules/filter/modal";
+import { FilterModalTrigger } from "@/components/modules/filter/modal-trigger";
+import { MarkersModal } from "@/components/modules/markers/modal";
+import { MarkersModalTrigger } from "@/components/modules/markers/modal-trigger";
+import { ResourceGrid } from "@/components/modules/resource/grid";
 
 export interface AppProps {}
 
 export const App: React.FC<AppProps> = () => {
-  const { search, setSearch } = useFilter()
+  const { search, setSearch } = useFilter();
+  const network = useNetwork();
 
   return (
     <>
@@ -63,9 +68,25 @@ export const App: React.FC<AppProps> = () => {
                   }
                 `}
               </style>
+
+              {network.state === "offline" && (
+                <Box mb="4">
+                  <Callout.Root color="orange" variant="soft">
+                    <Callout.Icon>
+                      <ExclamationTriangleIcon />
+                    </Callout.Icon>
+                    <Callout.Text>
+                      You are currently offline. Online actions (like pushing
+                      changes, updating) are temporarily unavailable.
+                    </Callout.Text>
+                  </Callout.Root>
+                </Box>
+              )}
+
               <div className="controls mb-4">
                 <Box className="controls__search">
                   <TextField.Root
+                    size={"3"}
                     value={search}
                     onChange={(event) => setSearch(event.target.value)}
                     placeholder="Search resources..."
@@ -77,12 +98,12 @@ export const App: React.FC<AppProps> = () => {
                 </Box>
                 <Box className="controls__filter">
                   <TagFilterModal>
-                    <FilterModalTrigger className="w-full" />
+                    <FilterModalTrigger size={"3"} className="w-full" />
                   </TagFilterModal>
                 </Box>
                 <Box className="controls__markers">
                   <MarkersModal>
-                    <MarkersModalTrigger className="w-full" />
+                    <MarkersModalTrigger size="3" className="w-full" />
                   </MarkersModal>
                 </Box>
               </div>
@@ -95,5 +116,5 @@ export const App: React.FC<AppProps> = () => {
         </div>
       </div>
     </>
-  )
-}
+  );
+};

@@ -19,6 +19,7 @@ import { ListMetadataEditSheet } from "@/components/modules/misc/list-metadata-e
 import { PushChangesDialog } from "@/components/modules/misc/push-changes-dialog";
 import { SettingsDialog } from "@/components/modules/misc/settings-dialog";
 import { ResourceCreateSheet } from "@/components/modules/resource/create-sheet";
+import { useNetwork } from "@/contexts/network";
 
 export interface FloatingActionBarProps {}
 
@@ -28,9 +29,17 @@ export const FloatingActionBar: React.FC<FloatingActionBarProps> = () => {
   const [pushChangesOpen, setPushChangesOpen] = React.useState(false);
   const [settingsOpen, setSettingsOpen] = React.useState(false);
 
+  const network = useNetwork();
   const list = useList();
   const { hasUnsavedChanges, content } = list;
   const { editingEnabled, setEditingEnabled } = useEditing();
+
+  const isPushingDisabled: [boolean, string] =
+    network.state === "offline"
+      ? [true, "No internet available to push changes."]
+      : !hasUnsavedChanges
+        ? [true, "No changes detected."]
+        : [false, "Push changes."];
 
   const handleToggleEditing = () => {
     const next = !editingEnabled;
@@ -66,14 +75,16 @@ export const FloatingActionBar: React.FC<FloatingActionBarProps> = () => {
             <Flex direction={{ initial: "row", sm: "column" }} gap={"2"}>
               {editingEnabled && (
                 <>
-                  <IconButton
-                    variant="classic"
-                    disabled={!hasUnsavedChanges}
-                    onClick={() => setPushChangesOpen(true)}
-                    aria-label="Push changes"
-                  >
-                    <UploadIcon />
-                  </IconButton>
+                  <Tooltip content={isPushingDisabled[1]}>
+                    <IconButton
+                      variant="classic"
+                      disabled={isPushingDisabled[0]}
+                      onClick={() => setPushChangesOpen(true)}
+                      aria-label="Push changes"
+                    >
+                      <UploadIcon />
+                    </IconButton>
+                  </Tooltip>
                   <IconButton
                     variant="classic"
                     disabled={!list.canEdit}
